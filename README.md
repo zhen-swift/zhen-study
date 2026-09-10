@@ -32,6 +32,46 @@ does not begin until every one of its gates is met.
 | 0.5 | The harness, dry | **Met**, with 0.4 as a declared hole. 36 schema-valid records, zero validation warnings. |
 | 0.6 | Pilot | **Not started.** Gated on 0.4. |
 
+## A third blocker, found 2026-09-09: this machine answers no ICMP
+
+`PHASE0.md` lists two outstanding decisions, unattended root and keeping the host
+awake. There is a third, and it is not a decision — it is the state of the machine.
+
+**Nothing on the local subnet answers ICMP from this host.** Not netsanity: 762
+probes across a /24, zero replies, every device in the report sourced from the kernel
+neighbour table and the run carrying the "no host answered a probe" degradation. Not
+`/sbin/ping` either, which fails identically against the default gateway — a host
+that is demonstrably alive, since this machine reaches the internet through it. A
+system tool failing the same way is what says this is the machine rather than the
+scanner.
+
+Two things changed since the 2026-09-04 measurements in `data/`, which recorded four
+to twelve ICMP replies per run and therefore worked:
+
+- The host has moved from `10.10.20.0/24` to `192.168.1.0/24`.
+- An IPsec tunnel is up (`ipsec0`, `10.1.15.176`) and holds a default route.
+
+The tunnel is the obvious suspect and has not been confirmed as the cause. What is
+confirmed is the effect, and it matters more than the mechanism: **a pilot run today
+would measure a network on which no host answers ICMP**, and every hypothesis that
+turns on round-trip dispersion would be measuring the absence of round trips. The
+comparison against `nmap -sn` would still run and would still produce numbers, which
+is what makes this dangerous rather than merely inconvenient — unprivileged nmap
+falls back to TCP connect probes and would keep finding hosts while netsanity's ICMP
+sweep found none.
+
+**The programmable testbed is unaffected, and that is what saves phase 0.** Checked
+the same day: `netbed1` brought up, and `192.168.64.4` answers at 0.87 ms with no
+loss, against its calibrated 1 ms target. The segment is host-local vmnet over
+`bridge100` rather than the physical LAN, so whatever is eating ICMP on `en0` does not
+reach it.
+
+That matters because the programmable segment is the **primary** testbed — the
+physical one was demoted to secondary in this phase's own amendment. So collection can
+proceed on the primary while the host's ICMP problem is unresolved. What cannot
+proceed is anything on the physical LAN, which includes the external-validity runs the
+secondary testbed exists for.
+
 ## The rule that matters most
 
 The harness never computes a statistic and the analysis never touches the network.
