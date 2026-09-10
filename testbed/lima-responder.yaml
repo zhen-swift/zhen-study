@@ -1,0 +1,36 @@
+# One responder machine: two shaped addresses on the vmnet segment the Mac is bridged
+# onto.
+#
+# Two, not more. `vmnet` drops any frame whose source hardware address is not the one it
+# assigned to the port, so each responder needs its own network device; and Apple's
+# Virtualization framework refuses a configuration with more than three devices, one of
+# which lima uses for its own transport. Measured, not assumed: four devices are
+# rejected with "The number of network devices is greater than the maximum number
+# supported", three are accepted. See FINDINGS-0.1.md.
+#
+# Not bridged onto en0. That interface is Wi-Fi: 802.11 gives a station no four-address
+# mode, so frames bearing a guest's own source address are dropped by the driver or the
+# access point, and the segment's own latency was measured at 152-305 ms in an earlier
+# phase — larger than four of the five delays this segment exists to impose.
+vmType: "vz"
+os: "Linux"
+arch: "aarch64"
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+cpus: 2
+memory: "1GiB"
+disk: "10GiB"
+
+networks:
+  - vzNAT: true
+  - vzNAT: true
+
+mountType: "virtiofs"
+mounts: []
+
+containerd:
+  system: false
+  user: false
