@@ -181,7 +181,14 @@ CONDITIONS: tuple[Condition, ...] = (
               "the same task as name fusion and the protocol says so.",
     ),
 
-    # ── Blocked: conditions whose flag does not exist ─────────────────────────────
+    # ── The two ablations of our own mechanism ───────────────────────────────────
+    #
+    # Both were BLOCKED until 2026-09-09, when the flags they name shipped.  They are
+    # kept together because they ablate different things and it is easy to conflate
+    # them: `ns.fixed.timeout` removes the ADAPTIVITY of the retransmit interval while
+    # keeping the two budgets separate; `ns.budget.shared` removes the SEPARATION and
+    # keeps neither.  A result that moved under both would say the mechanism matters; a
+    # result that moved under only one says which half of it does.
     Condition(
         id="ns.fixed.timeout",
         tool="netsanity",
@@ -189,8 +196,8 @@ CONDITIONS: tuple[Condition, ...] = (
         argv_template=_NS + ("--discovery-only", "--retransmit-timeout", "{fixed_ms}ms"),
         hypotheses=("H2",),
         purpose="netsanity with a fixed retransmit timeout, the ablation H2 needs",
-        status=BLOCKED,
-        requires="--retransmit-timeout on `netsanity scan`",
+        status=READY,
+        requires=None,
         parser="netsanity_json",
         notes=(
             "H2 claims adaptive per-host timing dominates fixed templates. Without a "
@@ -198,7 +205,10 @@ CONDITIONS: tuple[Condition, ...] = (
             "netsanity to nmap's templates and never to netsanity's own fixed-timing "
             "behaviour, which is the comparison that isolates the mechanism. `--deadline` "
             "is not this flag: it bounds the whole scan, not the per-host retransmit "
-            "interval."
+            "interval. Unblocked 2026-09-09. The pinned value is NOT clamped into the "
+            "adaptive path's 25-150 ms range, so `{fixed_ms}` is measured as written, "
+            "and the artifact reports `budget_policy: fixed-retransmit` beside the "
+            "interval so a reader can tell an imposed value from a measured one."
         ),
     ),
     Condition(
@@ -208,15 +218,18 @@ CONDITIONS: tuple[Condition, ...] = (
         argv_template=_NS + ("--discovery-only", "--shared-budget"),
         hypotheses=("H5",),
         purpose="netsanity with one shared budget instead of the split, for H5",
-        status=BLOCKED,
-        requires="--shared-budget on `netsanity scan`",
+        status=READY,
+        requires=None,
         parser="netsanity_json",
         notes=(
             "H5 is an ablation of our own system: split retransmit/declaration budget "
-            "versus a single shared one. There is no CLI knob and no environment "
-            "override for it — SweepSpacing computes both budgets internally — so H5 "
-            "cannot be measured at all until one exists. This is the entry PROTOCOL.md "
-            "section 2 row 4 requires, and it is unwritable today."
+            "versus a single shared one. This is the entry PROTOCOL.md section 2 row 4 "
+            "requires. Unblocked 2026-09-09 by `--shared-budget`, which collapses both "
+            "questions onto the tail's number — the sweep's pre-split behaviour. Note "
+            "it does NOT change the spacing policy: the spread is still bought out of "
+            "the same tail slack, so this ablates one variable rather than two. The "
+            "artifact reports `budget_policy: shared` alongside the unchanged "
+            "`spacing_policy`, which is what makes that checkable rather than asserted."
         ),
     ),
 )
