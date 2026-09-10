@@ -137,6 +137,13 @@ def reset_machine(vm, responders):
     """
     script = ["set +e"]
     for responder in responders:
+        # Listeners first. A transient unit outlives the namespace it was running in,
+        # and `systemd-run` refuses a unit name that already exists — so a second
+        # `configure` would fail on the unit rather than on anything to do with the
+        # segment, which is a confusing way to be told to clean up.
+        for port in responder.tcp_ports:
+            script.append(f"systemctl stop {listener_unit(responder.name, port)}.service "
+                          f"2>/dev/null")
         script.append(f"ip netns del {responder.name} 2>/dev/null")
     script += ["sleep 1",
                "for d in $(ls /sys/class/net | grep '^lima'); do ip link set $d up; done",
@@ -179,6 +186,84 @@ def namespace_responders(vm, responders, interfaces):
             f"ip -n {ns} link set lo up",
         ]
     guest(vm, "\n".join(script))
+
+
+def listener_unit(ns, port):
+    """The transient unit name for one responder's listener on one port."""
+    return f"netbed-listen-{ns}-{port}"
+
+
+def start_listeners(vm, responder, iface):
+    """Open the responder's TCP ports, BEFORE its delay is calibrated.
+
+    The order is not arbitrary and getting it wrong is not obvious. A listener is a
+    process, and a process changes how idle the machine is — which is the same lever the
+    CPU spinner pulls, for the same reason. Calibrated in a quiet machine and then run in
+    a busy one, a responder drifts away from the target it was tuned to: measured here,
+    the 25 ms responder came out at 22.3 ms once its two servers were running, which is
+    outside the gate's tolerance and was caused entirely by tuning it under conditions it
+    would never be measured in.
+
+    Transient units for the same reasons the spinner is one — a backgrounded job holds
+    the ssh channel open and limactl reports 255, and a `pkill` matches the shell running
+    it. `python3 -m http.server` because the image has it and a TCP connect scan only
+    needs the handshake; what it serves is irrelevant.
+    """
+    if not responder.tcp_ports:
+        return
+    ns = responder.name
+    script = ["set -e"]
+    for port in responder.tcp_ports:
+        unit = listener_unit(ns, port)
+        script += [
+            f"systemctl stop {unit}.service 2>/dev/null || true",
+            f"systemd-run --unit={unit} --collect "
+            f"ip netns exec {ns} python3 -m http.server {port} "
+            f"--bind {iface['address']} >/dev/null 2>&1",
+        ]
+    guest(vm, "\n".join(script))
+
+
+def set_icmp_policy(vm, responder):
+    """Switch the responder's ICMP off, AFTER its delay is calibrated.
+
+    The opposite order to the listeners, and for the opposite reason: calibration
+    measures the delay by pinging, so a host whose ICMP is off first is a host whose
+    delay cannot be measured. It still needs one — netem is on the interface, so it
+    delays that host's TCP handshakes exactly as much as it would have delayed its pings.
+
+    `icmp_echo_ignore_all` in the responder's own namespace rather than a firewall rule:
+    the namespace has its own network sysctls, it is one line, and it leaves the host
+    otherwise entirely normal. It still answers ARP, which is the whole reason a
+    privileged scan finds it and an unprivileged one does not.
+    """
+    guest(vm, f"ip netns exec {responder.name} sysctl -qw "
+              f"net.ipv4.icmp_echo_ignore_all={0 if responder.answers_icmp else 1}")
+
+
+def verify_policy(vm, responder, iface):
+    """Check the responder is what the plan says, from inside the machine hosting it.
+
+    Not from the Mac. A responder that is unreachable from the Mac for some other reason
+    would otherwise look exactly like a correctly filtered one, and the manifest would
+    record a composition the segment does not have.
+    """
+    ns = responder.name
+    address = iface["address"]
+    icmp = guest(
+        vm,
+        f"ip netns exec {ns} ping -c 2 -W 1 -q {address} >/dev/null 2>&1 "
+        f"&& echo answers || echo silent",
+    ).stdout.strip()
+    ports = {}
+    for port in responder.tcp_ports:
+        probe = guest(
+            vm,
+            f"ip netns exec {ns} timeout 3 bash -c "
+            f"'</dev/tcp/{address}/{port}' >/dev/null 2>&1 && echo open || echo shut",
+        ).stdout.strip()
+        ports[str(port)] = probe
+    return {"icmp": icmp, "ports": ports}
 
 
 def set_shaping(vm, ns, ifname, delay_ms, loss_percent):
@@ -260,6 +345,12 @@ def cmd_configure(args):
         interfaces = interfaces[:len(responders)]
         namespace_responders(vm, responders, interfaces)
 
+        # Listeners before anything is measured, including the baseline. Everything
+        # downstream is calibrated against a machine in the state it will be measured
+        # in — see `start_listeners` for what it cost to get this order wrong.
+        for responder, iface in zip(responders, interfaces):
+            start_listeners(vm, responder, iface)
+
         # Baseline before any shaping, so calibration starts from measurement rather
         # than from an assumed floor.
         for responder, iface in zip(responders, interfaces):
@@ -288,6 +379,23 @@ def cmd_configure(args):
             print(f"  {responder.name} {iface['address']} "
                   f"target {responder.target_rtt_ms} ms", flush=True)
             netem, stats, history = calibrate(vm, responder, iface, baseline)
+            # After calibration: the filter would have made the delay unmeasurable.
+            set_icmp_policy(vm, responder)
+            observed = verify_policy(vm, responder, iface)
+            expected_icmp = "answers" if responder.answers_icmp else "silent"
+            if observed["icmp"] != expected_icmp:
+                raise SystemExit(
+                    f"{responder.name}: ICMP is '{observed['icmp']}' and the plan says "
+                    f"'{expected_icmp}' — the composition is not what was declared"
+                )
+            shut = [p for p, state in observed["ports"].items() if state != "open"]
+            if shut:
+                raise SystemExit(
+                    f"{responder.name}: ports {shut} are not accepting — H6 turns on "
+                    f"exactly these being reachable by a TCP connect scan"
+                )
+            print(f"    role {responder.role}: icmp {observed['icmp']}, "
+                  f"ports {sorted(observed['ports'])} open", flush=True)
             entries.append({
                 "name": responder.name,
                 "machine": vm,
@@ -299,11 +407,23 @@ def cmd_configure(args):
                 "netem_delay_ms": round(netem, 4),
                 "achieved": {k: round(v, 4) for k, v in stats.items()},
                 "calibration": history,
+                # What the responder IS, verified from inside the machine hosting it
+                # rather than asserted from the plan. A composition recorded from
+                # intention is a composition nobody checked.
+                "role": responder.role,
+                "answers_icmp": responder.answers_icmp,
+                "tcp_ports": list(responder.tcp_ports),
+                "verified": observed,
             })
 
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "segment": plan.SEGMENT,
+        # Recorded so the paper cites the segment it measured rather than the segment
+        # the protocol asked for, and so a reader can check the H6 declaration against
+        # the instrument instead of against the plan that described it.
+        "composition": plan.composition(),
+        "declared_web_fraction": plan.DECLARED_WEB_FRACTION,
         "generated_at_unix": int(time.time()),
         "responders_per_machine": plan.RESPONDERS_PER_VM,
         "responders": entries,

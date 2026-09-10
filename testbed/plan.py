@@ -36,23 +36,105 @@ class Responder:
     #: losing the request are the same event to a discovery scan, and netem shapes
     #: egress, so this is the honest description of what is imposed.
     loss_percent: float = 0.0
+    #: Whether the host answers an ICMP echo request at all.
+    #:
+    #: Section 3 requires a host with ICMP filtered, and H6 turns on the difference
+    #: between what ICMP reaches and what a TCP connect scan reaches. Imposed with the
+    #: namespace's own `icmp_echo_ignore_all`, so the host is otherwise entirely normal
+    #: — it still answers ARP, which is what a privileged scan would find it by.
+    answers_icmp: bool = True
+    #: TCP ports the responder accepts a connection on.
+    #:
+    #: Unprivileged nmap probes exactly 80 and 443, measured in 0.3. A responder serving
+    #: neither is invisible to it; one serving either is not. That is the whole
+    #: mechanism H6 predicts, so it is expressed here as data rather than left to what
+    #: an image happens to have running.
+    tcp_ports: tuple[int, ...] = ()
+
+    @property
+    def role(self):
+        """How this responder reads in a composition table."""
+        if self.answers_icmp and self.tcp_ports:
+            return "icmp+web"
+        if self.answers_icmp:
+            return "icmp-only"
+        if self.tcp_ports:
+            return "tcp-only"
+        return "silent"
 
 
 # Five delays spanning 1 ms to 500 ms — a dispersion of 500, which is the range the
 # study needs and which no physical consumer network supplies. Two responders at each
 # so a single machine's scheduling cannot be mistaken for a property of the delay.
+#
+# ── The composition is pre-declared, and this is it ──────────────────────────────
+#
+# `PROTOCOL.md`'s H6 amendment fixes the testbed's composition before collection,
+# because the size of the privilege gap is a property of what is on the segment rather
+# than of either scanner: a segment where everything serves a web page shows no gap, and
+# one where nothing does shows a gap of one. Neither is informative. The declaration is
+# **at least one quarter must answer ICMP and serve port 80 or 443**, alongside the
+# ICMP-filtered and TCP-only hosts section 3 already requires.
+#
+#   r01, r03, r05   answer ICMP and serve a port   3 of 10, so the quarter is met
+#   r06             ICMP filtered, serves port 80  section 3's "TCP/80 only" host
+#   r08             ICMP filtered, serves nothing  found by ARP alone, by neither scan
+#   r10             answers, but sleeps            section 3's sleeping host, as loss
+#
+# The delay ladder is carried by the responders that answer ICMP, because a delay
+# imposed on a host nothing can measure is not a point on the curve.
 RESPONDERS = (
-    Responder("r01", 1.0),
+    Responder("r01", 1.0, tcp_ports=(80,)),
     Responder("r02", 1.0),
-    Responder("r03", 5.0),
+    Responder("r03", 5.0, tcp_ports=(443,)),
     Responder("r04", 5.0),
-    Responder("r05", 25.0),
-    Responder("r06", 25.0),
+    Responder("r05", 25.0, tcp_ports=(80, 443)),
+    # ICMP filtered but serving 80: the one host unprivileged nmap finds and an
+    # ICMP-only sweep does not. Without it H6 is a claim nothing on the segment can
+    # contradict.
+    Responder("r06", 25.0, answers_icmp=False, tcp_ports=(80,)),
     Responder("r07", 100.0),
-    Responder("r08", 100.0),
+    # Answers nothing at either layer. Present in ARP, so a privileged scan finds it and
+    # both unprivileged scans should not — which is what makes the privileged/
+    # unprivileged comparison in H3 have something to be about.
+    Responder("r08", 100.0, answers_icmp=False),
     Responder("r09", 500.0),
-    Responder("r10", 500.0),
+    # The sleeper, expressed as loss rather than as a duty cycle: netem's loss is what
+    # this apparatus can impose repeatably, and correction C8 is about exactly this
+    # host — the one whose three transmissions can all land inside one outage.
+    Responder("r10", 500.0, loss_percent=15.0),
 )
+
+#: The fraction of responders that must answer ICMP and serve a probed port, from the
+#: H6 amendment. Asserted below rather than trusted, because a composition that quietly
+#: stops meeting its own declaration invalidates the threshold derived from it, and
+#: nothing else in the apparatus would notice.
+DECLARED_WEB_FRACTION = 0.25
+
+
+def composition():
+    """How many responders of each role, for the manifest and for the paper."""
+    out = {}
+    for responder in RESPONDERS:
+        out[responder.role] = out.get(responder.role, 0) + 1
+    return out
+
+
+def _check_declaration():
+    web = sum(1 for r in RESPONDERS if r.answers_icmp and r.tcp_ports)
+    if web < DECLARED_WEB_FRACTION * len(RESPONDERS):
+        raise AssertionError(
+            f"composition breaks PROTOCOL.md's H6 declaration: {web} of "
+            f"{len(RESPONDERS)} responders answer ICMP and serve a probed port, "
+            f"and at least {DECLARED_WEB_FRACTION:.0%} must"
+        )
+    if not any(not r.answers_icmp for r in RESPONDERS):
+        raise AssertionError("section 3 requires a host with ICMP filtered")
+    if not any(not r.answers_icmp and r.tcp_ports for r in RESPONDERS):
+        raise AssertionError("section 3 requires a host answering only on TCP")
+
+
+_check_declaration()
 
 
 def machines():

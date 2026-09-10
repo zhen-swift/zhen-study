@@ -165,3 +165,58 @@ code at the point they bite.
   established.
 - **The secondary physical testbed.** Untouched. `PROTOCOL.md` section 3 still
   describes it and it remains the external-validity arm.
+
+---
+
+## Re-planned for H6, 2026-09-10 — gate re-met
+
+The 2026-09-08 amendment pre-declares the segment's composition, and the segment did
+not have it. Ten responders that all answered ICMP and served nothing would have made
+H6 unfalsifiable in the wrong direction: unprivileged nmap would find zero, the gap
+would be 1.0, and the 0.25 threshold could not fail however weak the mechanism was. A
+threshold derived from a composition the instrument does not have is not a threshold.
+
+**The composition now.**
+
+| role | count | responders |
+|---|---|---|
+| answers ICMP and serves 80 or 443 | 3 | r01, r03, r05 |
+| answers ICMP only | 5 | r02, r04, r07, r09, r10 |
+| ICMP filtered, serves 80 | 1 | r06 |
+| answers neither | 1 | r08 |
+
+Three of ten is above the declared quarter. `r06` is section 3's "host answering only
+on TCP/80" and is the one host unprivileged nmap finds that an ICMP sweep does not —
+without it H6 is a claim nothing on the segment can contradict. `r08` answers nothing
+at either layer and is present only in ARP, which is what gives H3's
+privileged-versus-unprivileged comparison something to be about. `r10` carries 15% loss
+as the sleeping host, which is the host correction C8 is about.
+
+ICMP is switched off with the responder's own namespace `icmp_echo_ignore_all` rather
+than a firewall rule. One line, per namespace, and it leaves the host otherwise entirely
+normal — it still answers ARP, which is precisely why a privileged scan finds it.
+
+**Order matters, and getting it wrong cost a gate run.** The first attempt started the
+TCP listeners after calibrating each responder's delay. A listener is a process, and a
+process changes how idle the machine is — the same lever the CPU spinner pulls, for the
+same reason. Calibrated quiet and then run busy, the 25 ms responder came out at
+22.3 ms, and the gate failed on three responders for a reason that had nothing to do
+with shaping. Listeners now start before anything is measured, including the baseline.
+The ICMP filter goes on in the opposite order, after calibration, because calibration
+measures delay by pinging and a filtered host cannot be pinged.
+
+**A filtered host still has a delay, and it is still verified.** netem is on the
+interface, so it delays that host's TCP handshakes exactly as much as it would have
+delayed its pings. `verify_gate.py` measures `r06` by timing a TCP connect instead of a
+ping. `r08` answers nothing and is recorded as unmeasurable rather than as a failure:
+its delay is imposed and cannot be checked by any active probe, which is acceptable
+because nothing in the study measures a round trip to a host that never answers one.
+
+**Gate 0.1 re-met on the new composition.** Worst error 2.50% across three runs and ten
+addresses against a 10% tolerance — better than the 5.0% the original composition
+managed, because everything is now calibrated under the load it is measured under. Ten
+distinct hardware addresses, all agreeing between the guest and the Mac's neighbour
+table. The gate now also fails if a responder's ICMP state disagrees with the plan, or
+if the declared quarter is not met: a segment that quietly stops being the pre-declared
+one invalidates every number derived from that declaration, and nothing else would
+notice.

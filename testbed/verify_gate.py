@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import json
 import re
+import socket
 import statistics
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -44,6 +46,34 @@ def ping_rtts(address, count, interval):
                        capture_output=True, text=True,
                        timeout=int(count * interval) + 60)
     return [float(m) for m in re.findall(r"time=([0-9.]+)", p.stdout)]
+
+
+def tcp_rtts(address, port, count, interval):
+    """Round trips measured by opening a TCP connection instead of by pinging.
+
+    The composition declared for H6 includes hosts with ICMP switched off, and those
+    hosts still carry a shaped delay — netem is on the interface, so it delays their
+    handshakes exactly as much as it would have delayed their pings. Ping cannot see
+    them, which does not make the delay unverified; it makes it verified by the other
+    thing they answer.
+
+    The connect itself is one round trip: SYN out, SYN/ACK back, and the socket is
+    writable. What follows on the connection is irrelevant and is not waited for.
+    """
+    out = []
+    for _ in range(count):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5.0)
+        start = time.perf_counter()
+        try:
+            sock.connect((address, port))
+            out.append((time.perf_counter() - start) * 1000.0)
+        except OSError:
+            pass
+        finally:
+            sock.close()
+        time.sleep(interval)
+    return out
 
 
 def summarise(values):
@@ -94,8 +124,26 @@ def main():
               f"{'error':>8} {'p10':>9} {'p90':>10} {'sd':>7}")
         measurements = []
         for r in responders:
-            stats = summarise(ping_rtts(r["address"], PROBES,
-                                        interval_for(r["target_rtt_ms"])))
+            # How this responder is asked depends on what it answers. A host with ICMP
+            # filtered is measured over TCP; a host that answers neither is not measured
+            # at all, and says so rather than being recorded as a failure.
+            method = "icmp"
+            if not r.get("answers_icmp", True):
+                method = "tcp" if r.get("tcp_ports") else "none"
+            if method == "none":
+                measurements.append({"name": r["name"], "address": r["address"],
+                                     "target_rtt_ms": r["target_rtt_ms"],
+                                     "method": "none", "unmeasurable": True})
+                print(f"  {r['name']:<6} {r['address']:<15} "
+                      f"{r['target_rtt_ms']:>8} {'(answers nothing)':>10}")
+                continue
+            if method == "tcp":
+                port = r["tcp_ports"][0]
+                stats = summarise(tcp_rtts(r["address"], port, PROBES,
+                                           interval_for(r["target_rtt_ms"])))
+            else:
+                stats = summarise(ping_rtts(r["address"], PROBES,
+                                            interval_for(r["target_rtt_ms"])))
             if stats is None:
                 measurements.append({"name": r["name"], "address": r["address"],
                                      "target_rtt_ms": r["target_rtt_ms"],
@@ -105,7 +153,7 @@ def main():
                 continue
             error = 100.0 * (stats["p50"] - r["target_rtt_ms"]) / r["target_rtt_ms"]
             measurements.append({"name": r["name"], "address": r["address"],
-                                 "target_rtt_ms": r["target_rtt_ms"],
+                                 "target_rtt_ms": r["target_rtt_ms"], "method": method,
                                  "error_percent": round(error, 3), **stats})
             print(f"  {r['name']:<6} {r['address']:<15} {r['target_rtt_ms']:>8} "
                   f"{stats['p50']:>10.3f} {error:>+7.2f}% {stats['p10']:>9.3f} "
@@ -146,6 +194,8 @@ def main():
                         f"gate asks for 1-500")
     for run_index, measurements in enumerate(runs, 1):
         for m in measurements:
+            if m.get("unmeasurable"):
+                continue
             if m.get("unreachable"):
                 failures.append(f"run {run_index}: {m['name']} unreachable")
             elif abs(m["error_percent"]) > TOLERANCE_PERCENT:
@@ -160,8 +210,27 @@ def main():
     if any(not row["agrees"] for row in mac_rows):
         failures.append("neighbour table and guest disagree about a hardware address")
 
+    # The composition is part of the gate now. A responder that was supposed to be
+    # silent and answers is not a shaping error, it is the segment failing to be the one
+    # the protocol pre-declared — and every number derived from that declaration,
+    # H6's 0.25 threshold included, would be about a different network.
+    for r in responders:
+        expected = r.get("verified", {}).get("icmp")
+        wanted = "answers" if r.get("answers_icmp", True) else "silent"
+        if expected and expected != wanted:
+            failures.append(f"{r['name']} is '{expected}' and the plan says '{wanted}'")
+    web = sum(1 for r in responders
+              if r.get("answers_icmp", True) and r.get("tcp_ports"))
+    declared = manifest.get("declared_web_fraction", 0.25)
+    if web < declared * len(responders):
+        failures.append(
+            f"{web} of {len(responders)} responders answer ICMP and serve a probed "
+            f"port; PROTOCOL.md's H6 declaration asks for {declared:.0%}"
+        )
+
     worst = max((abs(m.get("error_percent", 0.0))
-                 for run in runs for m in run if not m.get("unreachable")),
+                 for run in runs for m in run
+                 if not m.get("unreachable") and not m.get("unmeasurable")),
                 default=float("nan"))
     result = {
         "schema_version": 1,
@@ -169,6 +238,7 @@ def main():
         "runs": RUNS, "probes_per_run": PROBES,
         "tolerance_percent": TOLERANCE_PERCENT,
         "worst_error_percent": round(worst, 3),
+        "composition": manifest.get("composition"),
         "measurements": runs,
         "neighbour_table": mac_rows,
         "failures": failures,
