@@ -188,6 +188,35 @@ def namespace_responders(vm, responders, interfaces):
     guest(vm, "\n".join(script))
 
 
+#: A TCP responder that survives being connect-scanned.
+#:
+#: Accepts, closes, threads. Nothing is read from the socket and nothing is written to
+#: it, because a connect scan sends no request and waits for no reply — the handshake IS
+#: the probe, and anything else the responder does is latency it adds to a measurement.
+LISTENER_SOURCE = r"""
+cat > /usr/local/bin/netbed-listen <<'EOS'
+#!/usr/bin/env python3
+import socket, sys, threading
+
+address, port = sys.argv[1], int(sys.argv[2])
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server.bind((address, port))
+# A deep backlog as well as threads. Threads keep one slow client from blocking the
+# accept loop; the backlog keeps a burst of simultaneous SYNs from being refused before
+# the loop reaches them, which is what a concurrent scanner produces.
+server.listen(128)
+while True:
+    try:
+        conn, _ = server.accept()
+    except OSError:
+        continue
+    threading.Thread(target=conn.close, daemon=True).start()
+EOS
+chmod +x /usr/local/bin/netbed-listen
+"""
+
+
 def listener_unit(ns, port):
     """The transient unit name for one responder's listener on one port."""
     return f"netbed-listen-{ns}-{port}"
@@ -206,20 +235,40 @@ def start_listeners(vm, responder, iface):
 
     Transient units for the same reasons the spinner is one — a backgrounded job holds
     the ssh channel open and limactl reports 255, and a `pkill` matches the shell running
-    it. `python3 -m http.server` because the image has it and a TCP connect scan only
-    needs the handshake; what it serves is irrelevant.
+    it.
+
+    ── Not `python3 -m http.server`, and this one was nearly a corrupted result ──────
+
+    The first version used it, because the image has it and a TCP connect scan only needs
+    the handshake. It answered the first connection of a gate round and nothing after.
+
+    `http.server` is single-threaded and blocks reading a request line. A connect scan
+    never sends one: it completes the handshake and closes, which is the whole probe. So
+    the handler sits waiting, the listen backlog fills at five, and the kernel stops
+    answering SYNs — the responder goes silent while looking perfectly healthy from
+    inside the guest, where `verify_policy` had just opened one connection and seen it
+    work.
+
+    That is the worst shape a testbed bug can have. Unprivileged nmap's entire discovery
+    method on this segment is repeated bare connects to 80 and 443, so a responder that
+    stops answering them makes nmap's recall look worse than it is — and H6 predicts
+    exactly that nmap's recall is worse. The instrument would have agreed with the
+    hypothesis for a reason that has nothing to do with either scanner.
+
+    So the listener accepts and closes immediately, and threads, and is written down
+    rather than borrowed from a module that was built for a different job.
     """
     if not responder.tcp_ports:
         return
     ns = responder.name
-    script = ["set -e"]
+    script = ["set -e", LISTENER_SOURCE]
     for port in responder.tcp_ports:
         unit = listener_unit(ns, port)
         script += [
             f"systemctl stop {unit}.service 2>/dev/null || true",
             f"systemd-run --unit={unit} --collect "
-            f"ip netns exec {ns} python3 -m http.server {port} "
-            f"--bind {iface['address']} >/dev/null 2>&1",
+            f"ip netns exec {ns} /usr/local/bin/netbed-listen "
+            f"{iface['address']} {port} >/dev/null 2>&1",
         ]
     guest(vm, "\n".join(script))
 
