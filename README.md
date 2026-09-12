@@ -27,7 +27,7 @@ does not begin until every one of its gates is met.
 |---|---|---|
 | 0.1 | Programmable testbed | **Met.** Ten shaped responders, worst error 5.0% against a 10% tolerance. Re-planned for the composition H6 declares: three of the ten answer ICMP and serve a web port, against a declared floor of a quarter. |
 | 0.2 | Discovery-only mode | **Met.** Shipped as `netsanity scan --discovery-only`. |
-| 0.3 | Characterising nmap | **Partial.** The unprivileged half is established three ways. `sudo nmap -sn` has never run and no capture was taken — blocked on a credential, not a method. |
+| 0.3 | Characterising nmap | **Partial, and it is now the only thing in the way.** The unprivileged half is established three ways. `sudo -n` refused again on 2026-09-12 — blocked on a credential, not a method. It holds five of the fourteen conditions, H3 and H6 entirely, and through `tcpdump` the capture all fourteen need. |
 | 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
 | 0.5 | The harness, dry | **Met**, with 0.4 as a declared hole. 36 schema-valid records, zero validation warnings. |
 | 0.6 | Pilot | **Not started.** Gated on the privileged half of 0.3 and on the collection driver. |

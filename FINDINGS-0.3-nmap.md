@@ -4,14 +4,18 @@ Nothing here is evidence for or against a hypothesis. It is a description of the
 comparator, taken before any collection, so that the matched configuration in
 `PROTOCOL.md` section 2 compares what it says it compares.
 
-**Gate status: partially met, unchanged as of 2026-09-08.** The unprivileged half is
+**Gate status: partially met, unchanged as of 2026-09-12.** The unprivileged half is
 established, from three independent sources, one of which settles the ICMP question the
 gate cares most about without a packet capture. The privileged half could not be run and
 no capture could be taken, both for the same reason: `sudo` on this machine requires a
-password and I cannot supply one. A second attempt was made on 2026-09-08 with a fresh
-sudo timestamp expected to be in place; it was not, and the attempt is recorded in full
-in the last section. What is missing is listed precisely at the end, and it is still one
-thing rather than two.
+password and I cannot supply one. Three attempts are recorded, on 2026-09-06,
+2026-09-08 and 2026-09-12, each in its own dated section, and all three refused
+identically. What is missing is listed precisely at the end, and it is still one thing
+rather than two.
+
+The last section counts what the refusal costs: five of the fourteen conditions, H3
+entirely, H6 entirely, and — through `tcpdump` rather than through either scanner —
+the capture that every one of the fourteen needs.
 
 ---
 
@@ -337,3 +341,98 @@ composition. Section 1 is untouched, deliberately. The scope note this document 
 for — that nmap's privilege gap is near-total on a local segment because it cannot ARP,
 and much smaller across a router, so the claim is local-segment only and the abstract
 must say so — is part of that amendment.
+
+---
+
+## 2026-09-12: a third attempt, now with the netsanity half and the capture
+
+Attempted on the day the measured binary was frozen
+(`study/binary-2026-09-12`, `REPRODUCIBILITY.md`), because the freeze is the last
+thing that could be done without root and this gate is now the only thing between the
+apparatus and a pilot. Three invocations, run in this order, nothing else in between.
+
+**1. nmap, privileged.** The argv the condition matrix uses, against the programmable
+segment rather than the home LAN, since the programmable segment is the primary
+testbed:
+
+```
+$ sudo -n nmap -sn 192.168.64.0/24 -oX /tmp/nmap-priv.xml --reason -T3
+sudo: a password is required
+exit 1
+```
+
+**2. netsanity, privileged.** Never attempted before this date. It carries the
+`env NETSANITY_HISTORY=` prefix that the 2026-09-11 amendment requires, written into
+the argv rather than inherited, precisely because `sudo -n` resets the environment:
+
+```
+$ sudo -n env NETSANITY_HISTORY=/tmp/gate03-priv.ndjson \
+      .../InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity \
+      scan 192.168.64.0/24 --discovery-only --json
+sudo: a password is required
+exit 1
+```
+
+**3. tcpdump.** Not a scan, just an enumeration of interfaces — the cheapest possible
+test of whether a capture could be started at all:
+
+```
+$ sudo -n tcpdump -D
+sudo: a password is required
+exit 1
+```
+
+No file was created by any of the three. `/tmp/nmap-priv.xml` and
+`/tmp/gate03-priv.ndjson` do not exist, and `tcpdump -D` wrote zero bytes to stdout.
+So there is nothing to parse, nothing to report about ARP, and no capture.
+
+### What this blocks, counted
+
+The condition matrix is fourteen conditions, all fourteen now expressible — the two
+that were `BLOCKED` on missing flags were unblocked on 2026-09-09. **Five of the
+fourteen need root and none of the five can run:**
+
+| condition | serves |
+|---|---|
+| `ns.disc.priv` | H3 |
+| `nmap.sn.priv.T2` | H1, H2 |
+| `nmap.sn.priv.T3` | H1, H2 |
+| `nmap.sn.priv.T4` | H1, H2 |
+| `nmap.sn.priv.T5` | H1, H2 |
+
+**H3 is blocked entirely.** It is a paired comparison of privileged against
+unprivileged netsanity in the same block, and one half of the pair does not run.
+
+**H6 is blocked too, and less obviously.** Every condition H6 names is unprivileged, so
+it looks runnable. It is not: H6 claims losing root costs nmap more recall than it
+costs netsanity, and a privilege gap cannot be measured from one side of it. Without
+`nmap.sn.priv.*` there is no privileged nmap recall to subtract from, and the
+refutation condition — a gap of at least 0.25 — has nothing to be a gap in.
+
+H1, H2, H4 and H5 could in principle be measured from the unprivileged conditions
+alone. That is not an argument for starting: `run_block.py` treats a refused `sudo -n`
+as a halt rather than a per-run exclusion, deliberately, because a study that quietly
+drops five of its fourteen conditions overnight is worse than one that stops. The
+reasoning is in `FINDINGS-0.5-harness.md`, under what stops a live block.
+
+**The capture is blocked, and it is not only 0.3's problem.** `capture.py` runs
+`tcpdump` per run, and a run without its capture is not evidence — the passive capture
+is the oracle that separates a scanner miss from a sleeping device, which is the oracle
+that decides recall. So the same refusal that blocks the five privileged conditions
+also blocks all fourteen. Whatever arrangement is made for root has to cover `tcpdump`
+and the neighbour-table flush, not only the two scanners.
+
+### What unblocks it
+
+Unchanged from 2026-09-06 and from 2026-09-08, and it is JC's, not the agent's.
+`PHASE0.md` assigns unattended root under its two outstanding decisions and
+`HARNESS.md` repeats it: either a root-owned launchd job for the privileged
+conditions, or a sudoers entry scoped to exactly these binaries for the duration and
+removed afterwards. Either way it goes in the reproducibility appendix, because it is
+part of the method.
+
+Three binaries need to be reachable, not one: `nmap`, the frozen `netsanity` at the
+path in `frozen-binary.json`, and `tcpdump` — plus `arp` for the per-block cache flush.
+
+No fourth attempt should be read into this document, and none was made. The boundary is
+a credential and not a method, and it is the same boundary it was six days ago.
