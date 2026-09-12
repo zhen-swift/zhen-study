@@ -26,3 +26,27 @@ dryrun-stores/
 # worse than untidy — `provenance.py` counts untracked files as a dirty tree, so the
 # first real block would abort on the stores the block before it wrote.
 stores/
+
+# What the harness writes while it runs, and the pilot's copies of the same.
+# `provenance.py` aborts a block on a dirty tree — modified files as well as untracked
+# ones — so nothing the harness appends to during a block can be tracked while
+# collection is running, or the second block aborts on the first block's output. The
+# dry runs never hit this because they pass --allow-dirty; the first live block did.
+# `runs.ndjson` is a deliverable and is added with `git add -f` once collection has
+# ended, when the tree no longer has to stay clean under it.
+runs.ndjson
+collect.log
+collect-status.json
+collect-status.tmp
+collect.launchd.out
+collect.launchd.err
+COLLECTION-STOPPED.txt
+pilot.ndjson
+pilot.log
+pilot-status.json
+pilot-status.tmp
+PILOT-STOPPED.txt
+pilot-raw/
+pilot-captures/
+pilot-stores/
+pilot-settle/

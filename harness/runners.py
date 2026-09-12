@@ -211,8 +211,20 @@ def parse_nmap_xml(text: str) -> dict[str, Any]:
     }
 
 
+# 3600 s, not 600. A timeout that fires on the comparator's slowest template excludes
+# that condition on every block it fires — one in thirteen is 7.7%, over section 7's 5%
+# ceiling — and does so in the direction that flatters netsanity. The slowest template
+# is not the one gate 0.3 expected: privileged `-T2` was extrapolated at about 510 s,
+# but UNPRIVILEGED `-T2` serialises its connect probes and pays the kernel's ARP
+# resolution timeout for every empty address, and the 0.6 settle measurement saw it
+# reach 217 of 254 addresses in 1800 s. A ceiling of an hour leaves that run room to
+# finish; a run that reaches it is a finding, recorded as a timeout, and not a run the
+# apparatus quietly cut short.
+NMAP_TIMEOUT_SECONDS = 3600.0
+
+
 def run_nmap(argv: list[str], *, raw_dir: Path, run_id: str, xml_path: Path,
-             timeout: float = 600.0) -> Outcome:
+             timeout: float = NMAP_TIMEOUT_SECONDS) -> Outcome:
     code, out, err, elapsed, started, finished = _invoke(argv, timeout)
     if _sudo_refused(code, err):
         raise PrivilegeUnavailable(
@@ -222,14 +234,19 @@ def run_nmap(argv: list[str], *, raw_dir: Path, run_id: str, xml_path: Path,
         xml_text = xml_path.read_text(encoding="utf-8")
     except OSError as error:
         parsed = {"ok": False, "error": f"no XML at {xml_path}: {error}", "addresses": []}
-        xml_text = ""
+        xml_text = None
     else:
         parsed = parse_nmap_xml(xml_text)
+    # The XML is left exactly where nmap wrote it and is not copied or rewritten. After
+    # a privileged run the file is root's, and the first version of this function
+    # rewrote it in place as the owner — a PermissionError on the first `sudo nmap` of
+    # the first live block, which no dry run could have shown because the stubs never
+    # run nmap. If nmap wrote nothing there is nothing to keep, and `parsed` says so.
     return Outcome(
         argv=argv, exit_status=code,
         stdout_path=_write(raw_dir / f"{run_id}.nmap.out", out),
         stderr_path=_write(raw_dir / f"{run_id}.nmap.err", err),
-        xml_path=_write(raw_dir / f"{run_id}.nmap.xml", xml_text),
+        xml_path=str(xml_path) if xml_text is not None else None,
         wall_clock_seconds=elapsed,
         started_at_unix=started, finished_at_unix=finished,
         parsed=parsed,

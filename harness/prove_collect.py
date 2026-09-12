@@ -57,6 +57,11 @@ def kill_all(proc):
                          capture_output=True).returncode == 0:
         time.sleep(0.05)
 
+# The census is read by total rather than by stratum name: the first version read
+# `complete["morning"]`, which proved the driver on the morning it was written and
+# failed on the afternoon it was re-run, with nothing wrong in the driver.
+def complete(c): return c["total_complete"]
+
 # Cut in six conditions into block 2, i.e. line 32 of a 13-line-per-block file.
 TARGET = 2 * 13 + 6
 proc = start()
@@ -74,7 +79,7 @@ print("\nfile after the kill:")
 for b, n in after_kill.items():
     print(f"  block {b}: {'COMPLETE' if n == 13 else f'PARTIAL ({n}/13)'}")
 c1 = census()
-print(f"  census counts   : {c1['complete']['morning']} complete, "
+print(f"  census counts   : {complete(c1)} complete, "
       f"partial={c1['partial_blocks']}, runs={c1['runs']}")
 
 print("\nrestarting...")
@@ -89,7 +94,7 @@ print("\nfile after the restart:")
 for b, n in after_restart.items():
     print(f"  block {b}: {'COMPLETE' if n == 13 else f'PARTIAL ({n}/13)'}")
 c2 = census()
-print(f"  census counts   : {c2['complete']['morning']} complete, "
+print(f"  census counts   : {complete(c2)} complete, "
       f"partial={c2['partial_blocks']}, runs={c2['runs']}")
 
 print("\nchecks:")
@@ -109,7 +114,7 @@ check("the restart never reused the interrupted block id",
 check("no completed block lost records",
       all(after_restart[b] == 13 for b in after_kill if after_kill[b] == 13))
 check("complete count rose by exactly the blocks the restart finished",
-      c2["complete"]["morning"] - c1["complete"]["morning"]
+      complete(c2) - complete(c1)
       == sum(1 for b in after_restart if b not in after_kill and after_restart[b] == 13))
 check("every record still parses", c2["runs"] == sum(after_restart.values()))
 print("\nGATE:", "met" if ok else "NOT met")

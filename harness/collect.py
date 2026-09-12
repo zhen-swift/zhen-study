@@ -209,6 +209,11 @@ def run_one_block(args, log) -> None:
         argv += ["--control-host", host]
     if args.dry_run:
         argv += ["--dry-run", "--allow-dirty"]
+    if args.inject_fault:
+        # Once. The pilot breaks one run to prove the exclusion machinery, and a
+        # driver that kept breaking runs would be manufacturing its own exclusion rate.
+        argv += ["--inject-fault", args.inject_fault]
+        args.inject_fault = None
 
     log(f"block starting: {' '.join(argv[1:])}")
     started = time.monotonic()
@@ -308,8 +313,10 @@ def main() -> int:
         Path("/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli"
              "/.build/release/netsanity")))
     parser.add_argument("--control-host", action="append", default=[])
-    parser.add_argument("--cooldown", type=float, default=15.0,
-                        help="0.6 sets this; the default is a placeholder until then")
+    parser.add_argument("--cooldown", type=float, default=10.0,
+                        help="seconds between runs; set by the 0.6 pilot from the "
+                             "measured traffic tail, see run_block.py and "
+                             "FINDINGS-0.6-pilot.md")
     parser.add_argument("--dry-run", action="store_true",
                         help="stub the tools, so the driver's own logic can be proved "
                              "without spending a week of wall clock on it")
@@ -328,6 +335,9 @@ def main() -> int:
     parser.add_argument("--minimum-days", type=int, default=MINIMUM_DAYS)
     parser.add_argument("--daily-quota", type=int, default=None,
                         help="override the derived per-stratum-per-day cap")
+    parser.add_argument("--inject-fault", default=None, metavar="RESPONDER[:INDEX]",
+                        help="0.6 only: passed to run_block.py for the first block this "
+                             "driver runs, and never again")
     args = parser.parse_args()
 
     live = conditions.ready()
@@ -398,9 +408,17 @@ def main() -> int:
                           f"{days_floor}-day floor is the design, not a throughput "
                           f"problem")
             else:
+                # A block is stamped by its first run, so one started ten minutes
+                # before a boundary would count for this stratum while running most of
+                # its conditions in the next. The estimate is the matrix's own, from the
+                # observed per-condition times, so it moves when they do; the first
+                # version of this check allowed `cooldown x conditions + 120 s`, which
+                # was written for a twelve-minute block and is a tenth of a real one.
                 remaining = (window_end(now) - now).total_seconds()
-                if remaining < args.cooldown * len(live) + 120:
-                    reason = f"too little of the {name} window left ({remaining:.0f}s)"
+                needed = conditions.estimated_block_seconds(args.cooldown)
+                if remaining < needed:
+                    reason = (f"too little of the {name} window left ({remaining:.0f}s "
+                              f"for a block estimated at {needed:.0f}s)")
 
             if reason:
                 write_status(args.status, "waiting", reason, snapshot)

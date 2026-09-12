@@ -25,10 +25,14 @@ network.  `provenance.assert_local_network_permission` runs a positive control b
 each block and the verdict is written into every record.
 
 **A missing oracle stops a live block.**  Recall is meaningless without knowing what was
-there, and `oracles.py` does not exist yet: it belongs to 0.4, which is waiting on a
-testbed decision.  A live block therefore refuses to start.  This is the loud halt the
-protocol prefers to a silent gap — the alternative is seven days of runs whose recall
-column is unfalsifiable.
+there.  The three oracles are `oracles.py` (gate 0.4): the manifest is read once per
+block and a live block refuses to start without it; the per-responder capture is started
+around every run and a capture that fails stops the block; the inventory is read after
+every run.  A run whose three oracles disagree is recorded and excluded with
+`oracle_disagreement`, per PROTOCOL.md section 3 — never dropped.  Until the 0.6 pilot
+this module aborted every live block with a message saying `oracles.py` did not exist,
+which had stopped being true when 0.4 was met; the module had been built and never
+wired in, and the first live block is what found it.
 
 **A refused `sudo -n` stops the block.**  Not a per-run exclusion: if root is not
 arranged, every privileged run in every remaining block fails identically, and a study
@@ -55,6 +59,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness import capture as capture_mod           # noqa: E402
+from harness import oracles as oracles_mod           # noqa: E402
 from harness import conditions as conditions_mod     # noqa: E402
 from harness import provenance as provenance_mod     # noqa: E402
 from harness import runners, schema                  # noqa: E402
@@ -223,6 +228,32 @@ What this implies for 0.6, so the pilot has a number to test rather than invent:
 
 # ── the block ─────────────────────────────────────────────────────────────────────
 
+def _break_responder(name: str, *, down: bool) -> dict:
+    """Take one responder's link down, or bring it back. The 0.6 pilot's injected fault.
+
+    A link that is down receives nothing and sends nothing, while the namespace, the
+    address and the listeners are all still there — so the manifest and the inventory
+    both still list the host and only the capture does not. That is exactly the
+    disagreement PROTOCOL.md section 3 says excludes a run, produced by a fault a real
+    testbed could suffer, rather than by a flag that stamps a record "excluded".
+    """
+    entry = next((r for r in json.loads(oracles_mod.MANIFEST.read_text())["responders"]
+                  if r["name"] == name), None)
+    if entry is None:
+        raise SystemExit(f"--inject-fault names {name!r}, which is not in the manifest")
+    state = "down" if down else "up"
+    proc = oracles_mod._guest(
+        entry["machine"],
+        f"ip netns exec {name} ip link set {entry['interface']} {state}",
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise SystemExit(f"could not take {name}'s link {state}: {proc.stderr.strip()}")
+    return {"responder": name, "address": entry["address"], "machine": entry["machine"],
+            "interface": entry["interface"], "state": state,
+            "detail": f"{name} ({entry['address']}) link {state} on {entry['machine']}"}
+
+
 def existing_blocks(path: Path) -> set[int]:
     if not path.exists():
         return set()
@@ -243,10 +274,25 @@ def existing_blocks(path: Path) -> set[int]:
 
 def run_block(*, block_id: int, seed: int, args, provenance: dict,
               chosen: list, out_path: Path, raw_dir: Path,
-              capture_dir: Path, store_dir: Path) -> list[dict]:
+              capture_dir: Path, store_dir: Path,
+              inject_fault: tuple[str, int] | None = None) -> list[dict]:
     rng = random.Random(seed)
     order = list(chosen)
     rng.shuffle(order)
+
+    # Oracle one, read once per block: the manifest is a checked-in file and cannot
+    # change under a running block, so reading it per run would record the same thing
+    # thirteen times. The other two are read per run, because they can.
+    if args.dry_run:
+        manifest = {"status": "stubbed", "addresses": []}
+    else:
+        manifest = oracles_mod.manifest_oracle()
+        if manifest["status"] != "ok":
+            raise SystemExit(
+                "the testbed manifest is missing, so there is no ground truth to score "
+                "recall against and this block is not evidence: run `netbed.py "
+                "configure` first"
+            )
 
     # Sampled once per block rather than once per run, and the field says so.
     # `system_profiler` takes ~10 s to answer, which between two timed runs would be a
@@ -288,6 +334,31 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
             store=str(store_dir / f"{run_id}.history.ndjson"),
         )
 
+        # 0.6 breaks one run on purpose, to prove a broken run is excluded rather than
+        # absorbed. The fault is real — a responder's link is taken down for the length
+        # of the run — so the detection machinery has to notice it unaided; the flag
+        # only decides when. See `_break_responder`.
+        broken = None
+        if inject_fault and index == inject_fault[1] and not args.dry_run:
+            broken = _break_responder(inject_fault[0], down=True)
+            print(f"  ! injected fault: {broken['detail']}")
+
+        # Oracle three is two captures. The per-responder capture inside each guest is
+        # the one that decides recall (it attributes: the probe arrived, the host did
+        # or did not answer); the Mac-side one is the segment-wide view the protocol
+        # describes, and it is what `capture.status` and the pcap path refer to. The
+        # guest captures start first because starting them is several `limactl`
+        # round-trips, and the Mac-side one is started last so its attach settle is the
+        # only wait between the oracles being armed and the tool running.
+        oracle_cap = (None if args.dry_run
+                      else oracles_mod.Capture(run_id).start())
+        if oracle_cap is not None and oracle_cap.error:
+            raise SystemExit(
+                f"the per-responder capture could not be started for {run_id} "
+                f"({oracle_cap.error}). A run without its oracle is not evidence, so "
+                f"the block stops here."
+            )
+
         cap = capture_mod.Capture(
             interface=args.iface,
             pcap_path=capture_dir / f"{run_id}.pcap",
@@ -317,6 +388,46 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
                 f"its oracle is not evidence, so the block stops here."
             )
 
+        if args.dry_run:
+            oracle = {"status": "stubbed",
+                      "note": "dry run: the tools are stubbed and so are the oracles"}
+        else:
+            # Stopped after the Mac-side capture's drain, so the guests see every reply
+            # the Mac saw and one more second of them.
+            observed = oracle_cap.stop()
+            if observed["status"] != "ok":
+                raise SystemExit(
+                    f"the per-responder capture failed for {run_id} ({observed['error']}). "
+                    f"A run without its oracle is not evidence, so the block stops here."
+                )
+            inventory = oracles_mod.inventory_oracle()
+            verdict = oracles_mod.agree(manifest, inventory, observed)
+            oracle = {
+                "status": "agree" if verdict["status"] == "agreed" else "disagree",
+                "addresses": verdict["addresses"],
+                "counts": verdict["counts"],
+                "disagreements": verdict["disagreements"],
+                # What each address IS, so the analysis can score recall against the
+                # composition (H6 turns on which hosts serve a web port) without
+                # reaching for the manifest file, which may have been regenerated since.
+                "manifest": {
+                    "addresses": manifest["addresses"],
+                    "by_address": manifest["by_address"],
+                    "generated_at_unix": manifest.get("generated_at_unix"),
+                },
+                "inventory": {"addresses": inventory["addresses"],
+                              "machines": inventory["machines"]},
+                # Present is frames in or out; answering is frames out. The difference
+                # is what separates a scanner miss from a host that was not answering,
+                # and it is recorded per address so the analysis can make that call.
+                "capture": {"addresses": observed["addresses"],
+                            "answering": observed["answering"],
+                            "frames_by_address": observed["frames_by_address"],
+                            "location": "per responder, inside its network namespace"},
+            }
+        if broken:
+            _break_responder(inject_fault[0], down=False)
+
         parsed = outcome["parsed"]
         exclusion = None
         if not parsed["ok"]:
@@ -334,9 +445,33 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
             }
         elif args.dry_run:
             exclusion = {"reason": "oracle_not_configured",
-                         "detail": "dry run: the tools are stubbed and oracles.py "
-                                   "belongs to 0.4, which is waiting on a testbed "
-                                   "decision"}
+                         "detail": "dry run: the tools and the oracles are stubbed, so "
+                                   "there is no ground truth to score against"}
+        elif oracle["status"] == "disagree":
+            exclusion = {
+                "reason": "oracle_disagreement",
+                "detail": "the three oracles do not describe the same segment: "
+                          + "; ".join(f"{a} seen by {', '.join(w) or 'nothing'}"
+                                      for a, w in oracle["disagreements"].items()),
+            }
+
+        if broken:
+            # The whole point of breaking a run is that the machinery above catches it
+            # without being told. If it did not, the pilot has found the defect it
+            # exists to find, and the block stops so the defect is looked at rather
+            # than recorded as a clean run.
+            if exclusion is None:
+                raise SystemExit(
+                    f"INJECTED FAULT NOT DETECTED: {broken['detail']}, and the run was "
+                    f"about to be recorded as evidence with no exclusion. The exclusion "
+                    f"machinery is not working and the pilot's gate is not met."
+                )
+            exclusion = {
+                "reason": "injected_fault",
+                "detail": f"deliberately broken by the 0.6 pilot: {broken['detail']}. "
+                          f"Detected unaided as {exclusion['reason']}: "
+                          f"{exclusion['detail']}",
+            }
 
         record = schema.make_record(
             run_id=run_id, block_id=block_id, block_seed=seed, sequence_index=index,
@@ -357,9 +492,19 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
                 "wifi": wifi,
                 "neighbour_flush": flush,
                 "cooldown_seconds": args.cooldown,
+                # `time.monotonic()` on macOS is mach_absolute_time, which stops while
+                # the machine sleeps; `time.time()` does not. Their disagreement across
+                # one run is therefore the seconds the host slept inside it, and a run
+                # the host slept through is not a measurement of anything. Recorded
+                # rather than acted on: section 7's exclusion list is fixed, and adding a
+                # reason to it is an amendment. `caffeinate -i` in the driver is what
+                # keeps this at zero; the 0.6 settle measurement, which held no such
+                # assertion, is how the gap was noticed.
+                "host_asleep_seconds": round(
+                    (outcome["finished_at_unix"] - outcome["started_at_unix"])
+                    - outcome["wall_clock_seconds"], 3),
             },
-            oracle={"status": "stubbed" if args.dry_run else "not_configured",
-                    "note": "oracles.py is 0.4 and is not built; see PHASE0.md"},
+            oracle=oracle,
             exclusion=exclusion,
         )
         schema.append(out_path, record)
@@ -389,9 +534,12 @@ def main(argv=None) -> int:
     parser.add_argument("--iface", default="en0")
     parser.add_argument("--netsanity", default="netsanity")
     parser.add_argument("--nmap", default="nmap")
-    parser.add_argument("--cooldown", type=float, default=15.0,
-                        help="fixed inter-run cooldown; 0.6 measures it, this is the "
-                             "placeholder until then")
+    parser.add_argument("--cooldown", type=float, default=10.0,
+                        help="fixed inter-run cooldown, seconds. Set by the 0.6 pilot "
+                             "from the measured post-exit traffic tail (settle.py): the "
+                             "longest, 6.1 s, is the kernel's ARP retries after a "
+                             "netsanity sweep, on a fixed schedule; 10 s clears it with "
+                             "margin. See FINDINGS-0.6-pilot.md.")
     parser.add_argument("--cooldown-first", action="store_true")
     parser.add_argument("--control-host", action="append", default=[],
                         help="an address known to answer ICMP, used as the positive "
@@ -399,7 +547,18 @@ def main(argv=None) -> int:
     parser.add_argument("--conditions", default=None,
                         help="comma-separated condition ids; defaults to every ready one")
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--inject-fault", default=None, metavar="RESPONDER[:INDEX]",
+                        help="0.6 only: take this responder's link down for run INDEX "
+                             "(default 0) of the first block, and stop if the run is "
+                             "not excluded. Recorded as `injected_fault`.")
     args = parser.parse_args(argv)
+
+    inject_fault = None
+    if args.inject_fault:
+        if args.dry_run:
+            parser.error("--inject-fault breaks a real responder; it has no dry-run form")
+        name, _, index = args.inject_fault.partition(":")
+        inject_fault = (name, int(index) if index else 0)
 
     problems = self_check()
     if problems:
@@ -428,9 +587,15 @@ def main(argv=None) -> int:
                      "produces a number nobody can reproduce")
 
     out_path = args.out or (DATA / ("dryrun.ndjson" if args.dry_run else "runs.ndjson"))
-    raw_dir = DATA / ("dryrun-raw" if args.dry_run else "raw")
-    capture_dir = DATA / "captures"
-    store_dir = DATA / ("dryrun-stores" if args.dry_run else "stores")
+    # The raw output, captures and stores sit beside the file that references them and
+    # are named after it, so the pilot's artifacts (`pilot.ndjson`) cannot be mistaken
+    # for collection's (`runs.ndjson`) and a dry run's for either. `runs` keeps the bare
+    # names HARNESS.md documents.
+    stem = "dryrun" if args.dry_run else out_path.stem
+    prefix = "" if stem == "runs" else f"{stem}-"
+    raw_dir = DATA / f"{prefix}raw"
+    capture_dir = DATA / f"{prefix}captures"
+    store_dir = DATA / f"{prefix}stores"
     store_dir.mkdir(parents=True, exist_ok=True)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -473,13 +638,6 @@ def main(argv=None) -> int:
         )
         return 2
 
-    if not args.dry_run:
-        print("BLOCK ABORTED: oracles.py does not exist. Recall is meaningless without "
-              "knowing what was there, and the three oracles are gate 0.4, which is "
-              "waiting on the testbed decision PHASE0 leaves open. Live collection "
-              "cannot start before that gate is met.", file=sys.stderr)
-        return 2
-
     done = existing_blocks(out_path)
     start = (max(done) + 1) if done else 0
     if done:
@@ -494,6 +652,7 @@ def main(argv=None) -> int:
             block_id=block_id, seed=seed, args=args, provenance=provenance,
             chosen=chosen, out_path=out_path, raw_dir=raw_dir,
             capture_dir=capture_dir, store_dir=store_dir,
+            inject_fault=inject_fault if offset == 0 else None,
         ))
     print(f"\n{total} record(s) appended to {out_path}")
     return 0
