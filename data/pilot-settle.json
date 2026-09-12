@@ -1,0 +1,679 @@
+{
+ "schema_version": 1,
+ "what": "frames on the segment after each condition's process returned",
+ "taken_at_unix": 1789247279.246052,
+ "cidr": "192.168.64.0/24",
+ "iface": "bridge100",
+ "drain_seconds": 30.0,
+ "results": [
+  {
+   "condition_id": "ns.disc.unpriv",
+   "argv": [
+    "env",
+    "NETSANITY_HISTORY=/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.disc.unpriv.history.ndjson",
+    "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
+    "scan",
+    "--cidr",
+    "192.168.64.0/24",
+    "--iface",
+    "bridge100",
+    "--json",
+    "--quiet",
+    "--no-color",
+    "--discovery-only"
+   ],
+   "wall_clock_seconds": 0.41375841700028104,
+   "exit_status": 0,
+   "found_count": 9,
+   "finished_at_unix": 1789246827.0405939,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.disc.unpriv.pcap",
+   "frames_after_exit": 32,
+   "last_frame_offset_seconds": 6.088,
+   "tail": [
+    {
+     "offset_seconds": 0.1257,
+     "frame": "ARP, Reply 192.168.64.12 is-at 52:55:55:a9:01:64, length 28"
+    },
+    {
+     "offset_seconds": 0.1257,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 11, length 24"
+    },
+    {
+     "offset_seconds": 0.1257,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 322, length 24"
+    },
+    {
+     "offset_seconds": 0.1257,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 684, length 24"
+    },
+    {
+     "offset_seconds": 0.126,
+     "frame": "ARP, Reply 192.168.64.13 is-at 52:55:55:bf:a1:05, length 28"
+    },
+    {
+     "offset_seconds": 0.126,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 12, length 24"
+    },
+    {
+     "offset_seconds": 0.126,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 311, length 24"
+    },
+    {
+     "offset_seconds": 0.126,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 687, length 24"
+    },
+    {
+     "offset_seconds": 0.3733,
+     "frame": "ARP, Reply 192.168.64.12 is-at 52:55:55:a9:01:64, length 28"
+    },
+    {
+     "offset_seconds": 0.3735,
+     "frame": "ARP, Reply 192.168.64.13 is-at 52:55:55:bf:a1:05, length 28"
+    },
+    {
+     "offset_seconds": 0.6254,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 11, length 24"
+    },
+    {
+     "offset_seconds": 0.6254,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 322, length 24"
+    },
+    {
+     "offset_seconds": 0.6254,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 684, length 24"
+    },
+    {
+     "offset_seconds": 0.6256,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 12, length 24"
+    },
+    {
+     "offset_seconds": 0.6256,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 311, length 24"
+    },
+    {
+     "offset_seconds": 0.6256,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 687, length 24"
+    },
+    {
+     "offset_seconds": 4.7719,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.5, length 28"
+    },
+    {
+     "offset_seconds": 4.7719,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.4, length 28"
+    },
+    {
+     "offset_seconds": 4.7719,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.7719,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.0812,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.8, length 28"
+    },
+    {
+     "offset_seconds": 5.0812,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.1278,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.7, length 28"
+    },
+    {
+     "offset_seconds": 5.1278,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.6, length 28"
+    },
+    {
+     "offset_seconds": 5.1278,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.1278,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.2406,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.10, length 28"
+    },
+    {
+     "offset_seconds": 5.2407,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 6.0879,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.13, length 28"
+    },
+    {
+     "offset_seconds": 6.088,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.12, length 28"
+    },
+    {
+     "offset_seconds": 6.088,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 6.088,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    }
+   ]
+  },
+  {
+   "condition_id": "nmap.sn.unpriv.T3",
+   "argv": [
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T3.nmap.xml",
+    "--reason",
+    "-T3"
+   ],
+   "wall_clock_seconds": 22.550283582999327,
+   "exit_status": 0,
+   "found_count": 4,
+   "finished_at_unix": 1789246880.6385112,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T3.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "nmap.sn.unpriv.T4",
+   "argv": [
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T4.nmap.xml",
+    "--reason",
+    "-T4"
+   ],
+   "wall_clock_seconds": 23.140872916999797,
+   "exit_status": 0,
+   "found_count": 4,
+   "finished_at_unix": 1789246934.824278,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T4.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "nmap.sn.unpriv.T5",
+   "argv": [
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T5.nmap.xml",
+    "--reason",
+    "-T5"
+   ],
+   "wall_clock_seconds": 16.836943375000374,
+   "exit_status": 0,
+   "found_count": 4,
+   "finished_at_unix": 1789246982.709814,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.unpriv.T5.pcap",
+   "frames_after_exit": 2,
+   "last_frame_offset_seconds": 1.3816,
+   "tail": [
+    {
+     "offset_seconds": 1.3815,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.12, length 28"
+    },
+    {
+     "offset_seconds": 1.3816,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    }
+   ]
+  },
+  {
+   "condition_id": "nmap.sn.priv.T3",
+   "argv": [
+    "sudo",
+    "-n",
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T3.nmap.xml",
+    "--reason",
+    "-T3"
+   ],
+   "wall_clock_seconds": 7.863061125000058,
+   "exit_status": 0,
+   "found_count": 11,
+   "finished_at_unix": 1789247021.623081,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T3.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "nmap.sn.priv.T4",
+   "argv": [
+    "sudo",
+    "-n",
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T4.nmap.xml",
+    "--reason",
+    "-T4"
+   ],
+   "wall_clock_seconds": 4.445934875000603,
+   "exit_status": 0,
+   "found_count": 11,
+   "finished_at_unix": 1789247057.117389,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T4.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "nmap.sn.priv.T5",
+   "argv": [
+    "sudo",
+    "-n",
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T5.nmap.xml",
+    "--reason",
+    "-T5"
+   ],
+   "wall_clock_seconds": 3.87460316600027,
+   "exit_status": 0,
+   "found_count": 11,
+   "finished_at_unix": 1789247092.0354218,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.sn.priv.T5.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "ns.naming.full",
+   "argv": [
+    "env",
+    "NETSANITY_HISTORY=/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.naming.full.history.ndjson",
+    "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
+    "scan",
+    "--cidr",
+    "192.168.64.0/24",
+    "--iface",
+    "bridge100",
+    "--json",
+    "--quiet",
+    "--no-color"
+   ],
+   "wall_clock_seconds": 3.072705083999608,
+   "exit_status": 0,
+   "found_count": 9,
+   "finished_at_unix": 1789247126.141994,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.naming.full.pcap",
+   "frames_after_exit": 20,
+   "last_frame_offset_seconds": 4.5457,
+   "tail": [
+    {
+     "offset_seconds": 2.1019,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.5, length 28"
+    },
+    {
+     "offset_seconds": 2.1019,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.4, length 28"
+    },
+    {
+     "offset_seconds": 2.1019,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 2.1019,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 2.348,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.8, length 28"
+    },
+    {
+     "offset_seconds": 2.348,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 2.4641,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.6, length 28"
+    },
+    {
+     "offset_seconds": 2.4641,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.7, length 28"
+    },
+    {
+     "offset_seconds": 2.4641,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 2.4641,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 2.4984,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.10, length 28"
+    },
+    {
+     "offset_seconds": 2.4985,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 3.3482,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.13, length 28"
+    },
+    {
+     "offset_seconds": 3.3482,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.12, length 28"
+    },
+    {
+     "offset_seconds": 3.3482,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 3.3482,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.3958,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.9, length 28"
+    },
+    {
+     "offset_seconds": 4.3958,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.5457,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.11, length 28"
+    },
+    {
+     "offset_seconds": 4.5457,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    }
+   ]
+  },
+  {
+   "condition_id": "nmap.naming.broadcast",
+   "argv": [
+    "nmap",
+    "-sn",
+    "192.168.64.0/24",
+    "-oX",
+    "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.naming.broadcast.nmap.xml",
+    "--reason",
+    "--script",
+    "broadcast-dhcp-discover,broadcast-ping,broadcast-dns-service-discovery"
+   ],
+   "wall_clock_seconds": 28.660891583999728,
+   "exit_status": 0,
+   "found_count": 4,
+   "finished_at_unix": 1789247185.841442,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-nmap.naming.broadcast.pcap",
+   "frames_after_exit": 0,
+   "last_frame_offset_seconds": 0.0,
+   "tail": []
+  },
+  {
+   "condition_id": "ns.fixed.timeout",
+   "argv": [
+    "env",
+    "NETSANITY_HISTORY=/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.fixed.timeout.history.ndjson",
+    "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
+    "scan",
+    "--cidr",
+    "192.168.64.0/24",
+    "--iface",
+    "bridge100",
+    "--json",
+    "--quiet",
+    "--no-color",
+    "--discovery-only",
+    "--retransmit-timeout",
+    "50ms"
+   ],
+   "wall_clock_seconds": 0.33835275000001275,
+   "exit_status": 0,
+   "found_count": 9,
+   "finished_at_unix": 1789247217.219727,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.fixed.timeout.pcap",
+   "frames_after_exit": 26,
+   "last_frame_offset_seconds": 5.9577,
+   "tail": [
+    {
+     "offset_seconds": 0.1797,
+     "frame": "ARP, Reply 192.168.64.12 is-at 52:55:55:a9:01:64, length 28"
+    },
+    {
+     "offset_seconds": 0.1798,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 11, length 24"
+    },
+    {
+     "offset_seconds": 0.1798,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 279, length 24"
+    },
+    {
+     "offset_seconds": 0.1798,
+     "frame": "IP 192.168.64.1 > 192.168.64.12: ICMP echo request, id 0, seq 682, length 24"
+    },
+    {
+     "offset_seconds": 0.1801,
+     "frame": "ARP, Reply 192.168.64.13 is-at 52:55:55:bf:a1:05, length 28"
+    },
+    {
+     "offset_seconds": 0.1801,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 12, length 24"
+    },
+    {
+     "offset_seconds": 0.1801,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 255, length 24"
+    },
+    {
+     "offset_seconds": 0.1801,
+     "frame": "IP 192.168.64.1 > 192.168.64.13: ICMP echo request, id 0, seq 684, length 24"
+    },
+    {
+     "offset_seconds": 0.6795,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 11, length 24"
+    },
+    {
+     "offset_seconds": 0.6795,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 279, length 24"
+    },
+    {
+     "offset_seconds": 0.6795,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 682, length 24"
+    },
+    {
+     "offset_seconds": 0.6798,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 12, length 24"
+    },
+    {
+     "offset_seconds": 0.6798,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 255, length 24"
+    },
+    {
+     "offset_seconds": 0.6798,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 684, length 24"
+    },
+    {
+     "offset_seconds": 4.7233,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.5, length 28"
+    },
+    {
+     "offset_seconds": 4.7233,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.4, length 28"
+    },
+    {
+     "offset_seconds": 4.7233,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.7233,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.8438,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.8, length 28"
+    },
+    {
+     "offset_seconds": 4.8438,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.0792,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.6, length 28"
+    },
+    {
+     "offset_seconds": 5.0792,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.1109,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.10, length 28"
+    },
+    {
+     "offset_seconds": 5.111,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.9577,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.13, length 28"
+    },
+    {
+     "offset_seconds": 5.9577,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    }
+   ]
+  },
+  {
+   "condition_id": "ns.budget.shared",
+   "argv": [
+    "env",
+    "NETSANITY_HISTORY=/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.budget.shared.history.ndjson",
+    "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
+    "scan",
+    "--cidr",
+    "192.168.64.0/24",
+    "--iface",
+    "bridge100",
+    "--json",
+    "--quiet",
+    "--no-color",
+    "--discovery-only",
+    "--shared-budget"
+   ],
+   "wall_clock_seconds": 0.9725611670000944,
+   "exit_status": 0,
+   "found_count": 11,
+   "finished_at_unix": 1789247249.2318149,
+   "drain_seconds": 30.0,
+   "pcap": "/Users/jc/Dev/InfinityCastle/Study/data/pilot-settle/settle-ns.budget.shared.pcap",
+   "frames_after_exit": 21,
+   "last_frame_offset_seconds": 20.1921,
+   "tail": [
+    {
+     "offset_seconds": 0.0448,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 11, length 24"
+    },
+    {
+     "offset_seconds": 0.0448,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 254, length 24"
+    },
+    {
+     "offset_seconds": 0.211,
+     "frame": "IP 192.168.64.12 > 192.168.64.1: ICMP echo reply, id 0, seq 516, length 24"
+    },
+    {
+     "offset_seconds": 0.2121,
+     "frame": "IP 192.168.64.13 > 192.168.64.1: ICMP echo reply, id 0, seq 537, length 24"
+    },
+    {
+     "offset_seconds": 4.2996,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.6, length 28"
+    },
+    {
+     "offset_seconds": 4.2996,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.7, length 28"
+    },
+    {
+     "offset_seconds": 4.2997,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.2997,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.3238,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.10, length 28"
+    },
+    {
+     "offset_seconds": 4.3238,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.4552,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.5, length 28"
+    },
+    {
+     "offset_seconds": 4.4552,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.4, length 28"
+    },
+    {
+     "offset_seconds": 4.4552,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.4552,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 4.5748,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.8, length 28"
+    },
+    {
+     "offset_seconds": 4.5748,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 5.1725,
+     "frame": "ARP, Request who-has 192.168.64.1 tell 192.168.64.12, length 28"
+    },
+    {
+     "offset_seconds": 5.1725,
+     "frame": "ARP, Reply 192.168.64.1 is-at 86:2f:57:24:2d:64, length 28"
+    },
+    {
+     "offset_seconds": 20.1918,
+     "frame": "IP 192.168.64.1.5353 > 224.0.0.251.5353: 0 [1a] [21q] PTR (QM)? lb._dns-sd._udp.local. PTR (QM)? _airport._tcp.local. PTR (QM)? _rdlink._tcp.local. PTR (QM)? _u"
+    },
+    {
+     "offset_seconds": 20.192,
+     "frame": "IP 192.168.64.1.5353 > 224.0.0.251.5353: 0 [3q] PTR (QM)? _apple-mobdev._tcp.local. PTR (QM)? 933307f5._sub._apple-mobdev2._tcp.local. PTR (QM)? _apple-pairable"
+    },
+    {
+     "offset_seconds": 20.1921,
+     "frame": "IP 192.168.64.1.5353 > 224.0.0.251.5353: 0 [1a] [21q] PTR (QM)? lb._dns-sd._udp.local. PTR (QM)? _airport._tcp.local. PTR (QM)? _rdlink._tcp.local. PTR (QM)? _u"
+    }
+   ]
+  }
+ ]
+}

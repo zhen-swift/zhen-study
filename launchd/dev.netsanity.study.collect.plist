@@ -27,7 +27,7 @@
     <string>--control-host</string>
     <string>192.168.64.6</string>
     <string>--cooldown</string>
-    <string>15</string>
+    <string>10</string>
   </array>
 
   <!-- The collection worktree, not the checkout anyone works in: provenance.py derives
