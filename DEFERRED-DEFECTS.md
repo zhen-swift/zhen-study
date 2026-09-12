@@ -10,7 +10,7 @@ left alone.
 This is not a bug tracker. It is the list of things a reviewer is entitled to know were
 already known and deliberately left in the thing that was measured.
 
-**None of the four below is on the path any measured condition takes.** That claim is
+**None of the five below is on the path any measured condition takes.** That claim is
 made explicitly for each one, because "we knew and it did not matter" is only worth
 reading if the second half is argued rather than asserted.
 
@@ -121,6 +121,35 @@ history`.
 
 **The fix, for after.** Drop the `as ScanSetupError` from the four clauses. One line
 each.
+
+## 5. `ICMPSweepEngine` advertises `arpSweep`, which it does not do
+
+`Packages/netsanity-core/Sources/NetSanityCore/Engines/Engines.swift` documents the
+capability as *"Layer-2 ARP sweep"*.
+`Packages/netsanity-core/Sources/NetSanityDarwin/ICMPSweep.swift` claims it —
+`capabilities: [.icmpSweep, .arpSweep]` — and its own docstring says what it actually
+does: *"an ICMP echo sweep plus the kernel's neighbour table"*. Reading the neighbour
+table is not sweeping layer 2. The engine emits no ARP itself and cannot: it opens no
+BPF device, which is why `privilegedBPF` exists as a case and is never constructed.
+
+Confirmed from the capture taken for gate 0.3 on 2026-09-12. The 253 ARP requests that
+appear during an unprivileged sweep are the kernel resolving next-hop for the ICMP
+datagrams, not the engine probing — the same frames appear under `sudo`, in the same
+number, and appear for unprivileged `nmap` too, which is documented to hold no ARP
+capability at all.
+
+`EngineCapabilities` exists so a surface can say "unavailable — requires the privileged
+engine" without knowing which engine is installed. A capability that overstates is the
+one thing that structure cannot tolerate: a caller that gates an ARP-sweep feature on
+`.arpSweep` would enable it against an engine that will never send an ARP frame.
+
+**Why it is not on the measured path.** No measured condition reads `capabilities`. The
+harness asserts on `engine.kind`, which is accurate.
+
+**The fix, for after.** Either drop `.arpSweep` from this engine's set, or rename the
+capability to what the set member actually promises — the neighbour table as a discovery
+source, which is a real and useful thing to advertise. The second is probably right,
+since callers do want to know that a scan reports hosts it never probed.
 
 ---
 

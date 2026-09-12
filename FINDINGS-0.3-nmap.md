@@ -4,18 +4,18 @@ Nothing here is evidence for or against a hypothesis. It is a description of the
 comparator, taken before any collection, so that the matched configuration in
 `PROTOCOL.md` section 2 compares what it says it compares.
 
-**Gate status: partially met, unchanged as of 2026-09-12.** The unprivileged half is
-established, from three independent sources, one of which settles the ICMP question the
-gate cares most about without a packet capture. The privileged half could not be run and
-no capture could be taken, both for the same reason: `sudo` on this machine requires a
-password and I cannot supply one. Three attempts are recorded, on 2026-09-06,
-2026-09-08 and 2026-09-12, each in its own dated section, and all three refused
-identically. What is missing is listed precisely at the end, and it is still one thing
-rather than two.
+**Gate status as of 2026-09-12: half met, and the other half cannot be met by running
+anything.** The unprivileged half was established three ways and is now confirmed a
+fourth, from a packet capture. Privileged nmap ran, parsed, and showed ARP on the wire
+with zero ICMP and zero TCP — that half is closed. Privileged netsanity ran and parsed
+and is **not** the condition the matrix says it is: netsanity has no privileged engine,
+`README.md` says so, and running it under root executes the unprivileged one. H3 as
+frozen and as amended compares against an engine that was never built.
 
-The last section counts what the refusal costs: five of the fourteen conditions, H3
-entirely, H6 entirely, and — through `tcpdump` rather than through either scanner —
-the capture that every one of the fourteen needs.
+Read the sections in date order. 2026-09-06 characterises unprivileged nmap from three
+observers. 2026-09-08 and the first 2026-09-12 section record two refused attempts at
+root and count what the refusal cost. The final 2026-09-12 section is the gate actually
+running, and is the one that matters now.
 
 ---
 
@@ -436,3 +436,183 @@ path in `frozen-binary.json`, and `tcpdump` — plus `arp` for the per-block cac
 
 No fourth attempt should be read into this document, and none was made. The boundary is
 a credential and not a method, and it is the same boundary it was six days ago.
+
+---
+
+## 2026-09-12, later the same day: root arrived, the gate ran, and it did not close
+
+The credential boundary moved. JC enabled Touch ID for `sudo` and authenticated each
+invocation personally. That is not the unattended root `PHASE0.md` asks for and it does
+not become it — see what it does not unblock, at the end — but it is enough to run the
+gate once with a person present, which is all the gate ever needed.
+
+Because every privileged call costs a human a finger on a sensor, the whole gate was
+written as one script — `testbed/gate-0.3-privileged.sh`, seven runs, one `sudo`. It is
+not the harness and nothing it produces is a measurement: `run_block.py` owns wall
+clock. What it produces that the study needs is one packet capture per run, each
+preceded by `arp -a -d`, from which the engine is read rather than believed.
+
+The testbed was rebuilt first, since it had been shut down. Ten responders, RTTs from
+1 ms to 500 ms, **worst calibration error 1.7% against a 10% tolerance** — better than
+the 5.0% recorded in 0.1 — and the composition the H6 amendment pre-declared: three of
+ten answer ICMP and serve a web port, against a declared floor of one quarter.
+
+### What the wire says
+
+`testbed/gate-0.3-analyse.py`, counting with BPF filters rather than by parsing
+tcpdump's text, because a filter that is wrong returns zero and a text parser that is
+wrong returns something plausible. Frames sent by the scanning host, per run:
+
+| run | engine on the wire | ARP req | ICMP echo | TCP SYN | hosts | seconds |
+|---|---|---|---|---|---|---|
+| `nmap-priv-T2` | ARP | 425 | 0 | 0 | — | killed at 423 |
+| `nmap-priv-T3` | ARP | 508 | 0 | 0 | 11 | 8.08 |
+| `nmap-priv-T4` | ARP | 508 | 0 | 0 | 11 | 8.07 |
+| `nmap-priv-T5` | ARP | 507 | 0 | 0 | 11 | 5.05 |
+| `nmap-unpriv-T3` | arp(nexthop) + TCP | 741 | 0 | 44 | 4 | 22.17 |
+| `ns-priv` | arp(nexthop) + ICMP | 253 | 20 | 0 | 9 | 1.03 |
+| `ns-unpriv` | arp(nexthop) + ICMP | 253 | 19 | 0 | 9 | 1.03 |
+
+Durations are diagnostics and not measurements, and hosts are one run each on a flushed
+cache. **ARP appears in every row and means two different things**, so the raw count
+cannot be the discriminator: a process sending an IP packet to a local address with no
+neighbour entry makes the *kernel* emit the ARP request first. The signal that a tool is
+genuinely ARP-sweeping is ARP **and nothing else** — no ICMP and no SYN, so the ARP
+frames cannot be next-hop resolution for anything. Only the four privileged nmap rows
+have that shape.
+
+### Privileged nmap: the gate's half that closed
+
+`sudo nmap -sn` runs, its XML parses under the harness's own `parse_nmap_xml`, and the
+capture shows 507–508 ARP requests with **zero ICMP and zero TCP**. nmap's own
+`--reason` field agrees from the other side: all ten responders are `arp-response` and
+the eleventh is the host itself, `localhost-response`. Two independent observers, one of
+which is not nmap.
+
+**Recall 10/10, including the two hosts nothing else can see** — `192.168.64.11`, which
+answers no ICMP and opens no port, and `192.168.64.9`, which is ICMP-filtered. Every
+host with a MAC must answer ARP, which is the mechanism the 2026-09-08 amendment
+attributes the privilege gap to, now measured rather than inferred.
+
+### Unprivileged nmap: the residual is closed
+
+0.3 established from kernel descriptor tables that unprivileged nmap holds no ICMP
+socket, and said plainly that only a capture removes the residual. Here is the capture:
+**zero ICMP frames**, 44 TCP SYNs, to ports 80 (26) and 443 (18) and **no other port**.
+The descriptor evidence was right, and the two-port fallback H6 depends on is now
+confirmed on the wire.
+
+Recall 4/10, and exactly the four the composition predicts: the three `icmp+web`
+responders plus the one `tcp-only` responder, which is to say every host on the segment
+with a web port and nothing else. Against netsanity's 8/10 on the same responders, the
+observed H6 gap is **0.40**, comfortably clear of the 0.25 the amendment fixed in
+advance. One run, so a diagnostic — but the condition can fire.
+
+### netsanity: there is no privileged engine, and the gate cannot close on it
+
+`sudo -n env NETSANITY_HISTORY=... netsanity scan --discovery-only` runs and parses. It
+reports:
+
+```json
+{"capabilities": ["arp_sweep", "icmp_sweep"], "kind": "unprivileged",
+ "name": "unprivileged-icmp"}
+```
+
+**Running as root, it reports the unprivileged engine.** The capture agrees, which is
+the point of taking one: the privileged and unprivileged runs are indistinguishable on
+the wire — 253 ARP and 20 ICMP against 253 ARP and 19 ICMP, no TCP in either, the same
+nine hosts. The gate asked for the engine each invocation claims to be confirmed from
+the capture. It is confirmed. The claim is just not the one the condition matrix was
+written against.
+
+This is not a defect and not a surprise the product sprang. `README.md` says it outright:
+
+> Not built yet: the privileged helper (layer-2 ARP sweep and SYN scanning) […]
+> The unprivileged path is the primary configuration.
+
+`EngineKind` declares `privilegedBPF` and `composite`, `SPEC.md` designs
+`BPFDiscoveryEngine` and a `CompositeDiscoveryEngine` that guarantees root never finds
+fewer hosts than no-root, and neither is constructed anywhere outside a test.
+`ICMPSweepEngine` is the only `HostDiscovery` conformance on Darwin and it is hard-coded
+`kind: .unprivileged`.
+
+**So the defect is in the study, not in the scanner.** `PROTOCOL.md` H3 — in its
+original form and in the 2026-09-08 amendment that was supposed to rescue it — compares
+privileged netsanity against unprivileged netsanity "where the privileged engine uses
+raw sockets and ARP". There is no such engine to compare against, and there was none on
+the day the protocol was frozen. `conditions.py` was written to be the place a missing
+capability becomes visible, and it caught two missing *flags*; it did not catch a
+missing *engine*, because a condition can name an argv that runs perfectly.
+
+Three consequences, none of which is mine to resolve.
+
+**H3 is unmeasurable with this binary, and would be worse than unmeasurable if run.**
+Both sides of the pair execute identical code, so recall would be identical, so the
+parity claim would be confirmed every time. That is a tautology wearing a p-value. The
+2026-09-08 amendment split H3 in two precisely to make it testable and kept the half
+that cannot run.
+
+**Left as it is, the exclusion budget is blown before collection starts.** The harness
+already refuses this run, and it refuses it by design — `runners.py` carries the check
+and the comment says why it exists:
+
+```
+artifact reports engine 'unprivileged', condition expects 'privileged' —
+a privileged run that fell back to the unprivileged engine is not the
+condition it claims to be
+```
+
+That fires on every block, deterministically. One condition of fourteen excluded 100% of
+the time is an exclusion rate of **7.1%**, and section 7 says that above 5% the study is
+re-designed rather than patched. Whoever writes the amendment should note that removing
+`ns.disc.priv` takes the rate to zero rather than reducing it, because the exclusion is
+not noise.
+
+**The count of what root buys has to be corrected.** Earlier today this document said
+five of fourteen conditions need root. Four do: the privileged nmap templates.
+`ns.disc.priv` *requires* root and does not *use* it, which is the whole finding.
+
+### Two diagnostics worth carrying into the pilot
+
+**netsanity missed both 500 ms responders, and its own artifact says why.** Nine hosts
+against privileged nmap's eleven; the two absent are `192.168.64.12` and
+`192.168.64.13`, the pair calibrated to 500 ms. The discovery stage reports
+`retransmit_budget_millis: 45.4`, `spread_budget_millis: 127.7`, and
+`elapsed_millis: 397.4` — **the entire stage is shorter than those two hosts' round-trip
+time**, so neither their echo replies nor even their ARP replies had arrived when it
+ended. The budget is derived from the replies seen so far, and the replies seen so far
+came from the fast hosts, so the tail is never sampled.
+
+That is squarely against what `THEORY.md` predicts and what H2 claims, on the one axis
+the programmable testbed exists to vary. It is one run on one configuration with no
+blocking and no randomisation, so it is a diagnostic and nothing more — but a privileged
+nmap point at recall 1.0 that netsanity does not match is a non-dominated nmap point,
+and that is H2's pre-declared refutation condition. The pilot should be read with this
+in view rather than surprised by it.
+
+**`-T2` does not fit in a block.** It was killed by the script's 420 s watchdog at
+423.2 s having sent 425 ARP requests — a rate of 1.00 per second, against T3 and T4
+needing 508 to finish. Extrapolating from the capture rather than from the template
+documentation, a complete `-T2` sweep of this `/24` is about **510 s, roughly 8.5
+minutes**. `conditions.py` currently estimates 161 s for an entire block at a 5 s
+cooldown; one condition exceeds that threefold. A block is closer to eleven minutes than
+to five, and 120 blocks is closer to twenty-two hours than to ten. That still fits
+inside the seven-day floor with room to spare, but the driver has to budget from the
+real number.
+
+### What this does not unblock
+
+Touch ID authenticates a person who is present. Collection is seven days unattended, and
+the arithmetic is not close: `sudo -n` — which is what `run_block.py` actually invokes,
+and which never succeeded once today — is refused whether or not Touch ID is configured,
+because `-n` means there is no one to prompt.
+
+So the two commands that were listed as closing this gate are not the requirement any
+more, and the requirement is unchanged from 2026-09-06: a root-owned launchd job for the
+privileged conditions, or a sudoers entry scoped to the binaries and removed afterwards.
+Four binaries, not one: `nmap`, `tcpdump`, `arp`, and — only if H3 survives its
+amendment in some form — the frozen `netsanity`.
+
+**Gate 0.3 therefore stands at: privileged nmap met, in full and from the capture;
+privileged netsanity not met and not meetable, pending a protocol amendment that is not
+the agent's to write.**
