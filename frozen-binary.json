@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "what": "The netsanity build the study measures. Frozen before collection.",
+  "tag": "study/binary-2026-09-12",
+  "commit": "774051d6fcca1fad669012af29a14863d186575e",
+  "frozen_on": "2026-09-12",
+  "version": "0.4.0",
+  "sha256": "c0d786d9c51c36d877aec90cd57c1c8a021a4375ab5f2a153df4e4d0f2da31b8",
+  "size_bytes": 4327512,
+  "mach_o_uuid": "AF4D1C90-6EA6-39D2-96EA-A89D995D0FD3",
+  "path": "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
+  "worktree": "/Users/jc/Dev/InfinityCastle-collection",
+  "build_command": "swift build -c release",
+  "build_directory": "Packages/netsanity-cli",
+  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), swift-driver 1.148.6",
+  "target": "arm64-apple-macosx26.0",
+  "host": {
+    "os": "macOS 26.6.2",
+    "build": "25G83",
+    "model": "Mac16,8"
+  },
+  "sha256_is_reproducible": false,
+  "sha256_meaning": "Identifies this artifact, not this source. Two builds of the same commit at the same path differ; see REPRODUCIBILITY.md, 'What the checksum is for'. provenance.py hashes the binary on every run, so a replacement is visible in the data on the run it happens.",
+  "frozen_packages": [
+    "Packages/netsanity-core",
+    "Packages/netsanity-cli"
+  ],
+  "deferred_defects": "Study/DEFERRED-DEFECTS.md"
+}

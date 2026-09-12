@@ -25,12 +25,28 @@ does not begin until every one of its gates is met.
 
 | | | |
 |---|---|---|
-| 0.1 | Programmable testbed | **Met.** Ten shaped responders, worst error 5.0% against a 10% tolerance. Needs re-planning for the H6 amendment before it is rebuilt. |
+| 0.1 | Programmable testbed | **Met.** Ten shaped responders, worst error 5.0% against a 10% tolerance. Re-planned for the composition H6 declares: three of the ten answer ICMP and serve a web port, against a declared floor of a quarter. |
 | 0.2 | Discovery-only mode | **Met.** Shipped as `netsanity scan --discovery-only`. |
 | 0.3 | Characterising nmap | **Partial.** The unprivileged half is established three ways. `sudo nmap -sn` has never run and no capture was taken — blocked on a credential, not a method. |
-| 0.4 | The three oracles agree | **Not started**, deliberately: `oracles.py` is shaped by a testbed decision that is still open, and a live block refuses to start without it. |
+| 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
 | 0.5 | The harness, dry | **Met**, with 0.4 as a declared hole. 36 schema-valid records, zero validation warnings. |
-| 0.6 | Pilot | **Not started.** Gated on 0.4. |
+| 0.6 | Pilot | **Not started.** Gated on the privileged half of 0.3 and on the collection driver. |
+
+## The binary is frozen, from 2026-09-12
+
+Everything phase 0 can do without root is now done, so the build the study measures is
+pinned rather than left as "whatever `master` was that night".
+
+`study/binary-2026-09-12` tags commit `774051d`, and `netsanity` 0.4.0 is built from a
+worktree checked out there — a worktree because `provenance.py` aborts a block on a
+dirty tree, and a checkout somebody is working in goes dirty. `frozen-binary.json`
+carries the version, the checksum and the paths in a form the harness can read;
+`REPRODUCIBILITY.md` explains what the checksum does and does not prove, which matters
+because this build is not byte-reproducible and the appendix has to say so.
+
+`netsanity-core` and `netsanity-cli` are closed from here until the last block lands.
+Defects found in them go in `DEFERRED-DEFECTS.md` and wait; four are there already. A
+rebuild mid-collection does not cost a fix, it costs the window.
 
 ## A note on where measurements are taken, added 2026-09-09
 
