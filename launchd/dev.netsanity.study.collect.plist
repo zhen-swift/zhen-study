@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.netsanity.study.collect</string>
+
+  <!-- System python, not Study/.venv: the harness is stdlib-only on purpose, the
+       collection worktree has no virtual environment in it (Study/.gitignore excludes
+       it), and every import is something that can fail at 03:00 with nobody watching.
+       Verified against 3.9.6, which is what macOS 26 ships. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/Users/jc/Dev/InfinityCastle-collection/Study/harness/collect.py</string>
+    <string>--out</string>
+    <string>/Users/jc/Dev/InfinityCastle-collection/Study/data/runs.ndjson</string>
+    <string>--cidr</string>
+    <string>192.168.64.0/24</string>
+    <string>--iface</string>
+    <string>bridge100</string>
+    <string>--netsanity</string>
+    <string>/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity</string>
+    <string>--control-host</string>
+    <string>192.168.64.4</string>
+    <string>--control-host</string>
+    <string>192.168.64.6</string>
+    <string>--cooldown</string>
+    <string>15</string>
+  </array>
+
+  <!-- The collection worktree, not the checkout anyone works in: provenance.py derives
+       the repository it inspects from its own location and aborts a block on a dirty
+       tree, so one untracked scratch file on master would halt the night. -->
+  <key>WorkingDirectory</key>
+  <string>/Users/jc/Dev/InfinityCastle-collection</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Restart only on a non-zero exit, which is the driver's contract with launchd:
+       it exits 0 when it stops on purpose — finished, or halted with an alarm file
+       written — and non-zero only when it has crashed in a way it did not anticipate.
+       KeepAlive:true would restart it into the same wall over and over on a halt, and
+       fill the log with it. -->
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+
+  <!-- Long enough that a crash loop is visibly a crash loop rather than a busy CPU. -->
+  <key>ThrottleInterval</key>
+  <integer>300</integer>
+
+  <key>StandardOutPath</key>
+  <string>/Users/jc/Dev/InfinityCastle-collection/Study/data/collect.launchd.out</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/jc/Dev/InfinityCastle-collection/Study/data/collect.launchd.err</string>
+
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <!-- Deliberately absent: LowPriorityIO, Nice, and any throttling key. The thing being
+       measured is wall clock, and a scheduler that deprioritises the harness would put
+       its thumb on exactly that. ProcessType Background is kept because it describes
+       what this is to launchd; if it ever shows up as a timing effect in the pilot,
+       remove it and say so in an amendment rather than leaving it to be discovered. -->
+</dict>
+</plist>

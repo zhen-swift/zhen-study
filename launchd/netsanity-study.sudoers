@@ -1,0 +1,48 @@
+# Unattended root for the study's privileged conditions.
+#
+# INSTALL (JC does this; the agent does not touch sudoers):
+#     sudo install -m 0440 -o root -g wheel \
+#         Study/launchd/netsanity-study.sudoers /etc/sudoers.d/netsanity-study
+#     sudo visudo -c -f /etc/sudoers.d/netsanity-study     # syntax check
+#
+# REMOVE WHEN COLLECTION ENDS:
+#     sudo rm /etc/sudoers.d/netsanity-study
+#
+# This file is part of the method and goes in the reproducibility appendix, per
+# PHASE0.md's outstanding decision on unattended root and HARNESS.md's repeat of it.
+#
+# ── Why NOPASSWD and not a Touch ID prompt ───────────────────────────────────────
+#
+# Touch ID was tried on 2026-09-12 and works: `sudo true` succeeds with a fingerprint.
+# It does not help. `run_block.py` invokes `sudo -n`, and `-n` means "fail rather than
+# prompt" — which is the correct thing for a harness that must not sit on a prompt for
+# seven days, and which no PAM configuration can satisfy because there is nobody at the
+# machine at 04:00 to touch anything. The choice is not between a password and a
+# fingerprint; it is between an unattended grant and no overnight strata.
+#
+# ── Why three binaries and not a blanket rule ────────────────────────────────────
+#
+#   nmap     the four privileged timing-sweep conditions (H1, H2)
+#   tcpdump  the per-run packet capture, which EVERY condition needs — the capture is
+#            the oracle that separates a scanner miss from a sleeping device, and a run
+#            without it is not evidence
+#   arp      the per-block neighbour-table flush; cache state is a condition and not an
+#            accident, so a block that cannot flush is aborted rather than recorded warm
+#
+# netsanity is deliberately NOT here. It was, in the draft written before gate 0.3 ran.
+# H3 was withdrawn on 2026-09-12 because netsanity has no privileged engine, so there is
+# no privileged netsanity condition left to grant anything to. Granting it anyway would
+# be a standing root capability for a binary nothing needs to run as root.
+#
+# ── What this does not narrow, stated rather than glossed ────────────────────────
+#
+# These are whole-binary grants, so they permit any arguments, and `nmap` as root with
+# arbitrary arguments is a broad capability on this machine for as long as the file is
+# installed. Argument-matching was considered and rejected: the harness's argv carries
+# per-run paths that change every run, so a pattern tight enough to be worth having
+# would have to be loosened until it was not, and a rule that looks narrow while
+# matching everything is worse than one that is honestly wide. The mitigations are that
+# it names one user, three absolute paths, and a removal step — and that the study has
+# an end date.
+
+jc ALL=(root) NOPASSWD: /opt/homebrew/bin/nmap, /usr/sbin/tcpdump, /usr/sbin/arp

@@ -18,8 +18,9 @@ does not begin until every one of its gates is met.
 | `PHASE0.md` | The six tasks that make the study executable, each with a gate that must be met before the next begins. |
 | `HARNESS.md` | The apparatus: what collects, what analyses, and the rule that keeps them apart. |
 
-`FINDINGS-*.md` record one phase-0 task each, with the evidence for its gate.
-`testbed/FINDINGS-0.1.md` records the programmable segment.
+`FINDINGS-*.md` record one task each, with the evidence for its gate.
+`testbed/FINDINGS-0.1.md` records the programmable segment, and
+`FINDINGS-3-driver.md` the collection driver.
 
 ## Where phase 0 stands
 
@@ -30,7 +31,8 @@ does not begin until every one of its gates is met.
 | 0.3 | Characterising nmap | **Met.** Privileged nmap ran on 2026-09-12: the capture shows ARP, zero ICMP, zero TCP, recall 10/10. Privileged netsanity ran too and turned out not to be a distinct condition — no privileged engine exists — so H3 was withdrawn by the amendment of that date and `ns.disc.priv` left the matrix. Nothing remains to run. |
 | 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
 | 0.5 | The harness, dry | **Met.** 0.4 is no longer a hole. 39 schema-valid records across 13 conditions, zero validation warnings. |
-| 0.6 | Pilot | **Not started.** Gated on the collection driver and on unattended root. Thirteen live conditions; a block is about twelve minutes, most of it `nmap -T2`. |
+| 0.6 | Pilot | **Not started.** Gated on unattended root, which is the last thing outstanding. Thirteen live conditions; a block is about twelve minutes, most of it `nmap -T2`. |
+| 3 | Collection driver | **Met.** `harness/collect.py`: strata, a per-stratum-per-day cap that enforces the seven-day floor, counts read from the data rather than from bookkeeping, and `caffeinate -i` held on its own pid. A stratum ran end to end and a mid-block kill left the data correct — `harness/prove_collect.py`. |
 
 ## The binary is frozen, from 2026-09-12
 
