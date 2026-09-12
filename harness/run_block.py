@@ -243,7 +243,7 @@ def existing_blocks(path: Path) -> set[int]:
 
 def run_block(*, block_id: int, seed: int, args, provenance: dict,
               chosen: list, out_path: Path, raw_dir: Path,
-              capture_dir: Path) -> list[dict]:
+              capture_dir: Path, store_dir: Path) -> list[dict]:
     rng = random.Random(seed)
     order = list(chosen)
     rng.shuffle(order)
@@ -277,9 +277,15 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
 
         run_id = f"b{block_id:04d}-{index:02d}-{uuid.uuid4().hex[:8]}"
         xml_path = raw_dir / f"{run_id}.nmap.xml"
+        # One history store per run, named after the run, never reused.  See the note
+        # above `_NS` in conditions.py: a shared store puts a compaction rewrite inside
+        # one measured run in N, and which run pays drifts with the size of the file.
+        # These are kept rather than deleted — each is a few lines and it is the record
+        # of what that run actually wrote.
         argv = condition.render(
             netsanity=args.netsanity, nmap=args.nmap, cidr=args.cidr,
             iface=args.iface, nmap_xml=str(xml_path), fixed_ms="50",
+            store=str(store_dir / f"{run_id}.history.ndjson"),
         )
 
         cap = capture_mod.Capture(
@@ -424,6 +430,8 @@ def main(argv=None) -> int:
     out_path = args.out or (DATA / ("dryrun.ndjson" if args.dry_run else "runs.ndjson"))
     raw_dir = DATA / ("dryrun-raw" if args.dry_run else "raw")
     capture_dir = DATA / "captures"
+    store_dir = DATA / ("dryrun-stores" if args.dry_run else "stores")
+    store_dir.mkdir(parents=True, exist_ok=True)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     chosen = conditions_mod.ready()
@@ -485,7 +493,7 @@ def main(argv=None) -> int:
         total += len(run_block(
             block_id=block_id, seed=seed, args=args, provenance=provenance,
             chosen=chosen, out_path=out_path, raw_dir=raw_dir,
-            capture_dir=capture_dir,
+            capture_dir=capture_dir, store_dir=store_dir,
         ))
     print(f"\n{total} record(s) appended to {out_path}")
     return 0

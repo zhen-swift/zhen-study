@@ -74,7 +74,30 @@ def _placeholders(token: str) -> list[str]:
 # and removed afterwards) and it goes in the reproducibility appendix either way.
 _SUDO = ("sudo", "-n")
 
-_NS = ("{netsanity}", "scan", "--cidr", "{cidr}", "--iface", "{iface}",
+# Every netsanity condition writes its history somewhere disposable, and the path is
+# an explicit `env` assignment in the argv rather than an inherited variable.
+#
+# `netsanity scan` persists every run.  Left alone it appends to one file for the whole
+# collection window, and `LogHistoryStore` rewrites that file once it passes a line
+# threshold — so one run in N pays for a full compaction INSIDE the wall clock the
+# harness is measuring, and which run pays is a function of how long collection has been
+# running.  nmap persists nothing, so the conditions would also not be matched on I/O.
+# A systematic, drifting, self-inflicted penalty on the tool under test is not a thing
+# to discover in the analysis.
+#
+# One store per run, not per block: an empty store makes every run's write the same
+# constant amount of work.  A per-block store would have the first run insert and the
+# rest update, which is a within-block trend in exactly the quantity being measured.
+#
+# `env VAR=path` in the argv rather than `subprocess(env=...)` for two reasons.  The
+# recorded argv is then the whole truth about what ran, which is what reproducibility
+# means here; and `sudo -n` resets the environment, so an inherited variable would reach
+# the unprivileged conditions and silently not reach the privileged ones — the two
+# halves of H3 and H6, differing in a way no field would have recorded.  The same form
+# on both sides costs one extra `exec` (order of a millisecond) that nmap does not pay,
+# which biases H1 AGAINST netsanity.  That direction is the acceptable one.
+_NS = ("env", "NETSANITY_HISTORY={store}",
+       "{netsanity}", "scan", "--cidr", "{cidr}", "--iface", "{iface}",
        "--json", "--quiet", "--no-color")
 
 _NMAP = ("{nmap}", "-sn", "{cidr}", "-oX", "{nmap_xml}", "--reason")

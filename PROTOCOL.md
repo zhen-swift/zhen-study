@@ -156,6 +156,7 @@ Measured and fixed before collection begins.
 | Tuned-versus-default unfairness | nmap swept across `-T2`…`-T5`; comparing to `-T3` alone is not honest |
 | Our own defaults being tuned to this network | testbed composition differs from the development network; report both |
 | Version drift mid-study | commit hash pinned; a rebuild restarts the block |
+| netsanity's own history write | one disposable store per run, named in the argv; see the 2026-09-11 amendment |
 
 ---
 
@@ -242,6 +243,38 @@ meaningful.
 ---
 
 ## 12. Amendments
+
+**2026-09-11 — netsanity's history write is isolated per run, and that is a
+deliberate departure from what the product does.** `netsanity scan` persists every run;
+`nmap -sn` persists nothing. Measured as shipped, the two conditions are therefore not
+matched on I/O, and the mismatch is not a constant: `LogHistoryStore` is an append-only
+log that rewrites itself once it passes a line threshold, so across a seven-day window
+one run in N pays for a full compaction **inside the wall clock this harness measures**,
+and which run pays is a function of how long collection has been running. That is a
+systematic penalty on the system under test, in the direction that weakens H1, arriving
+on a schedule no covariate records. It was found in the harness rather than in the
+analysis, which is the only reason it is an amendment and not a retraction.
+
+Every netsanity condition now names its own store through `NETSANITY_HISTORY`, written
+as an explicit `env` assignment in the argv so that the recorded command is the whole
+truth about what ran — and because `sudo -n` resets the environment, so an inherited
+variable would have reached the unprivileged conditions and silently not reached the
+privileged ones, which are the two halves of H3 and H6.
+
+One store **per run**, not per block. An empty store makes every run's write the same
+constant amount of work; a per-block store would have the first run insert and the rest
+update, which is a within-block trend in precisely the quantity being measured.
+
+What this costs, stated so a reader can discount it. The comparison no longer measures
+netsanity as a person runs it — a real scan writes into a history file that accumulates,
+and this one does not. H1 is a claim about discovery, `--discovery-only` already removes
+naming for the same reason, and persistence is no more part of discovery than naming is;
+but the reported figure is a scanner's discovery time and not a product's, and the paper
+says so where it reports it. The `env` prefix itself costs one extra `exec` per
+netsanity run that nmap does not pay. It is on the order of a millisecond and it biases
+H1 against netsanity, which is the acceptable direction for a bias that could not be
+removed without making the privileged and unprivileged conditions differ from each
+other.
 
 **2026-09-06 — the primary testbed is programmable, not physical.** Section 3 described
 a physical segment of deliberately varied devices as the ground-truth testbed. That
