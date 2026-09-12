@@ -244,6 +244,73 @@ meaningful.
 
 ## 12. Amendments
 
+**2026-09-12 — H3 is withdrawn: netsanity has no privileged engine, and never had
+one.** H3 asks whether unprivileged netsanity's recall matches privileged netsanity's.
+There is no privileged netsanity. `netsanity-core` declares `EngineKind.privilegedBPF`
+and `EngineKind.composite`, `SPEC.md` designs a `BPFDiscoveryEngine` and a
+`CompositeDiscoveryEngine`, and neither is constructed anywhere in the product;
+`ICMPSweepEngine` is the only `HostDiscovery` conformance on Darwin and reports
+`kind: .unprivileged` unconditionally. `README.md` has said so throughout: *"Not built
+yet: the privileged helper (layer-2 ARP sweep and SYN scanning)."*
+
+Measured before it was read, which is the only reason it is stated this strongly.
+`FINDINGS-0.3-nmap.md`, 2026-09-12: the same binary run under `sudo` and as the owner,
+each under its own packet capture with the neighbour table flushed first, is
+indistinguishable on the wire — 253 ARP requests and 20 ICMP echoes against 253 and 19,
+no TCP in either, the same nine hosts. The ARP in both is the kernel resolving next-hop
+for the ICMP datagrams rather than either run sweeping layer 2, which is why the counts
+match: it is one engine, run twice.
+
+**Why this is a withdrawal and not a restatement.** Both arms of H3 execute identical
+code, so their recall is identical by construction and the parity claim is confirmed on
+every block regardless of what the network does. That is not a weak result or an
+underpowered one — it is a tautology, and reporting it with a p-value beside it would be
+worse than reporting nothing. There is no version of the sentence that fixes this,
+because the thing it compares against does not exist. The 2026-09-08 amendment split H3
+in two precisely to make it testable and, without knowing it, kept the half that cannot
+run and relocated the half that can to H6.
+
+**What is removed, and what is not.** The condition `ns.disc.priv` leaves the matrix.
+Section 2's matched-configuration table keeps its "Discovery, privileged" row for
+`sudo nmap -sn`, which serves H1 and H2 and is unaffected. Nothing else changes: H6
+already carries the privilege comparison that has a mechanism behind it, and it carries
+it against nmap, where the privileged and unprivileged engines genuinely differ.
+
+**Consequences for section 7.** The Bonferroni family returns from five statistically
+tested hypotheses to four — H1, H2, H5 and H6. H4 remains a reported capability
+comparison and carries no test. Every p-value in the family is corrected against four
+from this date. This is the second change to the family size and both are recorded here
+rather than inferred from a count of hypotheses that still appear in section 1.
+
+**Why removing it is not patching an exclusion rate.** `runners.py` already refuses a
+privileged netsanity artifact that reports the unprivileged engine, and would have
+refused every one of them — one condition in fourteen excluded on every block, which is
+7.1% against section 7's 5% ceiling, before any of the excluded-for-cause runs that
+ceiling exists to bound. Section 7 says a study above 5% is re-designed rather than
+patched, and this is the re-design: the condition is removed because it does not measure
+anything, and the exclusion rate goes to zero as a consequence rather than as a goal. A
+reviewer should be able to check that ordering, so it is stated in that order.
+
+**What is lost, stated so a reader can discount it.** The study can no longer say
+anything about whether root helps netsanity, because netsanity does not use root. That
+is a real gap and it is a gap in the product rather than in the design: the paper says
+netsanity's discovery is privilege-invariant because it has one engine, and does not
+present that as a finding. The comparison a reader may actually want — whether an
+unprivileged scanner gives up completeness against a privileged one — is not lost. It is
+in H1 and H2, which compare netsanity against `sudo nmap -sn` at every timing template,
+and the pre-declared refutation conditions there are the ones that will answer it.
+
+**Why this was not caught before the protocol was frozen.** `conditions.py` was written
+to be the place a missing capability becomes visible, and it worked twice: two conditions
+sat `BLOCKED` naming the CLI flags they needed until those shipped. It did not catch this
+one because a missing *engine* is not a missing *flag* — the argv is well-formed, the
+process exits zero, and the artifact is valid. The check that would have caught it is
+reading the artifact's `engine.kind` against the condition's expectation, which
+`runners.py` does and which nothing ran against a real privileged invocation until root
+was available. That is an argument for running one real block of every condition before
+freezing a protocol, and it is the strongest argument this study has produced for its own
+phase-0 discipline.
+
 **2026-09-11 — netsanity's history write is isolated per run, and that is a
 deliberate departure from what the product does.** `netsanity scan` persists every run;
 `nmap -sn` persists nothing. Measured as shipped, the two conditions are therefore not

@@ -10,9 +10,41 @@ left alone.
 This is not a bug tracker. It is the list of things a reviewer is entitled to know were
 already known and deliberately left in the thing that was measured.
 
-**None of the five below is on the path any measured condition takes.** That claim is
-made explicitly for each one, because "we knew and it did not matter" is only worth
-reading if the second half is argued rather than asserted.
+---
+
+## All five were fixed on 2026-09-12, before collection started
+
+The freeze was lifted the same day it was applied, and the entries below are kept
+because the reasoning in them is the record of what was known and when.
+
+What made it cheap was the calendar rather than a change of mind: **no block had been
+collected.** The rule above is about a rebuild *mid-collection*, where the cost is every
+block already taken. Before the first block there is no window to lose, and gate 0.3
+had just established that collection could not start anyway — H3 needed an amendment
+and unattended root is still not arranged. Fixing five known defects during a wait is
+not the same decision as fixing them during a run.
+
+| | fixed | |
+|---|---|---|
+| 1 | yes | `flock` retries on `EINTR`; other errors keep the documented lock-free fallback |
+| 2 | yes | retention applies when the file is replayed, not only at the fold |
+| 3 | yes | a genuine two-process lock test, with `perl` as the second process |
+| 4 | yes | the four redundant catch clauses are gone, and so are the build warnings |
+| 5 | yes | the neighbour table has its own capability; `arpSweep` is left for the BPF engine |
+
+A sixth was found while checking the fixes and is fixed too: `verify-linux.sh` had never
+passed on its SDK fallback path, because the static Linux SDK's libc module is Musl and
+`LogHistoryStore` had `#else import Glibc`. Core does compile on Linux in a container,
+which is the path the check prefers and the reason nobody noticed — so the check that
+defends the portability rule was red exactly when Docker was absent.
+
+All four suites pass: 284 core, 68 cli, 50 ios, and `verify-linux` for the first time on
+that path. The measured binary is therefore **not** the one tagged
+`study/binary-2026-09-12`; see `REPRODUCIBILITY.md` for the tag that replaced it.
+
+**The rule is unchanged for what comes next.** Once the first block lands, a defect
+found in core or cli is written here and waits, and the entry has to argue whether it
+touches a measured condition rather than assert it.
 
 ---
 

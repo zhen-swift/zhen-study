@@ -17,6 +17,11 @@ from dataclasses import dataclass, field
 
 READY = "ready"
 BLOCKED = "blocked"
+#: Described by the protocol, kept as data, and never run again.  Distinct from
+#: `BLOCKED`, which is waiting for something: a withdrawn condition is not coming back,
+#: and it stays in the matrix because a reader comparing the data against the protocol
+#: should be able to see what was removed and find the amendment that removed it.
+WITHDRAWN = "withdrawn"
 
 
 @dataclass(frozen=True)
@@ -126,7 +131,29 @@ def _nmap_condition(template: str, privileged: bool) -> Condition:
         hypotheses=hyp,
         purpose=f"nmap host discovery, {priv}ileged, timing template -{template}",
         parser="nmap_xml",
-        observed_seconds=12.4 if not privileged else 3.0,
+        # A diagnostic for sizing, never a result.  Which of these were actually run
+        # matters, so: privileged T3, T4 and T5 and unprivileged T3 were measured on the
+        # programmable segment on 2026-09-12 under the gate 0.3 script, one run each.
+        # Privileged T2 is an extrapolation and the rest are estimates.
+        #
+        # Every privileged template was 3.0 here before that, which was a guess and was
+        # wrong by two orders of magnitude for -T2.  That template paces itself at about
+        # one probe a second, so an ARP sweep of a /24 needs roughly 510s: it was killed
+        # by a watchdog at 423s having sent 425 of the 508 requests the faster templates
+        # need to finish, and 510 is that rate carried forward rather than anything
+        # nmap's documentation says.  The unprivileged templates other than T3 are
+        # scaled from it and from 0.3's four home-LAN runs, and are the least trustworthy
+        # numbers here.
+        #
+        # The consequence is the point: a block is about twelve minutes rather than the
+        # three the old numbers implied, and 120 blocks is a day of machine time rather
+        # than three hours.  Still inside the seven-day floor, which is why this is a
+        # correction and not a redesign — but a matrix that cannot fit is a design error
+        # and the cheapest place to catch it is while reading the matrix.
+        observed_seconds=(
+            {"T2": 510.0, "T3": 8.1, "T4": 8.1, "T5": 5.1}[template] if privileged
+            else {"T2": 60.0, "T3": 22.2, "T4": 22.2, "T5": 12.4}[template]
+        ),
         notes=(
             "Unprivileged nmap on this build sends TCP connect probes to exactly ports "
             "80 and 443 and opens no ICMP, raw or BPF descriptor (FINDINGS-0.3)."
@@ -144,7 +171,7 @@ CONDITIONS: tuple[Condition, ...] = (
         tool="netsanity",
         privilege="user",
         argv_template=_NS + ("--discovery-only",),
-        hypotheses=("H1", "H2", "H3", "H6"),
+        hypotheses=("H1", "H2", "H6"),
         purpose="netsanity host discovery with naming disabled, unprivileged",
         parser="netsanity_json",
         observed_seconds=0.5,
@@ -163,13 +190,23 @@ CONDITIONS: tuple[Condition, ...] = (
         hypotheses=("H3",),
         purpose="netsanity host discovery with naming disabled, privileged",
         parser="netsanity_json",
+        status=WITHDRAWN,
+        requires="a privileged netsanity engine, which does not exist",
         observed_seconds=0.5,
         notes=(
-            "The other half of the amended H3. run.engine.kind in the artifact must "
-            "read 'privileged' here and 'unprivileged' in ns.disc.unpriv; runners.py "
-            "treats a mismatch as a parse failure, because a privileged condition that "
-            "silently ran the unprivileged engine is the one way this comparison can "
-            "quietly measure nothing."
+            "Withdrawn 2026-09-12 with H3; see PROTOCOL.md's amendment of that date. "
+            "netsanity has no privileged engine: EngineKind.privilegedBPF is declared "
+            "and never constructed, ICMPSweepEngine is the only HostDiscovery "
+            "conformance on Darwin and reports 'unprivileged' unconditionally, and "
+            "README.md says the privileged helper is not built. Run under sudo it is "
+            "byte-for-byte the same engine as ns.disc.unpriv, which a packet capture "
+            "confirmed on 2026-09-12 -- 253 ARP and 20 ICMP against 253 and 19, the "
+            "same nine hosts. So the pair would have confirmed parity on every block "
+            "by construction, which is a tautology and not a result. "
+            "The runners.py engine check would have excluded it every time: one "
+            "condition in fourteen, 7.1%, against section 7's 5% ceiling. It is "
+            "removed because it measures nothing; the exclusion rate going to zero is "
+            "a consequence of that and not the reason for it."
         ),
     ),
 
@@ -266,7 +303,11 @@ def ready() -> list[Condition]:
 
 
 def blocked() -> list[Condition]:
-    return [c for c in CONDITIONS if c.status != READY]
+    return [c for c in CONDITIONS if c.status == BLOCKED]
+
+
+def withdrawn() -> list[Condition]:
+    return [c for c in CONDITIONS if c.status == WITHDRAWN]
 
 
 def for_hypothesis(name: str) -> list[Condition]:
@@ -286,12 +327,15 @@ def estimated_block_seconds(cooldown_seconds: float) -> float:
 
 
 if __name__ == "__main__":
-    print(f"{len(ready())} ready, {len(blocked())} blocked\n")
+    print(f"{len(ready())} ready, {len(blocked())} blocked, "
+          f"{len(withdrawn())} withdrawn\n")
     for c in CONDITIONS:
-        mark = " " if c.status == READY else "!"
+        mark = {READY: " ", BLOCKED: "!", WITHDRAWN: "-"}[c.status]
         print(f"{mark} {c.id:28s} {c.tool:10s} {c.privilege:5s} {','.join(c.hypotheses)}")
-        if c.status != READY:
+        if c.status == BLOCKED:
             print(f"    BLOCKED on {c.requires}")
+        elif c.status == WITHDRAWN:
+            print(f"    WITHDRAWN: needs {c.requires}")
     for cooldown in (5.0, 15.0, 30.0):
         seconds = estimated_block_seconds(cooldown)
         print(f"\nat a {cooldown:.0f}s cooldown: ~{seconds:.0f}s per block, "
