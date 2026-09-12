@@ -27,26 +27,32 @@ does not begin until every one of its gates is met.
 |---|---|---|
 | 0.1 | Programmable testbed | **Met, and rebuilt better on 2026-09-12.** Ten shaped responders spanning 1 ms to 500 ms, worst calibration error now 1.7% against a 10% tolerance, down from 5.0%. Composition matches what H6 pre-declares: three of ten answer ICMP and serve a web port, against a floor of a quarter. |
 | 0.2 | Discovery-only mode | **Met.** Shipped as `netsanity scan --discovery-only`. |
-| 0.3 | Characterising nmap | **Half met; the other half cannot be met by running anything.** Privileged nmap ran on 2026-09-12 and the capture shows ARP, zero ICMP, zero TCP, recall 10/10. Privileged netsanity ran too and is not a distinct condition: there is no privileged engine, so H3 compares an engine against itself. Needs an amendment, not a run. |
+| 0.3 | Characterising nmap | **Met.** Privileged nmap ran on 2026-09-12: the capture shows ARP, zero ICMP, zero TCP, recall 10/10. Privileged netsanity ran too and turned out not to be a distinct condition — no privileged engine exists — so H3 was withdrawn by the amendment of that date and `ns.disc.priv` left the matrix. Nothing remains to run. |
 | 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
-| 0.5 | The harness, dry | **Met**, with 0.4 as a declared hole. 36 schema-valid records, zero validation warnings. |
-| 0.6 | Pilot | **Not started**, and now gated on a protocol amendment as well as on the driver: with `ns.disc.priv` in the matrix the exclusion rate is 7.1% before a single block runs. |
+| 0.5 | The harness, dry | **Met.** 0.4 is no longer a hole. 39 schema-valid records across 13 conditions, zero validation warnings. |
+| 0.6 | Pilot | **Not started.** Gated on the collection driver and on unattended root. Thirteen live conditions; a block is about twelve minutes, most of it `nmap -T2`. |
 
 ## The binary is frozen, from 2026-09-12
 
-Everything phase 0 can do without root is now done, so the build the study measures is
-pinned rather than left as "whatever `master` was that night".
-
-`study/binary-2026-09-12` tags commit `774051d`, and `netsanity` 0.4.0 is built from a
+`study/binary-2026-09-12b` tags commit `ad09ed1`, and `netsanity` 0.4.0 is built from a
 worktree checked out there — a worktree because `provenance.py` aborts a block on a
 dirty tree, and a checkout somebody is working in goes dirty. `frozen-binary.json`
 carries the version, the checksum and the paths in a form the harness can read;
 `REPRODUCIBILITY.md` explains what the checksum does and does not prove, which matters
 because this build is not byte-reproducible and the appendix has to say so.
 
-`netsanity-core` and `netsanity-cli` are closed from here until the last block lands.
-Defects found in them go in `DEFERRED-DEFECTS.md` and wait; four are there already. A
-rebuild mid-collection does not cost a fix, it costs the window.
+**It is the second tag of that day and the first one measured nothing.** An earlier
+`study/binary-2026-09-12` froze the code with five known defects deliberately left in
+it, on the rule that a rebuild mid-collection costs the window rather than the fix.
+Gate 0.3 then established that collection could not start at all — H3 had no engine to
+test and unattended root is still not arranged — so the window did not exist yet and
+the five were fixed, along with a sixth found while checking them.
+`DEFERRED-DEFECTS.md` keeps the reasoning for all six, because what was known and when
+is part of the record even after it stops being a live constraint.
+
+`netsanity-core` and `netsanity-cli` are closed again from here. The next defect found
+in either goes in `DEFERRED-DEFECTS.md` and waits, and once the first block lands the
+rule is real: a rebuild then does cost every block already taken.
 
 ## A note on where measurements are taken, added 2026-09-09
 

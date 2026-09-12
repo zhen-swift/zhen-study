@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "what": "The netsanity build the study measures. Frozen before collection.",
-  "tag": "study/binary-2026-09-12",
-  "commit": "774051d6fcca1fad669012af29a14863d186575e",
+  "tag": "study/binary-2026-09-12b",
+  "commit": "ad09ed1f78b6026022462abb676eab63a596c333",
   "frozen_on": "2026-09-12",
   "version": "0.4.0",
-  "sha256": "c0d786d9c51c36d877aec90cd57c1c8a021a4375ab5f2a153df4e4d0f2da31b8",
-  "size_bytes": 4327512,
-  "mach_o_uuid": "AF4D1C90-6EA6-39D2-96EA-A89D995D0FD3",
+  "sha256": "b4220600b75acd10b46d033cb315a9e5c035021494a93afe381e0014eff6e4ed",
+  "size_bytes": 4328936,
+  "mach_o_uuid": "B08C5DC8-A0D0-3ADA-87D2-743804211691",
   "path": "/Users/jc/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity",
   "worktree": "/Users/jc/Dev/InfinityCastle-collection",
   "build_command": "swift build -c release",
@@ -25,5 +25,10 @@
     "Packages/netsanity-core",
     "Packages/netsanity-cli"
   ],
-  "deferred_defects": "Study/DEFERRED-DEFECTS.md"
+  "deferred_defects": "Study/DEFERRED-DEFECTS.md \u2014 all five fixed 2026-09-12, before collection",
+  "supersedes": {
+    "tag": "study/binary-2026-09-12",
+    "sha256": "c0d786d9c51c36d877aec90cd57c1c8a021a4375ab5f2a153df4e4d0f2da31b8",
+    "why": "Stood about six hours and measured nothing. Five known defects were fixed and a sixth found, before any block was collected. See DEFERRED-DEFECTS.md."
+  }
 }

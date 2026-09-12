@@ -14,12 +14,12 @@ If the two ever disagree, the JSON is the record and this document is the explan
 
 | | |
 |---|---|
-| tag | `study/binary-2026-09-12` |
-| commit | `774051d6fcca1fad669012af29a14863d186575e` |
+| tag | `study/binary-2026-09-12b` |
+| commit | `ad09ed1f78b6026022462abb676eab63a596c333` |
 | `netsanity --version` | `0.4.0` |
-| sha256 | `c0d786d9c51c36d877aec90cd57c1c8a021a4375ab5f2a153df4e4d0f2da31b8` |
-| size | 4,327,512 bytes |
-| Mach-O UUID | `AF4D1C90-6EA6-39D2-96EA-A89D995D0FD3` |
+| sha256 | `b4220600b75acd10b46d033cb315a9e5c035021494a93afe381e0014eff6e4ed` |
+| size | 4,328,936 bytes |
+| Mach-O UUID | `B08C5DC8-A0D0-3ADA-87D2-743804211691` |
 | built from | `/Users/jc/Dev/InfinityCastle-collection` (worktree, detached at the tag) |
 | binary path | `Packages/netsanity-cli/.build/release/netsanity` inside that worktree |
 
@@ -27,9 +27,23 @@ Rebuild:
 
 ```bash
 git clone https://github.com/JCTec/netsanity && cd netsanity
-git checkout study/binary-2026-09-12
+git checkout study/binary-2026-09-12b
 cd Packages/netsanity-cli && swift build -c release
 ```
+
+**It supersedes `study/binary-2026-09-12`, and the paper should say why.** That tag
+stood for about six hours and no block was ever collected under it. Five defects that
+had been deliberately left in it were fixed and a sixth was found while checking the
+fixes — `DEFERRED-DEFECTS.md` lists all six and what each one was. The rule that a
+rebuild costs the window is about a rebuild *during* collection; before the first block
+there is no window, and gate 0.3 had just established that collection could not start
+anyway. A reader is owed that reasoning rather than a silently bumped hash.
+
+One change is visible in the artifact: the unprivileged engine reports
+`["icmp_sweep", "neighbor_table"]` where it reported `["arp_sweep", "icmp_sweep"]`,
+because it never performed a layer-2 ARP sweep and a capture proved it. The document
+shape is unchanged and the schema version is not bumped, since which names appear in a
+capability list has always depended on which engine produced it.
 
 | | |
 |---|---|
@@ -89,9 +103,10 @@ work continues on `master` without touching it.
 
 Two tags, not one, and the second does not exist yet:
 
-- **`study/binary-2026-09-12`** freezes `netsanity-core` and `netsanity-cli`. It is the
+- **`study/binary-2026-09-12b`** freezes `netsanity-core` and `netsanity-cli`. It is the
   tag the appendix cites for the system under test, and the binary above is built from
-  it. It does not move.
+  it. It does not move — and the `b` in its name is the record of one that did, which is
+  why the superseded tag is left in place rather than deleted.
 - **A collection tag, cut at the start of stage 5**, on the `master` commit that carries
   the finished driver. The apparatus keeps being built after the binary is frozen —
   the driver, the pilot's cooldown, the analysis — and the worktree has to move forward
@@ -125,8 +140,13 @@ records why that had to be written down.
 
 ## Still open
 
-- The privileged half of gate 0.3 (`sudo -n nmap -sn`, and a capture confirming ARP)
-  is blocked on unattended root, which `PHASE0.md` assigns to JC. Five of the fourteen
-  conditions and hypotheses H3 and H6 wait on it.
-- The collection tag and its diff check, above.
-- The cooldown, which the pilot sets and which is 15 s only as a default until then.
+- **Unattended root.** Gate 0.3's privileged half ran on 2026-09-12 with Touch ID and a
+  person present, which is enough for a gate and not for collection: `run_block.py`
+  invokes `sudo -n`, which fails whether or not Touch ID is configured, because `-n`
+  means there is nobody to prompt. Four of the thirteen live conditions need root, and
+  `tcpdump` needs it for every one of the thirteen. `PHASE0.md` assigns this to JC.
+- **The collection tag and its diff check**, above.
+- **The cooldown**, which the pilot sets and which is 15 s only as a default until then.
+- **`-T2`'s cost.** Roughly 510 s for a `/24`, extrapolated from its capture rather than
+  measured to completion, and by far the largest term in a block. The pilot should run
+  it to the end once and replace the extrapolation.
