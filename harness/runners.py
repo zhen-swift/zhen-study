@@ -113,8 +113,27 @@ def parse_netsanity(stdout: str, *, expect_mode: str | None,
                          f"unprivileged engine is not the condition it claims to be",
                 "addresses": []}
 
-    stages = [s.get("stage") for s in (run.get("timing") or {}).get("stages", [])
-              if isinstance(s, dict)]
+    timing = run.get("timing") or {}
+    stage_list = [s for s in timing.get("stages", []) if isinstance(s, dict)]
+    stages = [s.get("stage") for s in stage_list]
+    # The discovery stage's own accounting, copied into the record rather than left in
+    # the artifact.  The 0.6 pilot cited `replies_seen` against `hosts_found` as the
+    # evidence that a warm run reports neighbour-table entries it never heard from —
+    # and cited it out of the raw artifact, which is git-ignored, so the one number
+    # carrying the cache-state mechanism was the one a reviewer could not recompute
+    # from the NDJSON.  Schema 2.  Recorded, never analysed by the harness.
+    discovery = None
+    for s in stage_list:
+        if s.get("stage") == "discovery":
+            discovery = {
+                "replies_seen": s.get("replies_seen"),
+                "hosts_found": s.get("hosts_found"),
+                "probes_sent": s.get("probes_sent"),
+                "elapsed_millis": s.get("elapsed_millis"),
+                "budget_policy": s.get("budget_policy"),
+            }
+            break
+    engine_capabilities = (run.get("engine") or {}).get("capabilities")
     started, finished = run.get("started_at"), run.get("finished_at")
     self_reported = None
     if isinstance(started, (int, float)) and isinstance(finished, (int, float)):
@@ -126,8 +145,10 @@ def parse_netsanity(stdout: str, *, expect_mode: str | None,
         "addresses": addresses,
         "artifact_mode": mode,
         "engine_kind": engine,
+        "engine_capabilities": engine_capabilities,
         "outcome": outcome,
         "stages": stages,
+        "discovery": discovery,
         "schema": artifact.get("schema"),
         "degradations": artifact.get("degradations", []),
         "tool_self_reported_seconds": self_reported,

@@ -15,6 +15,19 @@ things a JSON Schema cannot, and those are the clauses that protect the study.
 
 Adding a field bumps `SCHEMA_VERSION`, and the loader refuses a file that mixes
 versions without an explicit merge.
+
+Version history, because a record from an earlier version is still evidence and the
+validator must be able to read it as what it was rather than refuse it as what it is
+not:
+
+    1   the 0.5 harness through the 0.6 pilot's two attempts.
+    2   two fields the 0.6 pilot cited out of git-ignored files and could not recompute
+        from the record: `parse.discovery` (the netsanity discovery stage's
+        `replies_seen`, `hosts_found`, `probes_sent`, `elapsed_millis`, plus
+        `parse.engine_capabilities`), and `capture.wire` (ARP, ICMP echo and TCP
+        SYN/SYN-ACK/RST counts from the Mac-side pcap, with per-source tallies).
+        Also `covariates.flush_policy`, which says whether the neighbour table was
+        flushed once at block start or before every run.
 """
 
 from __future__ import annotations
@@ -24,7 +37,10 @@ import os
 import re
 from typing import Any
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+#: Versions the validator can still read. A file mixes them only with an explicit merge.
+KNOWN_SCHEMA_VERSIONS = {1, 2}
+FLUSH_POLICIES = {"block", "run"}
 
 TOOLS = {"netsanity", "nmap"}
 PRIVILEGES = {"user", "root"}
@@ -147,10 +163,10 @@ def validate(record: Any) -> list[str]:
         return [f"record is {type(record).__name__}, not an object"]
 
     version = record.get("schema_version")
-    if version != SCHEMA_VERSION:
-        # Every other check assumes this version's shape, so stop here rather than
-        # emit a cascade of confusing complaints about a record from another era.
-        return [f"schema_version is {version!r}, expected {SCHEMA_VERSION}"]
+    if version not in KNOWN_SCHEMA_VERSIONS:
+        # Every other check assumes a known shape, so stop here rather than emit a
+        # cascade of confusing complaints about a record from another era.
+        return [f"schema_version is {version!r}, known: {sorted(KNOWN_SCHEMA_VERSIONS)}"]
 
     for key, kind in (
         ("run_id", str), ("block_id", int), ("block_seed", int),
@@ -242,11 +258,27 @@ def validate(record: Any) -> list[str]:
                  "empty run are different findings")
 
     p += _validate_provenance(record.get("provenance"), dry_run=record.get("dry_run") is True)
-    p += _validate_capture(record.get("capture"))
+    p += _validate_capture(record.get("capture"), version=version)
     p += _validate_oracle(record.get("oracle"))
 
     covariates = record.get("covariates")
     _want(p, isinstance(covariates, dict), "covariates must be an object")
+
+    if version >= 2:
+        # The two fields the 0.6 pilot could not recompute, and the flush policy.
+        if record.get("tool") == "netsanity" and parse.get("ok") is True:
+            discovery = parse.get("discovery")
+            if discovery is None:
+                p.append("parse.discovery is missing on a parsed netsanity run (schema 2)")
+            elif not isinstance(discovery, dict):
+                p.append("parse.discovery must be an object")
+            else:
+                for key in ("replies_seen", "hosts_found", "elapsed_millis"):
+                    _want(p, key in discovery, f"parse.discovery.{key} is missing")
+        if isinstance(covariates, dict):
+            _want(p, covariates.get("flush_policy") in FLUSH_POLICIES,
+                  f"covariates.flush_policy {covariates.get('flush_policy')!r} not in "
+                  f"{sorted(FLUSH_POLICIES)}")
     return p
 
 
@@ -288,7 +320,7 @@ def _validate_provenance(prov: Any, *, dry_run: bool = False) -> list[str]:
     return p
 
 
-def _validate_capture(capture: Any) -> list[str]:
+def _validate_capture(capture: Any, *, version: int = SCHEMA_VERSION) -> list[str]:
     if not isinstance(capture, dict):
         return ["capture must be an object"]
     p = []
@@ -296,6 +328,14 @@ def _validate_capture(capture: Any) -> list[str]:
           f"capture.status {capture.get('status')!r} not in {sorted(CAPTURE_STATUSES)}")
     if capture.get("status") == "ok" and not capture.get("path"):
         p.append("capture.status is ok but no pcap path is recorded")
+    if version >= 2 and capture.get("status") == "ok":
+        wire = capture.get("wire")
+        if not isinstance(wire, dict):
+            p.append("capture.wire is missing on an ok capture (schema 2)")
+        elif wire.get("status") == "ok":
+            for key in ("arp_requests", "arp_replies", "tcp_syn", "tcp_rst",
+                        "tcp_rst_by_source", "arp_replies_by_sender"):
+                _want(p, key in wire, f"capture.wire.{key} is missing")
     return p
 
 

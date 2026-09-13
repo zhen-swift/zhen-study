@@ -25,6 +25,7 @@ Mac also happens to have.
 
 from __future__ import annotations
 
+import collections
 import os
 import re
 import signal
@@ -36,6 +37,80 @@ from typing import Any
 
 class CaptureFailed(Exception):
     """A run without its oracle is not evidence."""
+
+
+#: What the wire summary counts, as BPF.  Names are the record's field names.  The
+#: Mac is the scanning host, so on this capture "out" is what it sent and "in" is what
+#: reached it; the filters count frames regardless of direction and the per-address
+#: tallies below attribute the ones whose direction matters.
+_WIRE_FILTERS = {
+    "arp_requests": "arp and arp[6:2]=1",
+    "arp_replies": "arp and arp[6:2]=2",
+    "icmp_echo_requests": "icmp[icmptype]=icmp-echo",
+    "icmp_echo_replies": "icmp[icmptype]=icmp-echoreply",
+    "tcp_syn": "tcp[tcpflags]&(tcp-syn|tcp-ack)=tcp-syn",
+    "tcp_synack": "tcp[tcpflags]&(tcp-syn|tcp-ack)=(tcp-syn|tcp-ack)",
+    "tcp_rst": "tcp[tcpflags]&tcp-rst!=0",
+}
+_ARP_REPLY_LINE = re.compile(r"ARP, Reply (\d+\.\d+\.\d+\.\d+) is-at")
+_IP_SOURCE_LINE = re.compile(r" IP (\d+\.\d+\.\d+\.\d+)\.\d+ > ")
+
+
+def summarise_pcap(pcap_path: Path, *, timeout: float = 60.0) -> dict[str, Any]:
+    """Count on the wire what the 0.6 pilot counted by hand, and put it in the record.
+
+    The pilot explained unprivileged `-T2`'s two modes by ARP request counts (1679
+    against 507) and explained nmap's recall difference by which responders sent RSTs —
+    both read with `tcpdump -r` over the pcap, which is git-ignored, so neither number
+    was recomputable from the NDJSON.  This is the same `tcpdump -r`, run by the harness
+    at the end of every capture, with the counts written beside the pcap path.  Schema 2.
+
+    Reading a pcap needs no privilege, only the file, and the seven passes cost about
+    25 ms on the largest capture the pilot produced.  They run after the tool's wall
+    clock has been taken and before the next cooldown, so they are block span and not
+    measured time.  A failure here is recorded and does not exclude the run: the
+    counts are a convenience for the analysis, and the pcap they came from is still the
+    oracle.
+    """
+    if not pcap_path.exists():
+        return {"status": "failed", "error": "no pcap to summarise"}
+    counts: dict[str, Any] = {}
+    try:
+        for field, expression in _WIRE_FILTERS.items():
+            proc = subprocess.run(
+                ["tcpdump", "-r", str(pcap_path), "-nn", expression],
+                capture_output=True, text=True, timeout=timeout,
+            )
+            if proc.returncode != 0:
+                return {"status": "failed",
+                        "error": f"tcpdump -r for {field}: {proc.stderr.strip()[:200]}"}
+            counts[field] = sum(1 for line in proc.stdout.splitlines() if line.strip())
+        by_source: dict[str, collections.Counter] = {
+            "arp_replies_by_sender": collections.Counter(),
+            "tcp_rst_by_source": collections.Counter(),
+            "tcp_synack_by_source": collections.Counter(),
+            "icmp_echo_replies_by_source": collections.Counter(),
+        }
+        for field, pattern, key in (
+            ("arp_replies", _ARP_REPLY_LINE, "arp_replies_by_sender"),
+            ("tcp_rst", _IP_SOURCE_LINE, "tcp_rst_by_source"),
+            ("tcp_synack", _IP_SOURCE_LINE, "tcp_synack_by_source"),
+            ("icmp_echo_replies", _IP_SOURCE_LINE, "icmp_echo_replies_by_source"),
+        ):
+            proc = subprocess.run(
+                ["tcpdump", "-r", str(pcap_path), "-nn", _WIRE_FILTERS[field]],
+                capture_output=True, text=True, timeout=timeout,
+            )
+            for line in proc.stdout.splitlines():
+                match = pattern.search(line)
+                if match:
+                    by_source[key][match.group(1)] += 1
+    except (OSError, subprocess.TimeoutExpired) as error:
+        return {"status": "failed", "error": f"summarising pcap: {error}"}
+    counts.update({k: dict(sorted(v.items())) for k, v in by_source.items()})
+    counts["status"] = "ok"
+    counts["error"] = None
+    return counts
 
 
 class Capture:
@@ -65,6 +140,7 @@ class Capture:
         self._stderr_path = self.pcap_path.with_suffix(".tcpdump.err")
         self.status = "disabled"
         self.error: str | None = None
+        self.wire: dict[str, Any] | None = None
 
     @property
     def argv(self) -> list[str]:
@@ -121,6 +197,8 @@ class Capture:
             self.status, self.error = "failed", "tcpdump wrote no pcap"
         if self.status == "ok" and self.pcap_path.stat().st_size == 0:
             self.status, self.error = "failed", "tcpdump wrote an empty pcap"
+        if self.status == "ok":
+            self.wire = summarise_pcap(self.pcap_path)
         return self.record()
 
     def record(self) -> dict[str, Any]:
@@ -133,6 +211,7 @@ class Capture:
             "filter": self.filter_expr,
             "argv": self.argv,
             "error": self.error,
+            "wire": self.wire,
         }
 
     def __enter__(self):

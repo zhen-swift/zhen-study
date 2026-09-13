@@ -29,15 +29,15 @@
    },
    "frames": {
     "192.168.64.4": {
-     "frames_out": 6,
-     "frames_in": 7
+     "frames_out": 5,
+     "frames_in": 6
     },
     "192.168.64.5": {
      "frames_out": 3,
      "frames_in": 3
     },
     "192.168.64.6": {
-     "frames_out": 6,
+     "frames_out": 5,
      "frames_in": 7
     },
     "192.168.64.7": {
@@ -45,24 +45,24 @@
      "frames_in": 3
     },
     "192.168.64.8": {
-     "frames_out": 6,
-     "frames_in": 10
+     "frames_out": 7,
+     "frames_in": 11
     },
     "192.168.64.9": {
-     "frames_out": 4,
-     "frames_in": 7
+     "frames_out": 1,
+     "frames_in": 3
     },
     "192.168.64.10": {
-     "frames_out": 3,
-     "frames_in": 3
+     "frames_out": 4,
+     "frames_in": 4
     },
     "192.168.64.11": {
-     "frames_out": 0,
-     "frames_in": 2
+     "frames_out": 1,
+     "frames_in": 3
     },
     "192.168.64.12": {
-     "frames_out": 3,
-     "frames_in": 3
+     "frames_out": 2,
+     "frames_in": 2
     },
     "192.168.64.13": {
      "frames_out": 2,
@@ -71,6 +71,7 @@
    },
    "answering": [
     "192.168.64.10",
+    "192.168.64.11",
     "192.168.64.12",
     "192.168.64.13",
     "192.168.64.4",
@@ -106,49 +107,48 @@
    },
    "frames": {
     "192.168.64.4": {
-     "frames_out": 4,
+     "frames_out": 5,
      "frames_in": 6
     },
     "192.168.64.5": {
-     "frames_out": 2,
-     "frames_in": 2
+     "frames_out": 3,
+     "frames_in": 3
     },
     "192.168.64.6": {
      "frames_out": 4,
      "frames_in": 6
     },
     "192.168.64.7": {
-     "frames_out": 2,
-     "frames_in": 2
+     "frames_out": 3,
+     "frames_in": 3
     },
     "192.168.64.8": {
-     "frames_out": 7,
+     "frames_out": 6,
      "frames_in": 10
     },
     "192.168.64.9": {
-     "frames_out": 2,
-     "frames_in": 6
+     "frames_out": 1,
+     "frames_in": 3
     },
     "192.168.64.10": {
      "frames_out": 2,
      "frames_in": 2
     },
     "192.168.64.11": {
-     "frames_out": 1,
-     "frames_in": 3
+     "frames_out": 0,
+     "frames_in": 2
     },
     "192.168.64.12": {
      "frames_out": 2,
      "frames_in": 2
     },
     "192.168.64.13": {
-     "frames_out": 2,
+     "frames_out": 1,
      "frames_in": 2
     }
    },
    "answering": [
     "192.168.64.10",
-    "192.168.64.11",
     "192.168.64.12",
     "192.168.64.13",
     "192.168.64.4",
@@ -192,7 +192,7 @@
      "frames_in": 2
     },
     "192.168.64.6": {
-     "frames_out": 4,
+     "frames_out": 5,
      "frames_in": 6
     },
     "192.168.64.7": {
@@ -204,12 +204,12 @@
      "frames_in": 10
     },
     "192.168.64.9": {
-     "frames_out": 2,
-     "frames_in": 6
+     "frames_out": 0,
+     "frames_in": 2
     },
     "192.168.64.10": {
-     "frames_out": 2,
-     "frames_in": 2
+     "frames_out": 3,
+     "frames_in": 3
     },
     "192.168.64.11": {
      "frames_out": 0,
@@ -232,8 +232,7 @@
     "192.168.64.5",
     "192.168.64.6",
     "192.168.64.7",
-    "192.168.64.8",
-    "192.168.64.9"
+    "192.168.64.8"
    ]
   }
  ],

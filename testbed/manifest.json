@@ -8,7 +8,7 @@
   "silent": 1
  },
  "declared_web_fraction": 0.25,
- "generated_at_unix": 1789242547,
+ "generated_at_unix": 1789315685,
  "responders_per_machine": 2,
  "responders": [
   {
@@ -19,30 +19,30 @@
    "mac": "52:55:55:b7:1f:73",
    "target_rtt_ms": 1.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 0.7085,
+   "netem_delay_ms": 0.5845,
    "achieved": {
     "n": 40,
-    "min": 0.935,
-    "p10": 0.978,
-    "p50": 1.013,
-    "p90": 1.055,
-    "p99": 7.846,
-    "max": 7.846,
-    "mean": 1.1808,
-    "stdev": 1.0679
+    "min": 0.904,
+    "p10": 0.947,
+    "p50": 1.001,
+    "p90": 1.058,
+    "p99": 3.855,
+    "max": 3.855,
+    "mean": 1.0706,
+    "stdev": 0.4478
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 0.6875,
-     "measured_p50_ms": 0.979,
-     "error_percent": -2.1
+     "netem_ms": 0.7235,
+     "measured_p50_ms": 1.139,
+     "error_percent": 13.9
     },
     {
      "round": 2,
-     "netem_ms": 0.7085,
-     "measured_p50_ms": 1.013,
-     "error_percent": 1.3
+     "netem_ms": 0.5845,
+     "measured_p50_ms": 1.001,
+     "error_percent": 0.1
     }
    ],
    "role": "icmp+web",
@@ -65,24 +65,42 @@
    "mac": "52:55:55:0d:3b:4a",
    "target_rtt_ms": 1.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 0.6875,
+   "netem_delay_ms": 0.5945,
    "achieved": {
     "n": 40,
-    "min": 0.934,
-    "p10": 0.951,
-    "p50": 0.987,
-    "p90": 1.026,
-    "p99": 6.965,
-    "max": 6.965,
-    "mean": 1.1353,
-    "stdev": 0.9339
+    "min": 0.841,
+    "p10": 0.96,
+    "p50": 1.007,
+    "p90": 1.067,
+    "p99": 7.075,
+    "max": 7.075,
+    "mean": 1.1579,
+    "stdev": 0.9489
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 0.6875,
-     "measured_p50_ms": 0.987,
-     "error_percent": -1.3
+     "netem_ms": 0.7235,
+     "measured_p50_ms": 1.173,
+     "error_percent": 17.3
+    },
+    {
+     "round": 2,
+     "netem_ms": 0.5505,
+     "measured_p50_ms": 0.934,
+     "error_percent": -6.6
+    },
+    {
+     "round": 3,
+     "netem_ms": 0.6165,
+     "measured_p50_ms": 1.022,
+     "error_percent": 2.2
+    },
+    {
+     "round": 4,
+     "netem_ms": 0.5945,
+     "measured_p50_ms": 1.007,
+     "error_percent": 0.7
     }
    ],
    "role": "icmp-only",
@@ -101,24 +119,42 @@
    "mac": "52:55:55:49:5e:99",
    "target_rtt_ms": 5.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 4.69,
+   "netem_delay_ms": 3.7385,
    "achieved": {
     "n": 40,
-    "min": 4.955,
-    "p10": 4.969,
-    "p50": 5.004,
-    "p90": 5.085,
-    "p99": 11.903,
-    "max": 11.903,
-    "mean": 5.187,
-    "stdev": 1.0768
+    "min": 4.293,
+    "p10": 4.712,
+    "p50": 4.939,
+    "p90": 4.992,
+    "p99": 10.737,
+    "max": 10.737,
+    "mean": 5.0102,
+    "stdev": 0.9335
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 4.69,
-     "measured_p50_ms": 5.004,
-     "error_percent": 0.08
+     "netem_ms": 4.6545,
+     "measured_p50_ms": 6.143,
+     "error_percent": 22.86
+    },
+    {
+     "round": 2,
+     "netem_ms": 3.5115,
+     "measured_p50_ms": 4.651,
+     "error_percent": -6.98
+    },
+    {
+     "round": 3,
+     "netem_ms": 3.8605,
+     "measured_p50_ms": 5.122,
+     "error_percent": 2.44
+    },
+    {
+     "round": 4,
+     "netem_ms": 3.7385,
+     "measured_p50_ms": 4.939,
+     "error_percent": -1.22
     }
    ],
    "role": "icmp+web",
@@ -141,24 +177,42 @@
    "mac": "52:55:55:a3:47:17",
    "target_rtt_ms": 5.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 4.69,
+   "netem_delay_ms": 3.7245,
    "achieved": {
     "n": 40,
-    "min": 4.928,
-    "p10": 4.956,
-    "p50": 5.001,
-    "p90": 5.068,
-    "p99": 11.752,
-    "max": 11.752,
-    "mean": 5.1722,
-    "stdev": 1.0548
+    "min": 4.099,
+    "p10": 4.325,
+    "p50": 4.957,
+    "p90": 5.02,
+    "p99": 10.986,
+    "max": 10.986,
+    "mean": 4.9588,
+    "stdev": 1.004
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 4.69,
-     "measured_p50_ms": 5.001,
-     "error_percent": 0.02
+     "netem_ms": 4.6545,
+     "measured_p50_ms": 6.114,
+     "error_percent": 22.28
+    },
+    {
+     "round": 2,
+     "netem_ms": 3.5405,
+     "measured_p50_ms": 4.702,
+     "error_percent": -5.96
+    },
+    {
+     "round": 3,
+     "netem_ms": 3.8385,
+     "measured_p50_ms": 5.114,
+     "error_percent": 2.28
+    },
+    {
+     "round": 4,
+     "netem_ms": 3.7245,
+     "measured_p50_ms": 4.957,
+     "error_percent": -0.86
     }
    ],
    "role": "icmp-only",
@@ -177,30 +231,24 @@
    "mac": "52:55:55:ad:f5:4c",
    "target_rtt_ms": 25.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 19.6745,
+   "netem_delay_ms": 24.6805,
    "achieved": {
     "n": 40,
-    "min": 20.164,
-    "p10": 20.945,
-    "p50": 24.878,
-    "p90": 24.979,
-    "p99": 28.527,
-    "max": 28.527,
-    "mean": 23.8325,
-    "stdev": 1.7643
+    "min": 24.913,
+    "p10": 24.946,
+    "p50": 24.977,
+    "p90": 25.056,
+    "p99": 30.787,
+    "max": 30.787,
+    "mean": 25.1304,
+    "stdev": 0.9066
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 24.6445,
-     "measured_p50_ms": 29.97,
-     "error_percent": 19.88
-    },
-    {
-     "round": 2,
-     "netem_ms": 19.6745,
-     "measured_p50_ms": 24.878,
-     "error_percent": -0.488
+     "netem_ms": 24.6805,
+     "measured_p50_ms": 24.977,
+     "error_percent": -0.092
     }
    ],
    "role": "icmp+web",
@@ -225,30 +273,24 @@
    "mac": "52:55:55:3e:ba:fd",
    "target_rtt_ms": 25.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 19.6905,
+   "netem_delay_ms": 24.6805,
    "achieved": {
     "n": 40,
-    "min": 20.096,
-    "p10": 20.584,
-    "p50": 24.764,
-    "p90": 25.05,
-    "p99": 28.048,
-    "max": 28.048,
-    "mean": 23.6067,
-    "stdev": 1.9466
+    "min": 24.884,
+    "p10": 24.918,
+    "p50": 24.97,
+    "p90": 25.03,
+    "p99": 30.956,
+    "max": 30.956,
+    "mean": 25.118,
+    "stdev": 0.9357
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 24.6445,
-     "measured_p50_ms": 29.954,
-     "error_percent": 19.816
-    },
-    {
-     "round": 2,
-     "netem_ms": 19.6905,
-     "measured_p50_ms": 24.764,
-     "error_percent": -0.944
+     "netem_ms": 24.6805,
+     "measured_p50_ms": 24.97,
+     "error_percent": -0.12
     }
    ],
    "role": "tcp-only",
@@ -271,30 +313,30 @@
    "mac": "52:55:55:d0:9b:cb",
    "target_rtt_ms": 100.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 94.654,
+   "netem_delay_ms": 94.695,
    "achieved": {
     "n": 40,
-    "min": 95.26,
-    "p10": 95.717,
-    "p50": 99.976,
-    "p90": 100.099,
-    "p99": 102.884,
-    "max": 102.884,
-    "mean": 98.6764,
-    "stdev": 1.9456
+    "min": 95.195,
+    "p10": 96.935,
+    "p50": 100.037,
+    "p90": 100.113,
+    "p99": 104.473,
+    "max": 104.473,
+    "mean": 99.251,
+    "stdev": 1.7089
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 99.663,
-     "measured_p50_ms": 105.009,
-     "error_percent": 5.009
+     "netem_ms": 99.699,
+     "measured_p50_ms": 105.004,
+     "error_percent": 5.004
     },
     {
      "round": 2,
-     "netem_ms": 94.654,
-     "measured_p50_ms": 99.976,
-     "error_percent": -0.024
+     "netem_ms": 94.695,
+     "measured_p50_ms": 100.037,
+     "error_percent": 0.037
     }
    ],
    "role": "icmp-only",
@@ -313,30 +355,30 @@
    "mac": "52:55:55:ed:7e:fe",
    "target_rtt_ms": 100.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 94.615,
+   "netem_delay_ms": 94.683,
    "achieved": {
     "n": 40,
-    "min": 94.881,
-    "p10": 97.041,
-    "p50": 100.025,
-    "p90": 100.196,
-    "p99": 108.348,
-    "max": 108.348,
-    "mean": 99.5375,
-    "stdev": 1.9116
+    "min": 95.149,
+    "p10": 96.009,
+    "p50": 100.019,
+    "p90": 100.096,
+    "p99": 104.152,
+    "max": 104.152,
+    "mean": 99.0345,
+    "stdev": 1.8724
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 99.663,
-     "measured_p50_ms": 105.048,
-     "error_percent": 5.048
+     "netem_ms": 99.699,
+     "measured_p50_ms": 105.016,
+     "error_percent": 5.016
     },
     {
      "round": 2,
-     "netem_ms": 94.615,
-     "measured_p50_ms": 100.025,
-     "error_percent": 0.025
+     "netem_ms": 94.683,
+     "measured_p50_ms": 100.019,
+     "error_percent": 0.019
     }
    ],
    "role": "silent",
@@ -355,24 +397,24 @@
    "mac": "52:55:55:a9:01:64",
    "target_rtt_ms": 500.0,
    "loss_percent": 0.0,
-   "netem_delay_ms": 499.681,
+   "netem_delay_ms": 499.684,
    "achieved": {
     "n": 40,
-    "min": 499.935,
-    "p10": 500.01,
-    "p50": 500.046,
-    "p90": 500.125,
-    "p99": 507.192,
-    "max": 507.192,
-    "mean": 500.2313,
-    "stdev": 1.1154
+    "min": 500.662,
+    "p10": 500.79,
+    "p50": 504.895,
+    "p90": 505.185,
+    "p99": 505.764,
+    "max": 505.764,
+    "mean": 503.6718,
+    "stdev": 1.8143
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 499.681,
-     "measured_p50_ms": 500.046,
-     "error_percent": 0.009
+     "netem_ms": 499.684,
+     "measured_p50_ms": 504.895,
+     "error_percent": 0.979
     }
    ],
    "role": "icmp-only",
@@ -391,24 +433,24 @@
    "mac": "52:55:55:bf:a1:05",
    "target_rtt_ms": 500.0,
    "loss_percent": 15.0,
-   "netem_delay_ms": 499.681,
+   "netem_delay_ms": 499.684,
    "achieved": {
-    "n": 34,
-    "min": 499.996,
-    "p10": 500.011,
-    "p50": 500.055,
-    "p90": 500.115,
-    "p99": 506.935,
-    "max": 506.935,
-    "mean": 500.2547,
-    "stdev": 1.1634
+    "n": 35,
+    "min": 500.219,
+    "p10": 500.644,
+    "p50": 505.043,
+    "p90": 505.185,
+    "p99": 509.731,
+    "max": 509.731,
+    "mean": 503.9854,
+    "stdev": 1.9575
    },
    "calibration": [
     {
      "round": 1,
-     "netem_ms": 499.681,
-     "measured_p50_ms": 500.055,
-     "error_percent": 0.011
+     "netem_ms": 499.684,
+     "measured_p50_ms": 505.043,
+     "error_percent": 1.009
     }
    ],
    "role": "icmp-only",

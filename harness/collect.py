@@ -207,6 +207,19 @@ def run_one_block(args, log) -> None:
     ]
     for host in args.control_host:
         argv += ["--control-host", host]
+    # Which flush policy this block gets. `block` and `run` are the two designs;
+    # `alternate` gives odd block ids a flush before every run and even ones the
+    # protocol's single flush, decided by the id the block will take, which is read
+    # from the file the same way run_block.py reads it. Deterministic in the data, so
+    # the census and the analysis can attribute every record without the driver
+    # keeping a note of what it did.
+    policy = args.flush_policy
+    if policy == "alternate":
+        from harness.run_block import existing_blocks
+        done = existing_blocks(args.out)
+        next_id = (max(done) + 1) if done else 0
+        policy = "run" if next_id % 2 else "block"
+    argv += ["--flush-policy", policy]
     if args.dry_run:
         argv += ["--dry-run", "--allow-dirty"]
     if args.inject_fault:
@@ -343,6 +356,12 @@ def main() -> int:
     parser.add_argument("--minimum-days", type=int, default=MINIMUM_DAYS)
     parser.add_argument("--daily-quota", type=int, default=None,
                         help="override the derived per-stratum-per-day cap")
+    parser.add_argument("--flush-policy", choices=("block", "run", "alternate"),
+                        default="block",
+                        help="neighbour-table flush per block (PROTOCOL.md section 5, "
+                             "default), per run, or alternating by block id parity. "
+                             "Anything but 'block' for collection is an amendment; "
+                             "the pilot uses 'alternate' to price the difference.")
     parser.add_argument("--inject-fault", default=None, metavar="RESPONDER[:INDEX]",
                         help="0.6 only: passed to run_block.py for the first block this "
                              "driver runs, and never again")
@@ -382,6 +401,9 @@ def main() -> int:
     if (target, days_floor) != (BLOCKS_PER_STRATUM, MINIMUM_DAYS):
         log(f"! not the protocol's design: it asks for {BLOCKS_PER_STRATUM}/stratum "
             f"over {MINIMUM_DAYS} days. This run is a pilot or a rehearsal.")
+    if args.flush_policy != "block":
+        log(f"! flush policy {args.flush_policy!r}: PROTOCOL.md section 5 says one "
+            f"flush per block. Anything else in collection needs a dated amendment.")
     awake = hold_awake(log)
 
     stop = {"now": False}

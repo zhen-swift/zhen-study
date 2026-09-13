@@ -312,8 +312,8 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
             f"unknown and it is not evidence: {flush.get('error')}"
         )
 
-    print(f"block {block_id} seed {seed}, flushed at start: "
-          + " ".join(c.id for c in order))
+    print(f"block {block_id} seed {seed}, flush policy {args.flush_policy}, "
+          f"flushed at start: " + " ".join(c.id for c in order))
 
     records = []
     for index, condition in enumerate(order):
@@ -328,7 +328,22 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
         # first run had provoked and never waited for, with a discovery stage shorter
         # than their round trip. The label is what "warm versus cold, analysed apart"
         # keys on, and until the pilot every run in a block was stamped cold.
-        cache_state = "cold" if index == 0 else "warm"
+        #
+        # `--flush-policy run` flushes before every run instead, so every run is cold.
+        # It exists because one flush before thirteen conditions gives each condition
+        # 2.3 cold runs per stratum against 27.7 warm, and the pilot found seven
+        # conditions it had never once observed cold. Which policy collection uses is
+        # a protocol amendment, not a flag default; the flag makes the alternative
+        # measurable so the amendment can be argued with numbers.
+        if args.flush_policy == "run" and index and not args.dry_run:
+            flush = capture_mod.flush_neighbour_table(stub=args.dry_run)
+            if not flush.get("flushed"):
+                raise SystemExit(
+                    f"the neighbour table could not be flushed before run {index}, so "
+                    f"its cache state is unknown and it is not evidence: "
+                    f"{flush.get('error')}"
+                )
+        cache_state = "cold" if (index == 0 or args.flush_policy == "run") else "warm"
 
         run_id = f"b{block_id:04d}-{index:02d}-{uuid.uuid4().hex[:8]}"
         xml_path = raw_dir / f"{run_id}.nmap.xml"
@@ -510,6 +525,7 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
             covariates={
                 "wifi": wifi,
                 "neighbour_flush": flush,
+                "flush_policy": args.flush_policy,
                 "cooldown_seconds": args.cooldown,
                 # `time.monotonic()` on macOS is mach_absolute_time, which stops while
                 # the machine sleeps; `time.time()` does not. Their disagreement across
@@ -571,6 +587,11 @@ def main(argv=None) -> int:
                              "netsanity sweep, on a fixed schedule; 10 s clears it with "
                              "margin. See FINDINGS-0.6-pilot.md.")
     parser.add_argument("--cooldown-first", action="store_true")
+    parser.add_argument("--flush-policy", choices=("block", "run"), default="block",
+                        help="flush the neighbour table once at block start (the "
+                             "protocol's section 5, default) or before every run. The "
+                             "choice for collection is an amendment; see "
+                             "FINDINGS-0.6-pilot.md.")
     parser.add_argument("--control-host", action="append", default=[],
                         help="an address known to answer ICMP, used as the positive "
                              "control for the Local Network permission. Repeatable.")
