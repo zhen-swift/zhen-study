@@ -53,3 +53,12 @@ pilot-raw/
 pilot-captures/
 pilot-stores/
 pilot-settle/
+# run_block.py names the raw, capture and store directories after the output file's
+# stem, so an attempt written to `pilot-attempt-3.ndjson` writes to
+# `pilot-attempt-3-raw/` and its siblings. The third attempt's first block ran
+# because they did not exist at its provenance check; its second would have aborted
+# on the tree they made dirty. The same defect as the first attempt's, one name over.
+pilot-attempt-*-raw/
+pilot-attempt-*-captures/
+pilot-attempt-*-stores/
+*.driver.out
