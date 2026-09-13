@@ -107,18 +107,26 @@ Two tags, not one, and the second does not exist yet:
   tag the appendix cites for the system under test, and the binary above is built from
   it. It does not move — and the `b` in its name is the record of one that did, which is
   why the superseded tag is left in place rather than deleted.
-- **A collection tag, cut at the start of stage 5**, on the `master` commit that carries
+- **A collection tag, cut when collection starts**, on the `master` commit that carries
   the finished driver. The apparatus keeps being built after the binary is frozen —
   the driver, the pilot's cooldown, the analysis — and the worktree has to move forward
   to reach it. Before it moves, this must be empty:
 
   ```bash
-  git diff --stat study/binary-2026-09-12 <collection-tag> -- \
+  git diff --stat study/binary-2026-09-12b <commit> -- \
       Packages/netsanity-core Packages/netsanity-cli
   ```
 
   That is the check that lets the apparatus advance while proving the measured source
   did not. Its output goes in this document when it is run.
+
+  **Run three times on 2026-09-12, for the pilot.** The worktree moved from `ad09ed1`
+  (the tag) to `05b0870`, then `30584fc`, to pick up the driver and the apparatus fixes
+  the pilot found. Each time the command above printed nothing — zero lines of diff
+  across both frozen packages — and `shasum -a 256` of the binary in the worktree read
+  `b4220600…` before and after. The worktree is checked out detached at whichever
+  apparatus commit collection runs from; `provenance.py` records that commit on every
+  run, and the frozen packages at that commit are byte-identical to the tag's.
 
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
@@ -129,7 +137,7 @@ catches it if it happens anyway.
 The programmable segment is the primary testbed, per `PHASE0.md`'s amendment. Its
 composition, per-responder shaping, calibration and achieved round-trip times are in
 `testbed/manifest.json`, and `testbed/FINDINGS-0.1.md` records how it was built and what
-it cost to make repeatable. Ten responders, worst calibration error 5.0% against a 10%
+it cost to make repeatable. Ten responders, worst calibration error 1.3% at the pilot rebuild of 2026-09-12 (5.0% when first built) against a 10%
 tolerance. The three-oracle agreement that gate 0.4 turns on is in
 `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture
 all reporting the same ten addresses, no disagreements.
@@ -138,15 +146,47 @@ The physical segment is secondary and is `10.10.20.0/24`, the home LAN — a par
 network and not "whatever the laptop is on". `Study/README.md`'s note of 2026-09-09
 records why that had to be written down.
 
+## Unattended root, as installed
+
+`Study/launchd/netsanity-study.sudoers` was installed by JC on 2026-09-12 at 13:41 as
+`/etc/sudoers.d/netsanity-study`, mode 0440 root:wheel, and `sudo -n` for
+`/opt/homebrew/bin/nmap`, `/usr/sbin/tcpdump` and `/usr/sbin/arp` succeeds without a
+prompt from this account. It is a whole-binary grant to one user for three absolute
+paths, and it is removed with `sudo rm /etc/sudoers.d/netsanity-study` when collection
+ends. The file's own header carries the reasoning and belongs in the appendix verbatim.
+
+## The pilot's settings, now in force
+
+- **Cooldown: 10 s**, from `harness/settle.py` and `data/pilot-settle.json` — the
+  longest scan-attributable traffic tail after a process exits is 6.1 s, on the kernel's
+  fixed ARP retry schedule. `FINDINGS-0.6-pilot.md`.
+- **nmap timeout: 3600 s.** Unprivileged `-T2` ran at 228, 462, 1580, 1735, 1809 and
+  1938 s across the pilot's six blocks. The ceiling has never been reached and a run that
+  reaches it is a finding, not a timeout.
+- **A block is about 43 minutes**, dominated by unprivileged `-T2`. Measured block spans
+  in the gate attempt: 2559, 2599 and 1226 s. 120 blocks is about 85 hours of machine
+  time inside the seven-day window, five blocks per stratum per day at 3.6 hours of each
+  six-hour window and 14.2 hours of each 24.
+- **The host must be held awake from a full wake.** Idle sleep is set to one minute on
+  this machine. The driver takes `caffeinate -u` for five seconds and then holds `-i`;
+  a run in which the host slept is excluded as `host_asleep` and stops the block.
+
 ## Still open
 
-- **Unattended root.** Gate 0.3's privileged half ran on 2026-09-12 with Touch ID and a
-  person present, which is enough for a gate and not for collection: `run_block.py`
-  invokes `sudo -n`, which fails whether or not Touch ID is configured, because `-n`
-  means there is nobody to prompt. Four of the thirteen live conditions need root, and
-  `tcpdump` needs it for every one of the thirteen. `PHASE0.md` assigns this to JC.
-- **The collection tag and its diff check**, above.
-- **The cooldown**, which the pilot sets and which is 15 s only as a default until then.
-- **`-T2`'s cost.** Roughly 510 s for a `/24`, extrapolated from its capture rather than
-  measured to completion, and by far the largest term in a block. The pilot should run
-  it to the end once and replace the extrapolation.
+- **The collection tag and its diff check**, above, cut when collection starts.
+- **Gate 0.6 is not met**, and `FINDINGS-0.6-pilot.md` says why: three quantities that
+  write-up cites come from the per-run pcaps and the raw netsanity artifacts rather than
+  from the NDJSON, which `PHASE0.md` 0.6 and `HARNESS.md` both require. The fix is two
+  schema fields — the discovery stage's `replies_seen` and `hosts_found` in `runners.py`,
+  and per-address ARP and RST counts in the capture oracle — and then a pilot under the
+  repaired schema. No measured number changes and the binary is untouched.
+- **Cache state, and it is a protocol amendment rather than an apparatus fix.** Section 5
+  of `PROTOCOL.md` wants cache state analysed as a condition and n >= 30 per stratum, and
+  one flush per thirteen-condition block gives 2.3 cold runs per condition per stratum
+  against 27.7 warm — 9.2 against 110.8 pooled. Flushing before every run in half the
+  blocks gives 16.2 against 13.8, so neither arm reaches 30. Holding both arms at 30
+  takes 60 blocks per stratum, 240 blocks, 175 machine hours, and moves the seven-day
+  floor to twelve days at the driver's current five-a-day cap or ten days at six a day.
+  Every option that strengthens the cold arm also makes H1, H2 and H6 easier to refute,
+  so the ruling is JC's and the amendment gets written only after he makes it, dated,
+  and recording that it was decided before any block was collected.
