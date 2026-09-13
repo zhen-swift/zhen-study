@@ -43,9 +43,11 @@ NDJSON" below, with the schema fix each one needs.
 The blocks do not have to run again to fix it — the timing, recall and exclusion
 numbers are all in the records already. What has to run again is a pilot under the
 repaired schema, because a gate that says "every number" is not met by "every number
-that turned out to matter". That re-run is deliberately not scheduled yet: the
-cache-state ruling at the end of this document changes what a block is, and piloting
-the old block shape first would buy nothing.
+that turned out to matter". **The repair is in, at apparatus commit `f9e2d6c`
+(2026-09-13), and the pilot that would meet the gate is built and not yet run** — see
+"The third attempt, ready and not run" at the end. It is also the pilot that prices the
+cache-state options below with measurements rather than one inferred number, which is
+why it is designed to run both block shapes rather than the old one.
 
 ---
 
@@ -429,24 +431,32 @@ cache-state mechanism, which is the question the next section puts to JC. The ev
 for the most consequential open decision in the study is the evidence a reviewer cannot
 check from the file the protocol says is the record.
 
-**What would fix it**, in the order the apparatus should take them:
+**What fixes it, done on 2026-09-13 at `f9e2d6c` — schema 2:**
 
-1. **The discovery stage's reply count belongs in the record.** `runners.py` already
-   parses the netsanity artifact and copies `engine_kind`, `outcome`, `stages` and
-   `degradations` into `parse`; `replies_seen`, `hosts_found` and `elapsed_millis` for
-   the discovery stage belong beside them. That is a `schema.py` version bump and a few
-   lines in `runners.py`.
-2. **The capture oracle should count what it already reads.** `oracles.py` walks every
-   pcap to build `frames_by_address`. ARP requests sent, ARP replies seen, and RSTs
-   received per address are the same walk, and they turn the two by-hand `tcpdump`
-   numbers above into record fields.
-3. **Then pilot again under the repaired schema**, because the gate is about the pilot
-   and a repaired apparatus that has not been piloted is what 0.5 was.
+1. **The discovery stage's reply count is in the record.** `runners.py` copies
+   `replies_seen`, `hosts_found`, `probes_sent` and `elapsed_millis` from the artifact's
+   discovery stage into `parse.discovery`, and the engine's capability list into
+   `parse.engine_capabilities`, beside the `engine_kind` it already copied.
+2. **The Mac-side capture counts what the pilot counted by hand.** `capture.py` runs
+   the same `tcpdump -r` over the finished pcap — seven filters, about 25 ms on the
+   largest capture the pilot produced — and writes ARP request and reply counts, ICMP
+   echo counts, TCP SYN, SYN-ACK and RST counts, and per-source tallies of the replies
+   into `capture.wire`. Checked against the by-hand numbers: the 462 s run's pcap
+   summarises to 954 ARP requests and RSTs from exactly the seven responders read off
+   it by hand.
+3. **The validator reads version 1 as version 1.** Both pilot attempts stay readable and
+   a file still may not mix versions. `analysis/pilot.py` uses `parse.discovery` when a
+   record carries it and opens the artifact when it does not, and every line it prints
+   from an artifact says so.
+4. **Then pilot again under the repaired schema**, because the gate is about the pilot
+   and a repaired apparatus that has not been piloted is what 0.5 was. Proven dry first:
+   26 schema-2 records across both flush policies with zero validation problems, and
+   `prove_collect.py` still met.
 
 None of this touches `Packages/netsanity-core` or `netsanity-cli`, and none of it is a
 reason to rebuild the binary. The frozen packages are byte-identical to
-`study/binary-2026-09-12b` at `30584fc`, checked again while assessing this gate, and
-the binary in the collection worktree still hashes `b4220600…`.
+`study/binary-2026-09-12b` at `30584fc` and again at `f9e2d6c`, checked each time the
+collection worktree moved, and the binary in it still hashes `b4220600…`.
 
 **What this does not excuse.** Nothing above changes a measured number. Exclusion is
 2.56%, the variance is what the table says, and the injected fault was caught unaided
@@ -500,7 +510,10 @@ which every run is cold, fifteen unflushed in which one is.
   unprivileged `-T2` itself, so even its estimate rests on the recency correlation rather
   than on a cold measurement — and the remaining six have been observed cold exactly once
   each. A design whose cold arm is one run in thirteen cannot price its own alternative,
-  which is close to being the argument for changing it.
+  which is close to being the argument for changing it. **The third attempt below is
+  built to replace this bullet with a measurement**: four blocks flushed before every
+  run against four flushed once, so every condition is observed cold four times and the
+  per-condition cost of the policy is a number rather than a floor.
 
 **Keeping both arms at n = 30 per stratum.** Warm needs 32.5 unflushed blocks, cold
 needs 27.5 flushed, so **60 blocks per stratum, 240 blocks, with 46% of blocks flushed
@@ -556,12 +569,80 @@ dated, saying what prompted it and stating that it was decided before any block 
 collected — which is true, and which is the only reason any of this is worth writing
 down.
 
+## The third attempt, ready and not run
+
+Built on 2026-09-13 and deliberately left for a person to start. It serves two purposes
+at once and the design follows from that:
+
+- **Gate 0.6 under schema 2.** Every record carries `parse.discovery` and
+  `capture.wire`, so the three quantities above become recomputable and the gate's third
+  condition can be assessed rather than argued about.
+- **The cache-state options, priced.** `--flush-policy alternate` gives odd block ids a
+  flush before every run and even ones the protocol's single flush. Eight blocks is four
+  of each: every one of the thirteen conditions observed cold four times, against the
+  four warm blocks of the same day and the three of the second attempt, so the
+  per-condition cost of flushing per run — wall clock and recall — is measured for all
+  thirteen instead of inferred for one.
+
+Not repeated: the injected fault. Attempts one and two both caught it unaided, on two
+different conditions, and a third would be manufacturing an exclusion to admire. This
+attempt's exclusion rate is therefore the apparatus's own.
+
+What was done before it could run, in order, each checked:
+
+| step | result |
+|---|---|
+| testbed, after the host lost power | all five machines restarted; `netbed.py configure` re-shaped and re-calibrated the ten responders at the same addresses and roles; worst achieved error 1.22% against 10% |
+| the three oracles | three consecutive rounds, manifest 10, inventory 10, capture 10, agreed; `testbed/gate-0.4.json` rewritten |
+| schema 2 | `f9e2d6c`; 26 dry-run records across both policies, zero validation problems; `prove_collect.py` met |
+| the freeze | `git diff --stat study/binary-2026-09-12b f9e2d6c -- Packages/netsanity-core Packages/netsanity-cli` empty; binary `b4220600…` |
+| the collection worktree | moved to `f9e2d6c`, clean, standing `sudo -n` grant confirmed for all three binaries |
+| unattended root | `sudo -n -l` succeeds for `nmap`, `tcpdump` and `arp` from this account |
+
+The invocation, from the collection worktree, writing to files `data/.gitignore` already
+covers:
+
+```
+W=/Users/jc/Dev/InfinityCastle-collection
+nohup /usr/bin/python3 $W/Study/harness/collect.py \
+  --out $W/Study/data/pilot-attempt-3.ndjson \
+  --log $W/Study/data/pilot-attempt-3.log \
+  --status $W/Study/data/pilot-attempt-3-status.json \
+  --alarm $W/Study/data/PILOT-STOPPED.txt \
+  --cidr 192.168.64.0/24 --iface bridge100 \
+  --netsanity $W/Packages/netsanity-cli/.build/release/netsanity \
+  --cooldown 10.0 --control-host 192.168.64.4 --control-host 192.168.64.6 \
+  --blocks-per-stratum 8 --minimum-days 1 --daily-quota 6 \
+  --flush-policy alternate \
+  > $W/Study/data/pilot-attempt-3.driver.out 2>&1 &
+```
+
+Eight blocks at about 43 to 45 minutes each is six hours of machine time. With a daily
+quota of six the driver takes what fits in the current stratum's window, waits at the
+boundary for the next, and after eight it goes to `waiting`, at which point it is
+stopped with `SIGTERM` as the second attempt was. Then:
+
+```
+python3 Study/analysis/pilot.py $W/Study/data/pilot-attempt-3.ndjson
+```
+
+prints the cold-against-warm table per condition, the block span under each policy,
+and the wire counts for unprivileged `-T2`, and this document's cache-state section is
+rewritten against them before the options go to JC a second time.
+
+Why it was not started by the agent: the driver takes root through the standing grant
+to scan the segment and flush the host's neighbour table, and the session's policy
+classed launching it as modifying a shared resource. That is a reasonable line for a
+policy to draw and it was not argued with. The command above is the whole of what was
+going to run.
+
 ## What is recorded and where
 
 | | |
 |---|---|
 | `data/pilot.ndjson` | the pilot that is the gate; every timing, recall, exclusion and schedule number above is recomputable from it with `analysis/pilot.py`, and the three named above are not |
 | `data/pilot-attempt-1.ndjson` | the first attempt, kept because its failures are the record of what the apparatus could not do before this date |
+| `data/pilot-attempt-3.ndjson` | the third attempt, schema 2, both flush policies; the gate candidate once it has run |
 | `data/pilot-settle.json` | every post-exit frame per condition, the cooldown's evidence |
 | `data/pilot-raw/`, `pilot-captures/`, `pilot-stores/` | raw tool output, Mac-side pcaps, and history stores for both attempts, by run id; git-ignored like collection's |
 | `harness/settle.py` | the cooldown measurement, re-runnable |
@@ -569,5 +650,6 @@ down.
 
 The apparatus commits: `91f7e31` (testbed rebuilt), `a0ab4f3` (the five defects, the
 injected fault, the sleep covariate), `05b0870` (the cooldown), `30584fc` (host sleep
-stops the block; the cache label). The frozen packages are byte-identical to
+stops the block; the cache label), `f9e2d6c` (schema 2; flush per run runnable; testbed
+rebuilt after the power loss). The frozen packages are byte-identical to
 `study/binary-2026-09-12b` at every one of them, checked each time the worktree moved.

@@ -120,11 +120,11 @@ Two tags, not one, and the second does not exist yet:
   That is the check that lets the apparatus advance while proving the measured source
   did not. Its output goes in this document when it is run.
 
-  **Run three times on 2026-09-12, for the pilot.** The worktree moved from `ad09ed1`
-  (the tag) to `05b0870`, then `30584fc`, to pick up the driver and the apparatus fixes
-  the pilot found. Each time the command above printed nothing — zero lines of diff
-  across both frozen packages — and `shasum -a 256` of the binary in the worktree read
-  `b4220600…` before and after. The worktree is checked out detached at whichever
+  **Run four times, three on 2026-09-12 and one on 2026-09-13, for the pilot.** The
+  worktree moved from `ad09ed1` (the tag) to `05b0870`, then `30584fc`, then `f9e2d6c`,
+  to pick up the driver, the apparatus fixes the pilot found, and schema 2. Each time
+  the command above printed nothing — zero lines of diff across both frozen packages —
+  and `shasum -a 256` of the binary in the worktree read `b4220600…` before and after. The worktree is checked out detached at whichever
   apparatus commit collection runs from; `provenance.py` records that commit on every
   run, and the frozen packages at that commit are byte-identical to the tag's.
 
@@ -137,10 +137,12 @@ catches it if it happens anyway.
 The programmable segment is the primary testbed, per `PHASE0.md`'s amendment. Its
 composition, per-responder shaping, calibration and achieved round-trip times are in
 `testbed/manifest.json`, and `testbed/FINDINGS-0.1.md` records how it was built and what
-it cost to make repeatable. Ten responders, worst calibration error 1.3% at the pilot rebuild of 2026-09-12 (5.0% when first built) against a 10%
-tolerance. The three-oracle agreement that gate 0.4 turns on is in
-`testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture
-all reporting the same ten addresses, no disagreements.
+it cost to make repeatable. Ten responders, worst calibration error 1.22% at the rebuild
+of 2026-09-13 after the host lost power (1.3% at the pilot rebuild of 2026-09-12, 5.0%
+when first built) against a 10% tolerance. The three-oracle agreement that gate 0.4
+turns on is in `testbed/gate-0.4.json`, re-run after every rebuild: three consecutive
+rounds, manifest and inventory and capture all reporting the same ten addresses, no
+disagreements.
 
 The physical segment is secondary and is `10.10.20.0/24`, the home LAN — a particular
 network and not "whatever the laptop is on". `Study/README.md`'s note of 2026-09-09
@@ -175,11 +177,11 @@ ends. The file's own header carries the reasoning and belongs in the appendix ve
 
 - **The collection tag and its diff check**, above, cut when collection starts.
 - **Gate 0.6 is not met**, and `FINDINGS-0.6-pilot.md` says why: three quantities that
-  write-up cites come from the per-run pcaps and the raw netsanity artifacts rather than
-  from the NDJSON, which `PHASE0.md` 0.6 and `HARNESS.md` both require. The fix is two
-  schema fields — the discovery stage's `replies_seen` and `hosts_found` in `runners.py`,
-  and per-address ARP and RST counts in the capture oracle — and then a pilot under the
-  repaired schema. No measured number changes and the binary is untouched.
+  write-up cites came from the per-run pcaps and the raw netsanity artifacts rather than
+  from the NDJSON, which `PHASE0.md` 0.6 and `HARNESS.md` both require. Schema 2, at
+  `f9e2d6c`, puts them in the record — `parse.discovery` and `capture.wire`. What
+  remains is a pilot under it, built and waiting to be started; the invocation is in
+  the findings document. No measured number changes and the binary is untouched.
 - **Cache state, and it is a protocol amendment rather than an apparatus fix.** Section 5
   of `PROTOCOL.md` wants cache state analysed as a condition and n >= 30 per stratum, and
   one flush per thirteen-condition block gives 2.3 cold runs per condition per stratum

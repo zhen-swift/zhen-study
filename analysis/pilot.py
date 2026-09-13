@@ -203,25 +203,89 @@ def main(path: Path) -> int:
         print(f"  block {r['block_id']} {r['condition_id']:26s} recall "
               f"{recall(r, truth) if truth else float('nan'):.2f}  missed {missed}"
               + (f"  [{r['exclusion']['reason']}]" if r["exclusion"] else ""))
-    # NOT FROM THE NDJSON, and the heading says so rather than letting the reader
-    # assume it.  `replies_seen` and `hosts_found` live in netsanity's own artifact,
-    # which the record points at by path and does not copy; this block opens that file.
-    # Everything above this line is recomputable from the NDJSON alone and this is not,
-    # which is the deficiency FINDINGS-0.6-pilot.md records against the 0.6 gate.  The
-    # fix is a schema field, not a rule about who may open what: the discovery stage's
-    # reply count belongs in the record beside the address set it explains.
-    print("  warm runs of ns.disc.unpriv and ns.fixed.timeout, replies seen against hosts found:")
-    print("  [read from the netsanity artifact at stdout_path, NOT from the NDJSON]")
-    for r in records:
-        if r["condition_id"] in ("ns.disc.unpriv", "ns.fixed.timeout") and r["sequence_index"]:
+    # `replies_seen` against `hosts_found`.  Schema 2 carries them in `parse.discovery`
+    # and the line is then recomputable from the NDJSON; a schema 1 record points at
+    # the artifact by path and does not copy it, so for those the file is opened and
+    # the line says so.  That difference is the deficiency the 0.6 gate was first
+    # assessed against, and the heading names the source so nobody has to guess.
+    print("  netsanity runs, replies seen against hosts found, by cache state:")
+    for r in sorted(records, key=lambda r: (r["block_id"], r["sequence_index"])):
+        if r["tool"] != "netsanity":
+            continue
+        disc = (r.get("parse") or {}).get("discovery")
+        source = "record"
+        if not disc:
+            source = "ARTIFACT, not the NDJSON"
             try:
-                stage = [s for s in json.load(open(r["stdout_path"]))["run"]["timing"]["stages"]
-                         if s["stage"] == "discovery"][0]
-                print(f"    block {r['block_id']} idx {r['sequence_index']:2d} "
-                      f"{r['condition_id']:18s} replies {stage['replies_seen']:2d} found "
-                      f"{stage['hosts_found']:2d} stage {stage['elapsed_millis']:.0f} ms")
+                disc = [s for s in json.load(open(r["stdout_path"]))["run"]["timing"]["stages"]
+                        if s["stage"] == "discovery"][0]
             except (OSError, KeyError, IndexError):
-                print(f"    block {r['block_id']} idx {r['sequence_index']}: artifact not on disk")
+                print(f"    block {r['block_id']} idx {r['sequence_index']:2d} "
+                      f"{r['condition_id']:18s} artifact not on disk")
+                continue
+        truth = set(r["oracle"]["addresses"])
+        print(f"    block {r['block_id']} idx {r['sequence_index']:2d} "
+              f"{r['condition_id']:18s} {r['cache_state']:4s} replies {disc['replies_seen']:2d} "
+              f"found {disc['hosts_found']:2d} stage {disc['elapsed_millis']:.0f} ms  "
+              f"recall {recall(r, truth) if truth else float('nan'):.2f}  [{source}]")
+
+    # ── cold against warm, per condition, when the file has both ─────────────────
+    # `--flush-policy run` labels every run cold; the protocol's single flush labels
+    # one per block.  With both present the file can price the policy per condition:
+    # wall clock and recall, cold against warm, from the same apparatus on the same
+    # segment.  Absent the flush-per-run blocks, the cold column is one run in
+    # thirteen and this table says so by its n.
+    policies = {r["covariates"].get("flush_policy", "block") for r in records}
+    print(f"\ncold against warm, admissible runs (flush policies in file: {sorted(policies)})")
+    print(f"  {'condition':26s} {'n cold':>6} {'median cold':>11} {'recall':>6} "
+          f"{'n warm':>6} {'median warm':>11} {'recall':>6}   {'cold/warm':>9}")
+    for cid in sorted(live):
+        cold = [r for r in usable if r["condition_id"] == cid and r["cache_state"] == "cold"]
+        warm = [r for r in usable if r["condition_id"] == cid and r["cache_state"] == "warm"]
+        def med(rs):
+            return statistics.median(r["wall_clock_seconds"] for r in rs) if rs else None
+        def rec(rs):
+            vals = [recall(r, set(r["oracle"]["addresses"])) for r in rs
+                    if r["oracle"]["addresses"]]
+            return statistics.mean(vals) if vals else None
+        mc, mw, rc, rw = med(cold), med(warm), rec(cold), rec(warm)
+        ratio = (mc / mw) if (mc and mw) else None
+        print(f"  {cid:26s} {len(cold):>6} "
+              f"{(f'{mc:.3f}' if mc is not None else '-'):>11} "
+              f"{(f'{rc:.2f}' if rc is not None else '-'):>6} "
+              f"{len(warm):>6} "
+              f"{(f'{mw:.3f}' if mw is not None else '-'):>11} "
+              f"{(f'{rw:.2f}' if rw is not None else '-'):>6}   "
+              f"{(f'{ratio:.2f}x' if ratio else '-'):>9}")
+
+    by_policy = defaultdict(list)
+    for b in complete:
+        rs = [r for r in records if r["block_id"] == b]
+        pol = {r["covariates"].get("flush_policy", "block") for r in rs}.pop()
+        span = max(r["finished_at_unix"] for r in rs) - min(r["started_at_unix"] for r in rs)
+        by_policy[pol].append(span)
+    for pol, spans in sorted(by_policy.items()):
+        print(f"  block span under flush policy {pol!r}: {[round(x) for x in spans]} s, "
+              f"median {statistics.median(spans):.0f} s")
+
+    # ── what the wire saw, for the condition whose two modes the pilot chased ─────
+    wired = [r for r in records if (r["capture"].get("wire") or {}).get("status") == "ok"]
+    if wired:
+        print("\nunprivileged -T2, what the Mac-side capture counted (capture.wire, schema 2)")
+        print(f"  {'run':20s} {'wall':>8} {'cache':>5} {'arp req':>7} {'arp rep':>7} "
+              f"{'syn':>5} {'synack':>6} {'rst':>5}  {'rst senders':>11}  {'conn-refused':>12}")
+        for r in sorted(wired, key=lambda r: (r["block_id"], r["sequence_index"])):
+            if r["condition_id"] != "nmap.sn.unpriv.T2":
+                continue
+            w = r["capture"]["wire"]
+            senders = [a for a in w.get("tcp_rst_by_source", {}) if not a.endswith(".1")]
+            refused = sum(1 for v in (r["parse"].get("reasons") or {}).values()
+                          if v == "conn-refused")
+            print(f"  {r['run_id']:20s} {r['wall_clock_seconds']:8.1f} {r['cache_state']:>5} "
+                  f"{w['arp_requests']:7d} {w['arp_replies']:7d} {w['tcp_syn']:5d} "
+                  f"{w['tcp_synack']:6d} {w['tcp_rst']:5d}  {len(senders):11d}  {refused:12d}")
+    else:
+        print("\n(no capture.wire in this file: schema 1, the wire counts were read by hand)")
 
     roles = {}
     for r in records:

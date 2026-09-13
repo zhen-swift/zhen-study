@@ -37,12 +37,12 @@ live blocks and what they changed.
 
 | | | |
 |---|---|---|
-| 0.1 | Programmable testbed | **Met, and rebuilt twice on 2026-09-12.** Ten shaped responders spanning 1 ms to 500 ms, worst calibration error 1.7% at gate 0.3 and 1.3% at the pilot, against a 10% tolerance, down from 5.0%. Composition matches what H6 pre-declares: three of ten answer ICMP and serve a web port, against a floor of a quarter. |
+| 0.1 | Programmable testbed | **Met, rebuilt twice on 2026-09-12 and again on 2026-09-13 after the host lost power.** Ten shaped responders spanning 1 ms to 500 ms, worst calibration error 1.7% at gate 0.3, 1.3% at the pilot and 1.22% at the latest rebuild, against a 10% tolerance, down from 5.0%. Composition matches what H6 pre-declares: three of ten answer ICMP and serve a web port, against a floor of a quarter. |
 | 0.2 | Discovery-only mode | **Met.** Shipped as `netsanity scan --discovery-only`. |
 | 0.3 | Characterising nmap | **Met.** Privileged nmap ran on 2026-09-12: the capture shows ARP, zero ICMP, zero TCP, recall 10/10. Privileged netsanity ran too and turned out not to be a distinct condition — no privileged engine exists — so H3 was withdrawn by the amendment of that date and `ns.disc.priv` left the matrix. Nothing remains to run. |
 | 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
 | 0.5 | The harness, dry | **Met.** 0.4 is no longer a hole. 39 schema-valid records across 13 conditions, zero validation warnings. |
-| 0.6 | Pilot | **Not met — `FINDINGS-0.6-pilot.md`.** Two of three conditions hold: exclusion 2.56% of 39 runs, and variance stable enough for every test the protocol names. The third does not — three quantities the write-up cites come from the pcaps and the raw artifacts, not the NDJSON — so the schema needs two fields and the pilot needs one more run. Six blocks ran on 2026-09-12; a block is about 43 minutes, most of it unprivileged `nmap -T2`. |
+| 0.6 | Pilot | **Not met — `FINDINGS-0.6-pilot.md`.** Two of three conditions hold: exclusion 2.56% of 39 runs, and variance stable enough for every test the protocol names. The third did not — three quantities the write-up cites came from the pcaps and the raw artifacts, not the NDJSON. Schema 2 (`f9e2d6c`, 2026-09-13) records them; the pilot under it is built, eight blocks across both flush policies, and waits to be started. Six blocks ran on 2026-09-12; a block is about 43 minutes, most of it unprivileged `nmap -T2`. |
 | 3 | Collection driver | **Met.** `harness/collect.py`: strata, a per-stratum-per-day cap that enforces the seven-day floor, counts read from the data rather than from bookkeeping, and `caffeinate -i` held on its own pid. A stratum ran end to end and a mid-block kill left the data correct — `harness/prove_collect.py`. |
 
 ## The binary is frozen, from 2026-09-12
