@@ -185,8 +185,15 @@ def daily_quota(blocks_per_stratum: int = BLOCKS_PER_STRATUM,
     mechanism that stops the driver satisfying a stratum in an afternoon and calling the
     design met: `PROTOCOL.md` asks for thirty blocks *across seven days*, and thirty
     blocks in one day is a different experiment with the same block count.
+
+    The ceiling of the division is the five this docstring has always described. Until
+    2026-09-13 the function added one to it and returned six, and every document that
+    cited the cap cited five; the driver's own startup banner was the only place six
+    appeared, and it was read at the moment collection started, with no block yet run.
+    Six a day at the estimated block length is 5.6 hours of a six-hour window, which is
+    no slack at all, and it reaches thirty on day five rather than six.
     """
-    return -(-blocks_per_stratum // minimum_days) + 1
+    return -(-blocks_per_stratum // minimum_days)
 
 
 # ── running one block ─────────────────────────────────────────────────────────────
