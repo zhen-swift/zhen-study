@@ -244,6 +244,72 @@ meaningful.
 
 ## 12. Amendments
 
+**2026-09-13 — cache state stays one flush per block, and what that leaves
+under-sampled is written down here rather than discovered in the analysis.** Decided
+by JC on 2026-09-13, before any collection block was run; the only blocks that exist
+are the pilot's, under `pilot*.ndjson`, which the census does not count.
+
+**What prompted it.** Section 5 says cache state is a condition and not an accident,
+that each block begins with a cache flush, and that warm versus cold is recorded and
+analysed separately. Section 5 also says n ≥ 30 blocks per stratum. As built, one flush
+before thirteen conditions in randomised order makes exactly one run per block cold, so
+each condition is cold in about one block in thirteen: **2.3 cold runs per condition
+per stratum against 27.7 warm, 9.2 against 110.8 pooled across the four strata**, and
+about 4.7 of the 52 condition-by-stratum cells expected to hold no cold run at all. The
+0.6 pilot made this visible the only way it could — six cold runs in its first 78, on
+six conditions, seven conditions never once observed cold — and its third attempt
+flushed before every run in four of eight blocks to measure what the cold arm holds.
+`FINDINGS-0.6-pilot.md` carries the per-condition table. What it holds is not small:
+
+- netsanity's adaptive default and its fixed-timeout ablation missed the two 500 ms
+  responders on every cold run, fourteen of fourteen, and found them on every warm run,
+  eleven of eleven, with the wall clock unchanged. Warm, the neighbour table supplies
+  what the discovery stage did not hear.
+- The shared-budget ablation runs faster cold than warm and finds nearly all ten cold.
+  H5 — split budget faster without losing recall — holds warm and fails cold on that
+  data.
+- Privileged nmap is at recall 1.00 in both arms. H2's refutation condition, a
+  privileged nmap point netsanity does not match, is therefore live in the cold arm and
+  not the warm one.
+
+**The options, costed from the pilot's measurements, and declined.** Flushing before
+every run in half the blocks gives 16.2 cold against 13.8 warm per stratum — neither
+arm at 30 — for 72 machine hours against 61. Holding both arms at 30 per stratum takes
+60 blocks per stratum, 240 in all, 143 machine hours, and moves the seven-day floor to
+twelve days at the driver's cap of five a day. Dropping the cold arm from the analysis
+plan altogether was the fourth option. The first design is retained.
+
+**What the retained design can and cannot say, stated so a reader can discount it.**
+The warm arm meets section 5's n ≥ 30 per stratum for every condition and every test
+in section 7 is run there as written. The cold arm does not and cannot be stratified:
+it is analysed **pooled across strata**, at about nine runs per condition over the 120
+blocks, and every result reported from it carries that n beside it. That resolution is
+enough to see an effect that happens every time, which is what the pilot saw on
+fourteen of fourteen runs, and not enough for much else. Concretely:
+
+- H1 and H2 are reported for the warm arm at full resolution, and for the cold arm at
+  n ≈ 9 per condition. If the cold arm shows a privileged nmap point at recall 1.0 that
+  netsanity does not match — which the pilot predicts — H2 is reported as refuted in
+  the cold regime and the paper says so in the abstract, not in a limitations section.
+- H5 is reported in both arms. On the pilot's data it holds warm and fails cold, and
+  the paper reports both rather than the one that flatters the split budget.
+- H6 is reported in both arms; its refutation condition fired in both on the pilot.
+- Cache state is not a covariate to be adjusted away. The two arms are two results.
+
+**What this amendment does not change.** The flush, the cooldown, the block structure,
+the conditions, the strata, the floor and the analysis plan are as frozen. `cache_state`
+is recorded per run as before, labelled by position from apparatus commit `30584fc`;
+records from before that commit read cold as `sequence_index == 0`. The
+`--flush-policy` flag the pilot added to the harness stays at its default of `block`,
+and the driver logs anything else as not the protocol's design.
+
+**Why the author's ruling is recorded this way.** Every option that strengthened the
+cold arm also made H2, H5 and H6 easier to refute, and the person choosing wrote the
+system under test. Section 9 declares that conflict; this entry records that the
+choice was put with its measured costs, that the cheapest and least refutable option
+was taken, and that the cold arm's refutation conditions are named above so that a
+reviewer can hold the paper to them at the resolution the design provides.
+
 **2026-09-12 — H3 is withdrawn: netsanity has no privileged engine, and never had
 one.** H3 asks whether unprivileged netsanity's recall matches privileged netsanity's.
 There is no privileged netsanity. `netsanity-core` declares `EngineKind.privilegedBPF`

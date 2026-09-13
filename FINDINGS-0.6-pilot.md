@@ -61,9 +61,10 @@ driver waiting for AC power and an ignore rule, and the frozen packages are byte
 to `study/binary-2026-09-12b` at both). Binary `b4220600…`, permission `granted`,
 cooldown 10.0 s, capture `ok` and oracles `agree` on all 106.
 
-**Collection still does not start**, and the reason is now measured rather than
-inferred: the cache-state section at the end puts the design choice to JC with the
-per-condition cost of each option from this attempt's data.
+**Collection can start.** The one open design question — cache state — was put to JC
+with the per-condition cost of each option measured on this attempt, and ruled on the
+same day: one flush per block, as frozen. The amendment recording it, and what the
+retained design leaves under-sampled, is in `PROTOCOL.md` section 12.
 
 ---
 
@@ -601,11 +602,22 @@ the declaration mean something; an amendment chosen by the author, after seeing 
 way the pilot leaned — and it leaned, in every arm this attempt measured — is the
 amendment a reviewer reads hardest and should.
 
-**So: no design is chosen here, and collection does not start.** The options above go to
-JC with their measured costs. When he rules, the amendment goes in `PROTOCOL.md` section
-12, dated, saying what prompted it and stating that it was decided before any block was
-collected — which is true, and which is the only reason any of this is worth writing
-down.
+**No design is chosen here.** The options above went to JC with their measured costs
+on 2026-09-13, after the third attempt, and **he ruled: one flush per block, the design
+as it stands.** The amendment is in `PROTOCOL.md` section 12 under that date. It says
+what prompted the choice, that the cheapest and least refutable option was the one
+taken and by whom, and — so a reviewer can hold the paper to it — that the cold arm is
+analysed pooled across strata at about nine runs per condition, that H2's and H5's
+refutation conditions live there, and that a refutation at that resolution is reported
+in the abstract. It was decided before any collection block was run; the only blocks
+that exist are this pilot's.
+
+Two things follow for the apparatus and were done the same day.
+`conditions.estimated_block_seconds` is re-derived from the largest run this attempt
+saw, 2546 s, so the driver refuses a start that cannot finish inside its window; at a
+10 s cooldown the estimate is 3352 s, and five blocks a day is 4.7 hours of a six-hour
+window. And `--flush-policy` stays at `block`, which the driver logs as the design and
+anything else as not.
 
 ## The third attempt
 

@@ -123,11 +123,12 @@ Two tags, not one, and the second does not exist yet:
   **Run six times, three on 2026-09-12 and three on 2026-09-13, for the pilot.** The
   worktree moved from `ad09ed1` (the tag) to `05b0870`, `30584fc`, `f9e2d6c`, `b6b4051`
   and `cb30871`, to pick up the driver, the apparatus fixes the pilot found, schema 2,
-  and the two fixes the third attempt's first block found. Each time
-  the command above printed nothing — zero lines of diff across both frozen packages —
-  and `shasum -a 256` of the binary in the worktree read `b4220600…` before and after. The worktree is checked out detached at whichever
-  apparatus commit collection runs from; `provenance.py` records that commit on every
-  run, and the frozen packages at that commit are byte-identical to the tag's.
+  and the two fixes the third attempt's first block found. Each time the command above
+  printed nothing — zero lines of diff across both frozen packages — and
+  `shasum -a 256` of the binary in the worktree read `b4220600…` before and after. The
+  worktree is checked out detached at whichever apparatus commit collection runs from;
+  `provenance.py` records that commit on every run, and the frozen packages at that
+  commit are byte-identical to the tag's.
 
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
@@ -180,16 +181,10 @@ ends. The file's own header carries the reasoning and belongs in the appendix ve
 ## Still open
 
 - **The collection tag and its diff check**, above, cut when collection starts.
-- **Cache state, and it is a protocol amendment rather than an apparatus fix.** Section 5
-  of `PROTOCOL.md` wants cache state analysed as a condition and n >= 30 per stratum, and
-  one flush per thirteen-condition block gives 2.3 cold runs per condition per stratum
-  against 27.7 warm — 9.2 against 110.8 pooled. Flushing before every run in half the
-  blocks gives 16.2 against 13.8, so neither arm reaches 30, at 72 machine hours against
-  61. Holding both arms at 30 takes 60 blocks per stratum, 240 blocks, 143 machine hours,
-  and moves the seven-day floor to twelve days at the driver's current five-a-day cap or
-  ten days at six a day. The costs are measured, per condition, in the pilot's third
-  attempt. Every option that strengthens the cold arm also makes H2, H5 and H6 easier to
-  refute, so the ruling is JC's and the amendment gets written only after he makes it,
-  dated, and recording that it was decided before any block was collected.
-- **`conditions.estimated_block_seconds` should be re-derived** from the third attempt's
-  largest unprivileged `-T2`, 2546 s, before collection; it was set from the second's.
+- **Cache state: ruled on 2026-09-13, one flush per block.** `PROTOCOL.md` section 12
+  carries the amendment, the alternatives with their measured costs, and the statement
+  that the cold arm is analysed pooled at about nine runs per condition. Nothing about
+  it is open; it is listed here because the appendix must reproduce the amendment
+  verbatim.
+- **`conditions.estimated_block_seconds` was re-derived** from the third attempt's
+  largest runs; it is 3352 s at a 10 s cooldown.
