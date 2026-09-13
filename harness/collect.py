@@ -58,7 +58,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from harness import conditions  # noqa: E402
+from harness import conditions, provenance  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "Study" / "data"
@@ -356,6 +356,9 @@ def main() -> int:
     parser.add_argument("--minimum-days", type=int, default=MINIMUM_DAYS)
     parser.add_argument("--daily-quota", type=int, default=None,
                         help="override the derived per-stratum-per-day cap")
+    parser.add_argument("--allow-battery", action="store_true",
+                        help="start blocks on battery anyway. Never for collection: "
+                             "section 6 fixes the plugged-in state.")
     parser.add_argument("--flush-policy", choices=("block", "run", "alternate"),
                         default="block",
                         help="neighbour-table flush per block (PROTOCOL.md section 5, "
@@ -449,6 +452,22 @@ def main() -> int:
                 if remaining < needed:
                     reason = (f"too little of the {name} window left ({remaining:.0f}s "
                               f"for a block estimated at {needed:.0f}s)")
+                elif not args.dry_run and not args.allow_battery \
+                        and provenance._on_ac_power() is False:
+                    # PROTOCOL.md section 6 fixes the plugged-in state as a control on
+                    # thermal and CPU behaviour, and `provenance.py` records it per run.
+                    # Recording it is not controlling it. The third pilot attempt
+                    # started on battery at 28% with the lid closed 27 s later, and
+                    # `caffeinate -i` cannot hold a closed MacBook awake on battery —
+                    # it went to clamshell sleep under the assertion, the harness
+                    # excluded the run and halted, and every second of it was a
+                    # covariate violation the record would have carried into the
+                    # analysis. So the driver waits for AC rather than measuring
+                    # without it. Waiting, not halting: a cable that fell out at
+                    # 03:00 is fixed by plugging it back in, not by a person deleting
+                    # an alarm file.
+                    reason = ("on battery; PROTOCOL.md section 6 fixes the plugged-in "
+                              "state, so no block starts until the host is on AC")
 
             if reason:
                 write_status(args.status, "waiting", reason, snapshot)
