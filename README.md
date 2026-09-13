@@ -8,15 +8,16 @@ that drifts from the build it measured is worth nothing.
 **Nothing here has produced evidence yet.** Phase 0 is the apparatus, and collection
 does not begin until every one of its gates is met.
 
-**Two things block collection as of 2026-09-13**, and the second is the one that
-matters. Gate 0.6 is not met, for a reason that costs a schema change and one more
-pilot rather than any rethinking. And the pilot showed that `PROTOCOL.md` section 5
-asks for something the design cannot give: it wants cache state analysed as a condition
-*and* n ≥ 30 per stratum, and a block that flushes once before thirteen conditions
-delivers 2.3 cold runs per condition per stratum against 27.7 warm. Changing that
-changes what the study measures, so it is a protocol amendment and it is JC's to rule
-on. `FINDINGS-0.6-pilot.md` sets out the options with their costs and picks none of
-them.
+**One thing blocks collection as of 2026-09-13.** Every phase 0 gate is met. But the
+pilot showed that `PROTOCOL.md` section 5 asks for something the design cannot give: it
+wants cache state analysed as a condition *and* n ≥ 30 per stratum, and a block that
+flushes once before thirteen conditions delivers 2.3 cold runs per condition per
+stratum against 27.7 warm. The pilot's third attempt measured what cold costs for every
+condition — netsanity's default misses the two 500 ms hosts on every cold run and none
+of the warm ones, and H5 holds warm and fails cold — so the choice of arm is the choice
+of answer. Changing the design changes what the study measures, so it is a protocol
+amendment and it is JC's to rule on. `FINDINGS-0.6-pilot.md` sets out the options with
+their measured costs and picks none of them.
 
 ## Read in this order
 
@@ -42,7 +43,7 @@ live blocks and what they changed.
 | 0.3 | Characterising nmap | **Met.** Privileged nmap ran on 2026-09-12: the capture shows ARP, zero ICMP, zero TCP, recall 10/10. Privileged netsanity ran too and turned out not to be a distinct condition — no privileged engine exists — so H3 was withdrawn by the amendment of that date and `ns.disc.priv` left the matrix. Nothing remains to run. |
 | 0.4 | The three oracles agree | **Met.** `testbed/gate-0.4.json`: three consecutive rounds, manifest and inventory and capture reporting the same ten addresses, no disagreements. |
 | 0.5 | The harness, dry | **Met.** 0.4 is no longer a hole. 39 schema-valid records across 13 conditions, zero validation warnings. |
-| 0.6 | Pilot | **Not met — `FINDINGS-0.6-pilot.md`.** Two of three conditions hold: exclusion 2.56% of 39 runs, and variance stable enough for every test the protocol names. The third did not — three quantities the write-up cites came from the pcaps and the raw artifacts, not the NDJSON. Schema 2 (`f9e2d6c`, 2026-09-13) records them; the pilot under it is built, eight blocks across both flush policies, and waits to be started. Six blocks ran on 2026-09-12; a block is about 43 minutes, most of it unprivileged `nmap -T2`. |
+| 0.6 | Pilot | **Met, on the third attempt — `FINDINGS-0.6-pilot.md`.** Eight complete blocks on 2026-09-13 under schema 2: zero exclusions across 104 runs, every number recomputable from the NDJSON, variance stable except where it is structure. Half the blocks flushed the neighbour table before every run, and the cost of that is now measured per condition. Collection still waits on JC's cache-state ruling: cold, netsanity's default misses the two 500 ms hosts every time, and the design as it stands samples cold 2.3 times per condition per stratum. |
 | 3 | Collection driver | **Met.** `harness/collect.py`: strata, a per-stratum-per-day cap that enforces the seven-day floor, counts read from the data rather than from bookkeeping, and `caffeinate -i` held on its own pid. A stratum ran end to end and a mid-block kill left the data correct — `harness/prove_collect.py`. |
 
 ## The binary is frozen, from 2026-09-12

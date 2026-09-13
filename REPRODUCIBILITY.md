@@ -120,9 +120,10 @@ Two tags, not one, and the second does not exist yet:
   That is the check that lets the apparatus advance while proving the measured source
   did not. Its output goes in this document when it is run.
 
-  **Run four times, three on 2026-09-12 and one on 2026-09-13, for the pilot.** The
-  worktree moved from `ad09ed1` (the tag) to `05b0870`, then `30584fc`, then `f9e2d6c`,
-  to pick up the driver, the apparatus fixes the pilot found, and schema 2. Each time
+  **Run six times, three on 2026-09-12 and three on 2026-09-13, for the pilot.** The
+  worktree moved from `ad09ed1` (the tag) to `05b0870`, `30584fc`, `f9e2d6c`, `b6b4051`
+  and `cb30871`, to pick up the driver, the apparatus fixes the pilot found, schema 2,
+  and the two fixes the third attempt's first block found. Each time
   the command above printed nothing — zero lines of diff across both frozen packages —
   and `shasum -a 256` of the binary in the worktree read `b4220600…` before and after. The worktree is checked out detached at whichever
   apparatus commit collection runs from; `provenance.py` records that commit on every
@@ -162,13 +163,16 @@ ends. The file's own header carries the reasoning and belongs in the appendix ve
 - **Cooldown: 10 s**, from `harness/settle.py` and `data/pilot-settle.json` — the
   longest scan-attributable traffic tail after a process exits is 6.1 s, on the kernel's
   fixed ARP retry schedule. `FINDINGS-0.6-pilot.md`.
-- **nmap timeout: 3600 s.** Unprivileged `-T2` ran at 228, 462, 1580, 1735, 1809 and
-  1938 s across the pilot's six blocks. The ceiling has never been reached and a run that
-  reaches it is a finding, not a timeout.
-- **A block is about 43 minutes**, dominated by unprivileged `-T2`. Measured block spans
-  in the gate attempt: 2559, 2599 and 1226 s. 120 blocks is about 85 hours of machine
-  time inside the seven-day window, five blocks per stratum per day at 3.6 hours of each
-  six-hour window and 14.2 hours of each 24.
+- **nmap timeout: 3600 s.** Unprivileged `-T2` ran at 220 to 2546 s across the pilot's
+  fourteen admissible runs of it, three attempts. The ceiling has never been reached and
+  a run that reaches it is a finding, not a timeout.
+- **A block flushed once is 15 to 46 minutes**, the range being unprivileged `-T2`.
+  Seven such blocks across the second and third attempts spanned 916 to 2748 s, mean
+  1839 s. 120 blocks is about 61 hours of machine time at the mean inside the seven-day
+  window, five blocks per stratum per day at most 3.8 hours of each six-hour window.
+  A block flushed before every run averaged 2494 s over four.
+- **The host must be on AC.** Section 6 fixes the plugged-in state; the driver waits for
+  it from `7ebad19`. A closed lid on battery sleeps the host under any assertion.
 - **The host must be held awake from a full wake.** Idle sleep is set to one minute on
   this machine. The driver takes `caffeinate -u` for five seconds and then holds `-i`;
   a run in which the host slept is excluded as `host_asleep` and stops the block.
@@ -176,19 +180,16 @@ ends. The file's own header carries the reasoning and belongs in the appendix ve
 ## Still open
 
 - **The collection tag and its diff check**, above, cut when collection starts.
-- **Gate 0.6 is not met**, and `FINDINGS-0.6-pilot.md` says why: three quantities that
-  write-up cites came from the per-run pcaps and the raw netsanity artifacts rather than
-  from the NDJSON, which `PHASE0.md` 0.6 and `HARNESS.md` both require. Schema 2, at
-  `f9e2d6c`, puts them in the record — `parse.discovery` and `capture.wire`. What
-  remains is a pilot under it, built and waiting to be started; the invocation is in
-  the findings document. No measured number changes and the binary is untouched.
 - **Cache state, and it is a protocol amendment rather than an apparatus fix.** Section 5
   of `PROTOCOL.md` wants cache state analysed as a condition and n >= 30 per stratum, and
   one flush per thirteen-condition block gives 2.3 cold runs per condition per stratum
   against 27.7 warm — 9.2 against 110.8 pooled. Flushing before every run in half the
-  blocks gives 16.2 against 13.8, so neither arm reaches 30. Holding both arms at 30
-  takes 60 blocks per stratum, 240 blocks, 175 machine hours, and moves the seven-day
-  floor to twelve days at the driver's current five-a-day cap or ten days at six a day.
-  Every option that strengthens the cold arm also makes H1, H2 and H6 easier to refute,
-  so the ruling is JC's and the amendment gets written only after he makes it, dated,
-  and recording that it was decided before any block was collected.
+  blocks gives 16.2 against 13.8, so neither arm reaches 30, at 72 machine hours against
+  61. Holding both arms at 30 takes 60 blocks per stratum, 240 blocks, 143 machine hours,
+  and moves the seven-day floor to twelve days at the driver's current five-a-day cap or
+  ten days at six a day. The costs are measured, per condition, in the pilot's third
+  attempt. Every option that strengthens the cold arm also makes H2, H5 and H6 easier to
+  refute, so the ruling is JC's and the amendment gets written only after he makes it,
+  dated, and recording that it was decided before any block was collected.
+- **`conditions.estimated_block_seconds` should be re-derived** from the third attempt's
+  largest unprivileged `-T2`, 2546 s, before collection; it was set from the second's.

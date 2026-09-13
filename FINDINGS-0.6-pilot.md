@@ -5,13 +5,16 @@ collection driver rather than by hand, to measure the variance, set the cooldown
 it, and confirm the exclusion machinery by breaking a run on purpose. The first live
 blocks the study has ever run, on 2026-09-12, the day unattended root arrived.
 
-It took two attempts. The first found five apparatus defects no dry run could have
+It took three attempts. The first found five apparatus defects no dry run could have
 shown and then lost a block to the host going to sleep under the driver's own
-assertion; that attempt is kept as `pilot-attempt-1.ndjson`. The second attempt, after
-the fixes, is the gate, and its numbers come from `pilot.ndjson`. Both are read by
-`analysis/pilot.py`, which is standard-library python and prints nearly everything this
-document cites — the exceptions are named in "What is not recomputable from the NDJSON"
-and are the reason the gate is not met.
+assertion; it is kept as `pilot-attempt-1.ndjson`. The second, after the fixes, ran
+clean and failed the gate on its third condition — three numbers it cited were not in
+the record; it is `pilot.ndjson`. The third, on 2026-09-13 under a schema that carries
+those numbers, is the gate, and it is `pilot-attempt-3.ndjson`: eight complete blocks,
+half of them flushing the neighbour table before every run, so that the cache-state
+question this document ends on is answered with measurements. All three are read by
+`analysis/pilot.py`, standard-library python, which for the third attempt opens
+nothing but the NDJSON.
 
 **Both files live in the collection worktree, not in this checkout.** Collection runs
 from a worktree checked out detached at the apparatus commit, the pilot ran from it, and
@@ -21,6 +24,7 @@ published as a release artifact alongside the pcaps.
 
 ```
 C=~/Dev/InfinityCastle-collection/Study/data
+python3 Study/analysis/pilot.py $C/pilot-attempt-3.ndjson
 python3 Study/analysis/pilot.py $C/pilot.ndjson
 python3 Study/analysis/pilot.py $C/pilot-attempt-1.ndjson
 ```
@@ -30,24 +34,36 @@ apparatus, and the two places below where a hypothesis's refutation condition is
 visibly live are written down so that collection is read with them in view, not so
 that anything is concluded from them.
 
-**Gate status: not met.** `PHASE0.md` 0.6 asks for three things. Exclusion is 1 of 39,
-2.56%, and the one exclusion is the fault this pilot injected on purpose — met.
-Variance is stable enough for every test the protocol names, with unprivileged `-T2`
-named below as the one condition whose median no block count in this design pins —
-met, with that stated rather than smoothed. The third is that every number in the pilot
-is recomputable from the NDJSON alone, and it is not: three quantities this document
-cites come from the raw artifacts and the packet captures, which are git-ignored and
-shipped as a release artifact. They are named in "What is not recomputable from the
-NDJSON" below, with the schema fix each one needs.
+**Gate status: met, on the third attempt.** `PHASE0.md` 0.6 asks for three things.
 
-The blocks do not have to run again to fix it — the timing, recall and exclusion
-numbers are all in the records already. What has to run again is a pilot under the
-repaired schema, because a gate that says "every number" is not met by "every number
-that turned out to matter". **The repair is in, at apparatus commit `f9e2d6c`
-(2026-09-13), and the pilot that would meet the gate is built and not yet run** — see
-"The third attempt, ready and not run" at the end. It is also the pilot that prices the
-cache-state options below with measurements rather than one inferred number, which is
-why it is designed to run both block shapes rather than the old one.
+- **Exclusion under 5%.** 1 of 106 records, 0.94%, and that one is in a partial block
+  that never counts: the host went to clamshell sleep 27 s into block 0 and the harness
+  excluded the run and stopped. Across the eight complete blocks, 104 runs, there are no
+  exclusions at all — the first pilot attempt whose exclusion rate is the apparatus's own
+  rather than a fault it injected.
+- **Variance stable enough for usable intervals.** Eight blocks per condition. Nine of
+  thirteen conditions have a coefficient of variation of 0.13 or less. Two are not noise
+  but structure this pilot was built to expose: `ns.budget.shared` at 0.30 because it
+  runs at 0.98 s cold and 1.69 s warm, and unprivileged `-T2` at 0.73 because its wall
+  clock is the number of ARP requests the kernel emits (r = 0.988 over eight runs) and
+  nothing yet identified sets that number. Both are reported as what they are. Every
+  test the protocol names is resolvable at n = 30 per stratum in the arm where it is
+  measured; the section on cache state says which arm that is.
+- **Every number recomputable from the NDJSON alone.** For the third attempt, yes.
+  `parse.discovery` and `capture.wire` carry what the second attempt read out of
+  git-ignored files, `analysis/pilot.py` opens nothing else for this file, and every
+  line it prints from a netsanity artifact says `[record]`. The second attempt's
+  deficiency is kept below as the record of why the schema moved.
+
+The apparatus commit is `cb30871` on every record of the eight complete blocks
+(`b6b4051` on the two records of the partial one; the difference between them is the
+driver waiting for AC power and an ignore rule, and the frozen packages are byte-identical
+to `study/binary-2026-09-12b` at both). Binary `b4220600…`, permission `granted`,
+cooldown 10.0 s, capture `ok` and oracles `agree` on all 106.
+
+**Collection still does not start**, and the reason is now measured rather than
+inferred: the cache-state section at the end puts the design choice to JC with the
+per-condition cost of each option from this attempt's data.
 
 ---
 
@@ -127,11 +143,11 @@ have been equally defensible and the difference is two hours across collection.
 
 **What the cooldown is for, and what it cannot do.** It exists so one run's *traffic*
 cannot reach the next, and 10 s achieves that against a measured 6.1 s worst tail. It
-does nothing about kernel neighbour-table state, which is not traffic, outlives it by
-minutes, and turns out to order unprivileged `-T2`'s wall clock across the whole pilot —
-see "The second attempt". No cooldown short enough to run 120 blocks in a week would
-clear that, which is why it is a design question for the cache-state ruling and not a
-number to raise here.
+does nothing about kernel neighbour-table state, which is not traffic and which is
+what turns netsanity's recall from 0.8 to 1.0 between one run and the next — see "Two
+things to carry into collection". No cooldown short enough to run 120 blocks in a week
+would clear that, which is why it is a design question for the cache-state ruling and
+not a number to raise here.
 
 The first attempt at this measurement is why `settle.py` holds `caffeinate`: it did not,
 idle sleep on this machine is one minute, and `time.monotonic()` on macOS is
@@ -220,117 +236,121 @@ the sleep-excluded run's count.)
 
 ## What that does to the schedule
 
-A block is about 43 minutes: unprivileged `-T2` at up to 32 of them, privileged `-T2`
-at eight, everything else under half a minute, plus thirteen cooldowns and 65 s of
-capture and oracle overhead per block. `conditions.estimated_block_seconds(10)` says
-2504 s from the pilot's numbers, using the largest observed `-T2` rather than the
-median, because that estimate is what the driver uses to decide whether a block can
-still start before a stratum's window closes. The gate attempt's measured block *spans*
-were 2559, 2599 and 1226 s, so 2559 s is the median a schedule should budget — the
-estimate and the span differ by the overhead, and both are right about different things.
+A block flushed once is anywhere from 15 to 46 minutes, and the whole of that range is
+unprivileged `-T2`: 220 s to 2546 s across the pilot's eleven admissible runs of it,
+against privileged `-T2` at a steady eight minutes and everything else under half a
+minute, plus thirteen cooldowns and 65 s of capture and oracle overhead per block.
+`conditions.estimated_block_seconds(10)` says 2504 s from the second attempt's
+numbers, using the largest observed `-T2` rather than the median, because that
+estimate is what the driver uses to decide whether a block can still start before a
+stratum's window closes — and the third attempt's cold `-T2` at 2546 s says it should
+be re-derived from the larger figure before collection. The seven blocks flushed once
+across the second and third attempts spanned 916 to 2748 s, mean 1839 s.
 
 Five blocks per stratum per day — the cap the driver derives as `ceil(30/7) + 1` — is
-3.6 hours of each six-hour window and 14.2 hours of each 24. 120 blocks is about 85
-hours of machine time in a 168-hour window. It fits, with the slack halved from what
-the twelve-minute estimate implied: a stratum whose fifth block cannot start in time
-takes four that day and the
-window stretches to eight days, which the floor allows. If unprivileged `-T2` turns out
-to sit at the slow end more often than not, that is what will happen, and the census
-will show it as a stratum filling at four a day rather than five.
+at most 3.8 hours of each six-hour window at the worst block seen. 120 blocks is about
+61 hours of machine time at the mean, 92 at the worst, in a 168-hour window. It fits.
+What does not fit is a prediction of any one block's length: a stratum whose fifth
+block cannot start in time takes four that day and the window stretches to eight days,
+which the floor allows, and whether that happens is set by whatever sets `-T2`'s ARP
+retry count, which is not yet known.
 
 ## What the variance says about the block count
 
-Every figure in this section is from `pilot.ndjson`, the second attempt, which is the
-gate, except where it names the first. The first attempt's spread is not usable here:
-four of its runs spanned host sleep and their wall clocks are the sleep, not the scan.
-An earlier draft of this section reported the first attempt's numbers as the pilot's,
-which overstated the spread on nine of the thirteen conditions and understated it on
-three.
+Every figure in this section is from `pilot-attempt-3.ndjson`, eight complete blocks,
+except where it names an earlier attempt. Earlier drafts of this section reported the
+first attempt's spread as the pilot's, and then the second's; each was superseded by the
+next attempt and the numbers below are the third's.
 
-Three blocks pin sigma to a factor of ten, which is what three samples buy; the point
-of running them was to find out which conditions are tight and which are not, and the
-answer is clean. The netsanity conditions have coefficients of variation of 0.00 to
-0.02, so n = 30 per stratum gives intervals on all four of their medians of 1.1% or
-better — `ns.budget.shared`, the loosest of them in the first attempt at 0.18, comes in
-at 0.00 once no run is measuring a sleeping laptop. Privileged nmap sits at 0.01 to
-0.12, the 0.12 being `-T2` and worth watching rather than worrying about at three
-samples. Unprivileged nmap `-T3` to `-T5` sits at 0.13 to 0.27, which at n = 30 is ±6%
-to ±12% on the median and, pooled across strata, about half that. Unprivileged `-T2` is
-the outlier at 0.58, and no block count in this design gives a tight interval on its
-median: its sigma's own 95% interval reaches 5138 s, and pinning the median to ±25%
-against a sigma at that end would take 779 blocks. Its result will be reported as a
-distribution with two modes, if that is what 120 samples show, rather than as a median
-with an interval — and the two modes are visible already, at 462 s against 1809 and
-1938 s, with a mechanism attached rather than a shrug. See the cache-state section
-below, because the mechanism and the ruling that section asks for are the same thing.
+Eight blocks pin sigma to roughly a factor of two, and the point of running them was to
+find out which conditions are tight and which are not. The netsanity discovery
+conditions — `ns.disc.unpriv`, `ns.fixed.timeout`, `ns.naming.full` — have coefficients
+of variation of 0.01 to 0.04, so n = 30 per stratum gives intervals on their medians of
+2% or better. `ns.budget.shared` is at 0.30, and that is not noise: it runs at 0.98 s
+cold and 1.69 s warm, with each mode tight, and it is reported by cache state rather
+than as one median. Privileged nmap sits at 0.03 to 0.13. Unprivileged `-T3` to `-T5`
+sit at 0.09 to 0.42, which at n = 30 is ±4% to ±19% on the median and, pooled across
+strata, half that.
 
-For the hypothesis tests none of this is close. H1 and H2 are rank comparisons and the
-distributions do not overlap: every netsanity discovery run in the pilot finished
-inside 0.38 s and every nmap run took at least 4.2 s. H5 compares `ns.budget.shared` at
-1.67 s against `ns.disc.unpriv` at 0.37 s, a factor of four and a half with no overlap.
-H6 is a recall comparison, McNemar on paired per-host outcomes, and its resolution is
-set by the number of hosts times blocks rather than by timing variance.
+Unprivileged `-T2` is the outlier at 0.73 — 220 s to 2546 s across eight runs — and no
+block count in this design gives a tight interval on its median: 226 blocks for ±25%
+against a sigma at the top of its interval. Its result will be reported as a
+distribution rather than a median. What this attempt added is that the distribution has
+a mechanism and not yet a cause: across all eight runs the wall clock is the count of
+ARP requests the scanning host's kernel emitted, r = 0.988, from 512 requests at 220 s
+to 2239 at 2546 s. The kernel is resolving the 244 empty addresses, and how many times
+it retries each one is what the run costs. What sets the retry count is not the flush
+(cold runs took 463 s and 2546 s), not which condition ran before, and not — as the
+second attempt's three runs suggested and this attempt's eight refute — how recently a
+netsanity sweep ran. It is unknown, it is recorded per run in `capture.wire`, and it is
+the first thing collection's data should be asked.
+
+For the hypothesis tests none of the timing is close. H1 and H2 are rank comparisons
+and the distributions do not overlap: every netsanity discovery run in the pilot
+finished inside 0.42 s and every nmap run took at least 2.0 s. H5 compares
+`ns.budget.shared` against `ns.disc.unpriv` — 1.69 s against 0.38 s warm, 0.98 s
+against 0.40 s cold — with no overlap in either arm. H6 is a recall comparison, McNemar
+on paired per-host outcomes, and its resolution is set by the number of hosts times
+blocks rather than by timing variance.
 
 Section 7's n ≥ 30 per stratum is adequate for every test the protocol names **in the
-warm arm**, which is where 110.8 of the 120 blocks' runs per condition land. Where it is
-thin on timing is the interval around unprivileged nmap's median at the faster
-templates, and there it is thin in the way `FINDINGS-0.5-harness.md` already said it
-would be. Where it is thin on recall is the cold arm, at 2.3 runs per condition per
+warm arm**, which is where 110.8 of the 120 blocks' runs per condition land as the
+design stands. Where it is thin on recall is the cold arm, at 2.3 runs per condition per
 stratum, and that is not a variance problem with a bigger n as its answer — it is the
 design question the cache-state section puts to JC.
 
 ## Two things to carry into collection, written plainly
 
-**The gate 0.3 defeat is a cold-cache observation, and the pilot has not exercised it
-on the adaptive default.** Gate 0.3 found netsanity missing both 500 ms responders with
-a discovery stage shorter than their round trip. The pilot reproduced it exactly once,
-in the first attempt: `ns.fixed.timeout`, first in block 0, recall 0.8, missed exactly
-`192.168.64.12` and `.13`, the two 500 ms responders. Every other netsanity run in
-either attempt started warm and every one of them reported all ten — with seven to nine
-echo replies seen against eleven hosts found, the rest read from the neighbour table
-that the run before had provoked into holding the 500 ms hosts' ARP replies. The
-artifact's `replies_seen` against `hosts_found` shows it per run, and that pair of
-numbers is one of the three this document cites and the NDJSON does not hold.
+**The gate 0.3 defeat is a cold-cache result, and it is deterministic.** Gate 0.3 found
+netsanity missing both 500 ms responders with a discovery stage shorter than their round
+trip. The first two attempts reproduced it once, because one flush per thirteen
+conditions gave netsanity's adaptive default no cold run at all. The third attempt
+flushed before every run in four of its eight blocks, and the answer is not
+statistical: **every cold run of `ns.disc.unpriv`, `ns.fixed.timeout` and
+`ns.naming.full` — fourteen of fourteen, one of them the admissible run in the partial
+block 0 — reported nine hosts and missed exactly
+`192.168.64.12` and `.13`, the two 500 ms responders. Every warm run of the same three
+conditions — eleven of eleven — reported all ten.** Recall 0.8 cold, 1.0 warm, on the
+same binary, the same segment, minutes apart. The wall clock does not move: 0.40 s cold
+against 0.38 s warm. The record shows the mechanism per run: cold, `replies_seen` is 8
+or 9 and `hosts_found` is 9; warm, `replies_seen` is still 7 to 9 and `hosts_found` is
+11, the rest read from the neighbour table that the run before had provoked into holding
+the 500 ms hosts' ARP replies.
 
-**Once, across 78 runs.** That is the finding, and it is about the design rather than
-about netsanity. A block flushes once and then runs thirteen conditions, so one run per
-block is cold and twelve are warm. Six of the pilot's 78 runs were cold, they landed on
-six different conditions, and seven of the thirteen conditions — including
-`ns.disc.unpriv`, `ns.naming.full`, `ns.budget.shared` and unprivileged `-T2` — got no
-cold observation at all. The second attempt's three cold slots went to
-`nmap.sn.priv.T2`, `nmap.naming.broadcast` and `nmap.sn.unpriv.T5`; not one netsanity
-condition ran cold in the attempt that is the gate. The pilot cannot say what cold
-costs netsanity's adaptive default because it never once measured it.
+`ns.budget.shared` is the exception and it is the one that matters for H5. Cold it ran
+at 0.98 s and found all ten in four of five runs (0.90 in the fifth, missing `.13`);
+warm it ran at 1.69 s and found all ten. The shared-budget ablation is *faster cold than
+warm* and *more complete cold than the split-budget default*.
 
-So H2's refutation condition — a privileged nmap point at recall 1.0 that netsanity
-does not match — is live in the cold-cache stratum of the data and not in the warm one,
-and the two must be analysed apart, as section 5 says. The harness stamped every run
-in a block `cold` until the second pilot attempt; it now labels by position, and the
-analysis should read cold as `sequence_index == 0` in any record from before commit
-`30584fc`. With randomised order each condition lands cold in about one block in
-thirteen, so 120 blocks give roughly nine cold runs per condition. That is enough to
-see a miss that happens every time, which is what gate 0.3 and this pilot both saw,
-and not enough for much else. Nothing was tuned, and nothing should be.
+So **H5's answer depends on which arm it is asked in.** H5 says the split budget reduces
+sweep time without reducing recall, relative to the shared budget. Warm: 0.38 s against
+1.69 s, recall 1.0 against 1.0 — holds. Cold: 0.40 s against 0.98 s, recall 0.8 against
+0.98 — the time reduction is there and the recall is not, which is H5's refutation
+condition. Three blocks of each is a diagnostic and not a result, but it is a diagnostic
+that says the arm the study analyses decides the answer, and the design as it stands
+puts 110.8 of every 120 runs in the arm where H5 holds.
 
-**H6's refutation condition is not merely live, it fires on the pilot's own three
-blocks.** H6 is refuted if the median per-block recall of unprivileged nmap, at its best
-timing template, is less than 0.25 below unprivileged netsanity's. Unprivileged `-T3`,
-`-T4` and `-T5` sit at 0.4 in every block — the three web hosts and the TCP-only host,
-by `syn-ack`. Unprivileged `-T2` is the best template and in the gate attempt it scored
-0.9, 1.0 and 0.4: seven `conn-refused` plus three `syn-ack` in the block where it
-reached 1.0, against netsanity's 1.0. Median 0.9 against 1.0 is a gap of **0.1**, well
-inside 0.25, and in one block of three the gap is zero.
+H2's refutation condition — a privileged nmap point at recall 1.0 that netsanity does
+not match — is therefore live in the cold arm and not the warm one, and privileged nmap
+is at 1.00 on all 32 admissible runs of this attempt, cold and warm alike. The harness
+stamped every run in a block `cold` until the second attempt; it now labels by position
+and by policy, and the analysis should read cold as `sequence_index == 0` in any record
+from before commit `30584fc`. Nothing was tuned, and nothing should be.
 
-Three blocks decide nothing and this is a diagnostic, not a result. It is written this
-plainly because the amendment of 2026-09-08 predicted a gap near 0.75, and the reason it
-was wrong is now known and mechanical: a closed port answers a connect probe with a RST
-that nmap counts as a host, `-T2`'s pace leaves nmap listening long enough to count
-them, and seven of the ten responders have a TCP stack that answers a probe to a closed
-port with a RST whether or not they serve anything. The captures show those seven
-sending RSTs even in the runs where nmap reported none of them, so the difference
-between recall 0.4 and recall
-1.0 on the same command is entirely whether nmap was still waiting. Whether the median
-gap stays under 0.25 across 120 blocks is collection's question, and nothing in the
+**H6's refutation condition fires on this attempt too, and by a wider margin.** H6 is
+refuted if the median per-block recall of unprivileged nmap, at its best timing
+template, is less than 0.25 below unprivileged netsanity's. Unprivileged `-T3`, `-T4`
+and `-T5` sit at 0.4 in every one of 24 runs — the three web hosts and the TCP-only
+host, by `syn-ack`. Unprivileged `-T2` is the best template and across eight blocks it
+scored 1.0, 0.8, 1.0, 0.4, 0.4, 0.4, 0.8, 1.0: median **0.8**. Against warm netsanity at
+1.0 the gap is 0.2; against cold netsanity at 0.8 it is **0.0**. Every run at 0.8 or
+above found its extra hosts by `conn-refused` — a closed port answering a connect probe
+with a RST that nmap counts — and every run at 0.4 found none that way, though
+`capture.wire` shows the same seven responders sending RSTs in all eight runs. The
+difference between 0.4 and 1.0 on the same command is whether nmap was still listening
+when the RSTs arrived, and that tracks the same ARP-request count that sets its wall
+clock. The amendment of 2026-09-08 predicted a gap near 0.75. Whether the median gap
+stays under 0.25 across 120 blocks is collection's question, and nothing in the
 apparatus should be touched to change the answer.
 
 ## The second attempt
@@ -364,8 +384,9 @@ broken run.
 **The schedule, measured.** Block cost — tool wall clock plus cooldowns — was 2503,
 2544 and 1171 s; block span, which adds the capture and oracle overhead a block actually
 pays, was 2559, 2599 and 1226 s, so that overhead is 65 s a block. The median span of
-2559 s is the number the schedule should use, and `conditions.estimated_block_seconds(10)`
-says 2504 s, which is the cost and not the span. Privileged `-T2` ran to completion
+2559 s was, until the third attempt, the number the schedule used;
+`conditions.estimated_block_seconds(10)` says 2504 s, which is the cost and not the
+span. Privileged `-T2` ran to completion
 three times at 466, 376 and 469 s, confirming the first attempt's 471 and 452 and
 putting gate 0.3's 510 s extrapolation to rest as pessimistic. Unprivileged `-T2` ran
 1809, 1938 and 462 s and is still the largest term in a block by a factor of four over
@@ -377,10 +398,10 @@ that single run is the whole difference. Its capture holds 954 ARP requests agai
 and 1412 in the two slow runs, and its `conn-refused` count is zero against six and
 seven.
 
-What orders those runs is not which condition preceded them but **how long since a
-netsanity sweep last ran**. Across the five admissible unprivileged `-T2` runs in the two
-attempts, the gap between the end of the last netsanity run in the block and the start of
-`-T2` sorts them exactly:
+What seemed to order those runs, on the five admissible unprivileged `-T2` runs the
+first two attempts had, was **how long since a netsanity sweep last ran**. The gap
+between the end of the last netsanity run in the block and the start of `-T2` sorted
+them exactly:
 
 | gap since the last netsanity run | unprivileged `-T2` |
 |---|---|
@@ -390,29 +411,28 @@ attempts, the gap between the end of the last netsanity run in the block and the
 | 101 s | 1809 s |
 | 407 s | 1938 s |
 
-netsanity's sweep drives discovery through the kernel's own neighbour resolution and so
-leaves negative-cache state across all 254 addresses behind it; privileged nmap ARPs from
-its own raw socket and leaves that state untouched. Unprivileged nmap cannot send a SYN
-the kernel has not resolved, so it inherits whatever that state is. Five points with a
-threshold somewhere between 35 s and 76 s is a correlation with a plausible mechanism and
-not a measured decay curve, and the kernel's 20 s `host_down_time` — the one piece of
-carried state the cooldown measurement tested directly — is close to the fast end without
-accounting for 35 s.
+**The third attempt refuted it.** Its eight `-T2` runs include a 220 s run 663 s after
+the last netsanity sweep, a 463 s run with no netsanity sweep before it in the block at
+all, and a 2007 s run 58 s after one. The table above is five points that happened to
+sort, and it is left in place as the record of an inference this document made and the
+next attempt took away. What survives is narrower and better supported: the wall clock
+*is* the ARP request count, r = 0.988 across the third attempt's eight runs, and what
+sets that count is not identified. See "What the variance says".
 
-It is written down because of what it implies rather than what it explains: **"warm" is
-not one state.** It is a function of which conditions ran before and how recently, so a
-single warm/cold label is describing a continuum with two words. That is the thing the
-cache-state ruling below has to settle, and the 10 s cooldown — set from a traffic tail
-that is genuinely short — does nothing about it, because the state that matters here
-outlives the traffic by minutes.
+What is still true, and is why the cache-state ruling below exists: **"warm" is not one
+state.** Whatever sets the kernel's retry behaviour, it is not reset by the block's
+flush and it is not the 10 s cooldown's business — the cooldown was set from a traffic
+tail that is genuinely short, and the state that matters here is not traffic.
 
-## What is not recomputable from the NDJSON, and why that fails the gate
+## What the second attempt could not recompute from the NDJSON, and why that failed the gate
 
 `HARNESS.md` states the rule the whole apparatus is built around: collection produces
 raw evidence, analysis produces numbers, and they meet only at an append-only NDJSON
 file. `PHASE0.md` 0.6 turns it into a gate condition — every number in the pilot
-recomputable from the NDJSON alone. Three quantities this document cites are not, and
-all three were found by checking the claim rather than by anything going wrong.
+recomputable from the NDJSON alone. Three quantities this document cited from the
+second attempt were not, and all three were found by checking the claim rather than by
+anything going wrong. The third attempt's records carry all three; this section is kept
+as the reason the schema moved.
 
 | what | where it actually comes from | what it is cited for |
 |---|---|---|
@@ -426,10 +446,10 @@ has the NDJSON and the analysis can recompute every timing, recall, exclusion an
 schedule number in this document, and cannot recompute the three above. That is the gate
 condition, not a technicality about it.
 
-It matters beyond tidiness because those three are exactly the numbers carrying the
+It mattered beyond tidiness because those three are exactly the numbers carrying the
 cache-state mechanism, which is the question the next section puts to JC. The evidence
-for the most consequential open decision in the study is the evidence a reviewer cannot
-check from the file the protocol says is the record.
+for the most consequential open decision in the study was the evidence a reviewer could
+not check from the file the protocol says is the record.
 
 **What fixes it, done on 2026-09-13 at `f9e2d6c` — schema 2:**
 
@@ -451,160 +471,205 @@ check from the file the protocol says is the record.
 4. **Then pilot again under the repaired schema**, because the gate is about the pilot
    and a repaired apparatus that has not been piloted is what 0.5 was. Proven dry first:
    26 schema-2 records across both flush policies with zero validation problems, and
-   `prove_collect.py` still met.
+   `prove_collect.py` still met. Then run: the third attempt, below.
 
 None of this touches `Packages/netsanity-core` or `netsanity-cli`, and none of it is a
 reason to rebuild the binary. The frozen packages are byte-identical to
 `study/binary-2026-09-12b` at `30584fc` and again at `f9e2d6c`, checked each time the
 collection worktree moved, and the binary in it still hashes `b4220600…`.
 
-**What this does not excuse.** Nothing above changes a measured number. Exclusion is
-2.56%, the variance is what the table says, and the injected fault was caught unaided
-twice. The gate is not met because it asks for something more than that, and the honest
-reading is that the third condition was written to prevent exactly the situation this
-document was in — citing pcap numbers in a findings document while claiming the NDJSON
-held everything.
+**What this did not excuse.** Nothing above changed a measured number in the second
+attempt. Its exclusion was 2.56%, its variance is what its table says, and the injected
+fault was caught unaided twice. That attempt did not meet the gate because the gate asks
+for something more than that, and the honest reading is that the third condition was
+written to prevent exactly the situation this document was in — citing pcap numbers in a
+findings document while claiming the NDJSON held everything.
 
-## Cache state: four numbers, and a decision that is not the agent's to take
+## Cache state: four numbers, measured, and a decision that is not the agent's to take
 
 `PROTOCOL.md` section 5 says cache state is a condition and not an accident, that each
 block begins with a cache flush, and that warm versus cold is recorded and analysed
 separately. Section 5 also says n ≥ 30 blocks per stratum. As built, those two sentences
-do not hold together, and the pilot is what made it visible: **six cold runs in 78, on
-six different conditions, and seven conditions with none at all.**
+do not hold together, and the first two attempts made it visible: six cold runs in 78,
+on six conditions, seven conditions never observed cold. The third attempt was designed
+so this section could be written from measurements. Its four flush-per-run blocks give
+every condition four or five cold runs against three or four warm ones from the same
+day, and every number below that is a cost or a recall is from
+`pilot-attempt-3.ndjson`.
 
-The arithmetic, with K = 13 live conditions and B = 30 blocks per stratum.
+**What cold costs, per condition, measured.** Wall clock is the median; recall is the
+mean against the oracle-agreed set.
 
-**The design as it stands.** One flush per block, then thirteen conditions in randomised
-order, so exactly one run per block is cold. Each condition is cold with probability
-1/13.
+| condition | cold n | cold s | cold recall | warm n | warm s | warm recall | cold / warm |
+|---|---|---|---|---|---|---|---|
+| `nmap.sn.priv.T2` | 4 | 467.3 | 1.00 | 4 | 474.3 | 1.00 | 0.99x |
+| `nmap.sn.priv.T3` | 4 | 7.76 | 1.00 | 4 | 7.63 | 1.00 | 1.02x |
+| `nmap.sn.priv.T4` | 5 | 7.67 | 1.00 | 3 | 7.69 | 1.00 | 1.00x |
+| `nmap.sn.priv.T5` | 4 | 4.23 | 1.00 | 4 | 4.14 | 1.00 | 1.02x |
+| `nmap.naming.broadcast` | 4 | 30.2 | 0.40 | 4 | 29.8 | 0.40 | 1.01x |
+| `nmap.sn.unpriv.T3` | 4 | 22.8 | 0.40 | 4 | 18.6 | 0.40 | 1.23x |
+| `nmap.sn.unpriv.T4` | 5 | 22.8 | 0.40 | 3 | 19.4 | 0.40 | 1.18x |
+| `nmap.sn.unpriv.T5` | 4 | 16.3 | 0.40 | 4 | 10.4 | 0.40 | 1.57x |
+| `nmap.sn.unpriv.T2` | 4 | 1985 | 0.80 | 4 | 651 | 0.65 | 3.05x |
+| `ns.disc.unpriv` | 5 | 0.399 | **0.80** | 4 | 0.377 | 1.00 | 1.06x |
+| `ns.fixed.timeout` | 5 | 0.352 | **0.80** | 3 | 0.323 | 1.00 | 1.09x |
+| `ns.naming.full` | 4 | 3.08 | **0.80** | 4 | 3.06 | 1.00 | 1.01x |
+| `ns.budget.shared` | 5 | **0.976** | 0.98 | 3 | 1.687 | 1.00 | **0.58x** |
+
+Three things in that table, in the order they matter:
+
+1. **Privileged nmap does not care.** Four conditions, 1.00 recall in both arms, wall
+   clock within 2%. ARP does not care about round-trip time and the neighbour table does
+   not enter into it.
+2. **netsanity's adaptive default and its fixed-timeout ablation lose exactly the two
+   500 ms hosts, every cold run, and gain nothing warm but the table.** Recall 0.8 cold
+   against 1.0 warm on every one of the three discovery-bearing conditions, timing
+   unchanged. The shared-budget ablation goes the other way: faster cold and nearly
+   complete cold.
+3. **Unprivileged nmap is the only tool whose wall clock moves with cache state, and the
+   flush is not what moves it.** `-T3` to `-T5` run 1.2 to 1.6 times slower cold. `-T2`
+   is 3x slower on the median, but its cold runs were 463, 1505, 2465 and 2546 s and its
+   warm ones 220, 244, 1058 and 2007 s, so the policy shifts the distribution without
+   deciding it.
+
+**The four numbers, with K = 13 live conditions and B = 30 blocks per stratum.**
+
+*The design as it stands.* One flush per block, so one cold run in thirteen.
 
 - Cold: **2.3** per condition per stratum, **9.2** pooled across the four strata.
 - Warm: **27.7** per condition per stratum, **110.8** pooled.
 - A given condition never lands cold in a 30-block stratum with probability 0.091, so of
-  the 52 condition-by-stratum cells, about **4.7 are expected to hold no cold run at
-  all**. Pooled over 120 blocks that probability falls to 7e-5, but pooling is what the
-  strata exist to prevent.
+  the 52 condition-by-stratum cells about **4.7 hold no cold run at all**.
+- Block span: the seven blocks run this way across the second and third attempts span
+  916 to 2748 s, mean 1839 s. 120 blocks is **61 machine hours** at the mean, 92 at the
+  worst block seen, inside the 168-hour window; five a day is 3.8 hours of a six-hour
+  window at the worst block seen.
 
-So the cold arm is not merely small: it is a random 1-in-13 draw that cannot be
-stratified, and section 5's "analysed separately" is asking for an analysis the design
-cannot supply.
-
-**Flushing before every run in half the blocks.** Fifteen flushed blocks per stratum in
-which every run is cold, fifteen unflushed in which one is.
+*Flushing before every run in half the blocks, still 120 blocks.*
 
 - Cold: **16.2** per condition per stratum, **64.6** pooled.
 - Warm: **13.8** per condition per stratum, **55.4** pooled.
-- Against n ≥ 30 per stratum, **neither arm reaches it.** Both clear 30 only when pooled
-  across strata, which again is the thing stratification exists to prevent.
-- Wall clock: the flush itself is nothing — `sudo -n arp -a -d` measured at a median of
-  0.040 s, so 0.5 s across a thirteen-condition block, against a block span of 2559 s.
-  The cost is in the runs, and the pilot can price only one of them, and that one only
-  indirectly. Unprivileged `-T2` loses its fast mode by construction: a flush before
-  every run guarantees no netsanity sweep has warmed the neighbour table, and the
-  recency table above says that is the condition under which it runs at 1735 s or more.
-  Pinning it to the mean of its two slow runs, 1874 s, takes the median block span from
-  2559 s to **2623 s, about 64 s or 2.5%**.
-- **That 2.5% is the weakest number in this document and should be read as a floor.**
-  Of the thirteen conditions, seven have never been observed cold at all — including
-  unprivileged `-T2` itself, so even its estimate rests on the recency correlation rather
-  than on a cold measurement — and the remaining six have been observed cold exactly once
-  each. A design whose cold arm is one run in thirteen cannot price its own alternative,
-  which is close to being the argument for changing it. **The third attempt below is
-  built to replace this bullet with a measurement**: four blocks flushed before every
-  run against four flushed once, so every condition is observed cold four times and the
-  per-condition cost of the policy is a number rather than a floor.
+- Against n ≥ 30 per stratum, **neither arm reaches it.** Both clear 30 only pooled
+  across strata, which is what stratification exists to prevent.
+- Cost: the flush itself is 0.040 s. The four flush-per-run blocks spanned 1247 to
+  3230 s, mean **2494 s** — **655 s a block more than the mean of a flushed-once block,
+  36%**, almost all of it unprivileged `-T2`. Sixty blocks each way is **72 machine
+  hours**, eleven more than the design as it stands, and the seven-day floor holds: five
+  flush-per-run blocks a day at the worst span seen is 4.5 hours of a six-hour window.
+  The 2.5% this document carried before the third attempt, from one inferred number, was
+  wrong by an order of magnitude and is withdrawn.
 
-**Keeping both arms at n = 30 per stratum.** Warm needs 32.5 unflushed blocks, cold
-needs 27.5 flushed, so **60 blocks per stratum, 240 blocks, with 46% of blocks flushed
-per run.** At a 2623 s span that is **175 hours of machine time** against 85 hours for
-the design as it stands. The floor moves, and it moves to neither of the numbers the
-question offered:
+*Keeping both arms at n = 30 per stratum.* Warm needs 32.5 unflushed blocks, cold needs
+27.5 flushed: **60 blocks per stratum, 240 blocks, 46% flushed per run.**
 
-| blocks/day/stratum | days | machine h/day | of each 6 h window | window |
-|---|---|---|---|---|
-| 5 (the current cap) | **12** | 14.6 h | 3.6 h | 288 h |
-| 6 | **10** | 17.5 h | 4.4 h | 240 h |
-| 7 | 9 | 20.4 h | 5.1 h | 216 h |
-| 8 (the most a 6 h window holds) | 8 | 23.3 h | 5.8 h | 192 h |
+- **143 machine hours** at the measured means (110 flush-per-run blocks at 2494 s plus
+  130 flushed-once at 1839 s), against 61 as it stands.
+- The floor moves, and to neither of the numbers the question offered:
 
-At the cap the driver derives today — `ceil(30/7) + 1 = 5` — the seven-day floor becomes
-**twelve days**, not ten and not fourteen. Ten days is available at a cap of six a day,
-which is a change to `daily_quota` and therefore itself an amendment. Eight days is
-arithmetically possible and leaves 0.7 h of slack in a 24-hour day, which is not slack.
+| blocks/day/stratum | days | worst window use (cap × 3230 s) | machine h/day at means |
+|---|---|---|---|
+| 5 (the current cap) | **12** | 4.5 h of 6 | 11.9 |
+| 6 | **10** | 5.4 h of 6 | 14.3 |
+| 7 | 9 | 6.3 h of 6 — does not fit | 16.6 |
 
-**Does any of this make a hypothesis untestable? No — and that is the trap.**
+  At the cap the driver derives today, `ceil(30/7) + 1 = 5`, the seven-day floor
+  becomes **twelve days**. Ten days is available at six a day, which is a change to
+  `daily_quota` and itself an amendment. Nine is not available: seven flush-per-run
+  blocks at the worst span seen overrun a six-hour window.
 
-- **H1** and **H5** survive every option. The distributions do not overlap: netsanity
-  discovery inside 0.38 s against nmap's 4.2 s minimum, and `ns.budget.shared` at 1.67 s
-  against `ns.disc.unpriv` at 0.37 s. Even at n = 13.8 per stratum these are rank
-  comparisons that are not close.
-- **H2** is testable under every option and *supported* very differently. The central
-  figure is a speed/recall Pareto frontier, the cold regime is where netsanity's recall
-  is 0.8 rather than 1.0, and that regime rests on 9.2 points per condition as built and
-  64.6 under flush-per-run. H2 is the study's central claim, its refutation condition is
-  a privileged nmap point netsanity does not match, and privileged nmap is at recall 1.00
-  on all eleven admissible runs in the gate attempt. So the frontier's answer turns on
-  cold netsanity, which as built is the arm with nine points. And privileged nmap's own
-  1.00 may not be cache-independent either: the first attempt's one cold privileged run,
-  `nmap.sn.priv.T3`, scored 0.90 and missed `192.168.64.13`, a 500 ms responder. One
-  observation is not a finding, but it is the only cold privileged observation the study
-  has, and it went the direction nobody assumed.
-- **H6** is testable under every option and may well *answer differently* under each.
-  Its refutation condition already fires on the gate attempt's warm data at a median gap
-  of 0.1. Cold, netsanity scored 0.8 the one time it was measured, and unprivileged
-  `-T2` reached 0.9 and 1.0 in two of three blocks. Flushing before every run does not
-  make H6 untestable; it makes it *more likely to refute*.
+*Does any option make H1, H2, H5 or H6 untestable?* **No — and each of them answers
+differently by arm, which is the trap.**
 
-That last point is why this section stops here. Every option that improves the cold
-arm's power also makes H1, H2 and H6 harder for netsanity to pass, and the party
-choosing between them wrote netsanity. `PROTOCOL.md` section 9 declares that conflict of
-interest and says the falsification conditions are what make the declaration mean
-something; an amendment chosen by the author, after seeing which way the pilot leaned,
-is the amendment a reviewer reads hardest and should.
+- **H1** survives every option. netsanity discovery inside 0.42 s against nmap's 2.0 s
+  minimum, in both arms.
+- **H2** is testable under every option and *decided* differently. Its refutation is a
+  privileged nmap point at recall 1.0 that netsanity does not match. Privileged nmap is
+  at 1.00 in both arms; netsanity's default is at 1.0 warm and 0.8 cold. As built, the
+  cold arm carries 9.2 points per condition; under flush-per-run, 64.6.
+- **H5** — the split budget reduces sweep time without reducing recall — **holds warm
+  and fails cold on this attempt's data.** Warm: 0.38 s against 1.69 s at 1.0 against
+  1.0. Cold: 0.40 s against 0.98 s at 0.80 against 0.98. Its refutation condition is
+  live in the arm the design as it stands samples 2.3 times per stratum.
+- **H6** is testable under every option and its refutation condition fires in both arms
+  here: unprivileged `-T2`'s median per-block recall is 0.8, against warm netsanity at
+  1.0 (gap 0.2) and cold netsanity at 0.8 (gap 0.0), both inside 0.25.
+
+Every option that strengthens the cold arm makes H2, H5 and H6 harder for netsanity to
+pass, and the party choosing between them wrote netsanity. `PROTOCOL.md` section 9
+declares that conflict of interest and says the falsification conditions are what make
+the declaration mean something; an amendment chosen by the author, after seeing which
+way the pilot leaned — and it leaned, in every arm this attempt measured — is the
+amendment a reviewer reads hardest and should.
 
 **So: no design is chosen here, and collection does not start.** The options above go to
-JC with their numbers. When he rules, the amendment goes in `PROTOCOL.md` section 12,
-dated, saying what prompted it and stating that it was decided before any block was
+JC with their measured costs. When he rules, the amendment goes in `PROTOCOL.md` section
+12, dated, saying what prompted it and stating that it was decided before any block was
 collected — which is true, and which is the only reason any of this is worth writing
 down.
 
-## The third attempt, ready and not run
+## The third attempt
 
-Built on 2026-09-13 and deliberately left for a person to start. It serves two purposes
-at once and the design follows from that:
-
-- **Gate 0.6 under schema 2.** Every record carries `parse.discovery` and
-  `capture.wire`, so the three quantities above become recomputable and the gate's third
-  condition can be assessed rather than argued about.
-- **The cache-state options, priced.** `--flush-policy alternate` gives odd block ids a
-  flush before every run and even ones the protocol's single flush. Eight blocks is four
-  of each: every one of the thirteen conditions observed cold four times, against the
-  four warm blocks of the same day and the three of the second attempt, so the
-  per-condition cost of flushing per run — wall clock and recall — is measured for all
-  thirteen instead of inferred for one.
+Run on 2026-09-13, 10:27 to 15:42, from the collection worktree, through the driver,
+under schema 2. `pilot-attempt-3.ndjson`, 106 records: eight complete blocks (ids 1 to
+8) and one partial (id 0). Two purposes, one design: gate 0.6 under the repaired
+schema, and the cache-state options priced with `--flush-policy alternate`, which gave
+odd block ids a flush before every run and even ones the protocol's single flush — four
+of each.
 
 Not repeated: the injected fault. Attempts one and two both caught it unaided, on two
 different conditions, and a third would be manufacturing an exclusion to admire. This
-attempt's exclusion rate is therefore the apparatus's own.
+attempt's exclusion rate is therefore the apparatus's own, and across the eight complete
+blocks it is zero.
 
-What was done before it could run, in order, each checked:
+**Block 0 was lost to the lid.** It started at 10:27:01 on battery at 28%; the power
+log shows `Entering Sleep state due to 'Clamshell Sleep'` at 10:27:28. `caffeinate -i`
+cannot hold a closed MacBook awake on battery — no assertion can — and the host slept
+521 s inside the second run. The harness excluded that run as `host_asleep`, stopped the
+block and wrote the alarm, exactly as `30584fc` built it to. The two records stay in the
+file, one admissible and one excluded, under apparatus commit `b6b4051`; the block is
+partial and no census counts it.
+
+Two apparatus changes went in before the restart, both at `cb30871`, which every record
+of blocks 1 to 8 carries:
+
+- **The driver waits for AC.** Section 6 lists the plugged-in state as a control that is
+  *fixed*; `provenance.py` recorded `on_ac_power: false` on both of block 0's records,
+  which is recording a violation rather than preventing one. The driver now waits, and
+  logs why, until the host is on AC — waits rather than halts, because a cable that fell
+  out at 03:00 is fixed by plugging it in.
+- **`data/.gitignore` covers what a named attempt writes.** `run_block.py` names the raw,
+  capture and store directories after the output file's stem, so this attempt wrote to
+  `pilot-attempt-3-raw/` and siblings, which nothing ignored. Block 0 ran because they
+  did not exist at its provenance check; block 1 would have aborted on the tree they
+  dirtied. The first attempt's second defect, one name over.
+
+The frozen packages are byte-identical to `study/binary-2026-09-12b` at both commits and
+the binary hashes `b4220600…` on all 106 records.
+
+**What was done before it ran, in order, each checked:**
 
 | step | result |
 |---|---|
 | testbed, after the host lost power | all five machines restarted; `netbed.py configure` re-shaped and re-calibrated the ten responders at the same addresses and roles; worst achieved error 1.22% against 10% |
 | the three oracles | three consecutive rounds, manifest 10, inventory 10, capture 10, agreed; `testbed/gate-0.4.json` rewritten |
 | schema 2 | `f9e2d6c`; 26 dry-run records across both policies, zero validation problems; `prove_collect.py` met |
-| the freeze | `git diff --stat study/binary-2026-09-12b f9e2d6c -- Packages/netsanity-core Packages/netsanity-cli` empty; binary `b4220600…` |
-| the collection worktree | moved to `f9e2d6c`, clean, standing `sudo -n` grant confirmed for all three binaries |
+| the freeze | frozen-package diff against the tag empty at `f9e2d6c`, `b6b4051`, `cb30871`; binary `b4220600…` |
 | unattended root | `sudo -n -l` succeeds for `nmap`, `tcpdump` and `arp` from this account |
 
-The invocation, from the collection worktree, writing to files `data/.gitignore` already
-covers:
+**The eight complete blocks.** Block spans by policy — flushed once: 1830, 993, 916,
+2748 s; flushed per run: 3219, 3230, 1247, 2279 s. Per-run capture `ok` on all 106,
+oracles `agree` on all 106, permission `granted`, cooldown 10.0 s. Privileged `-T2` ran
+to completion eight times at 371 to 482 s. Unprivileged `-T2` ran eight times at 220 to
+2546 s and `capture.wire` explains every one of them by its ARP request count and none
+of them by anything else yet identified. Cold netsanity missed the two 500 ms responders
+fourteen times out of fourteen; warm netsanity found them eleven times out of eleven.
+The per-condition table is in the cache-state section, because that is what it is for.
+
+The invocation, for the record:
 
 ```
 W=/Users/jc/Dev/InfinityCastle-collection
-nohup /usr/bin/python3 $W/Study/harness/collect.py \
+/usr/bin/python3 $W/Study/harness/collect.py \
   --out $W/Study/data/pilot-attempt-3.ndjson \
   --log $W/Study/data/pilot-attempt-3.log \
   --status $W/Study/data/pilot-attempt-3-status.json \
@@ -612,44 +677,30 @@ nohup /usr/bin/python3 $W/Study/harness/collect.py \
   --cidr 192.168.64.0/24 --iface bridge100 \
   --netsanity $W/Packages/netsanity-cli/.build/release/netsanity \
   --cooldown 10.0 --control-host 192.168.64.4 --control-host 192.168.64.6 \
-  --blocks-per-stratum 8 --minimum-days 1 --daily-quota 6 \
-  --flush-policy alternate \
-  > $W/Study/data/pilot-attempt-3.driver.out 2>&1 &
+  --blocks-per-stratum 8 --minimum-days 1 --daily-quota 7 \
+  --flush-policy alternate
 ```
 
-Eight blocks at about 43 to 45 minutes each is six hours of machine time. With a daily
-quota of six the driver takes what fits in the current stratum's window, waits at the
-boundary for the next, and after eight it goes to `waiting`, at which point it is
-stopped with `SIGTERM` as the second attempt was. Then:
-
-```
-python3 Study/analysis/pilot.py $W/Study/data/pilot-attempt-3.ndjson
-```
-
-prints the cold-against-warm table per condition, the block span under each policy,
-and the wire counts for unprivileged `-T2`, and this document's cache-state section is
-rewritten against them before the options go to JC a second time.
-
-Why it was not started by the agent: the driver takes root through the standing grant
-to scan the segment and flush the host's neighbour table, and the session's policy
-classed launching it as modifying a shared resource. That is a reasonable line for a
-policy to draw and it was not argued with. The command above is the whole of what was
-going to run.
+Started once at 10:26:55 with `--daily-quota 6`, halted by the lid at 10:36:28; started
+again at 10:39:06 with the quota at 7 so the afternoon window could hold the remaining
+seven blocks; stopped with `SIGTERM` at 15:43:01 once the eighth block was in, the
+driver logging `stopped on request` and releasing its assertion.
 
 ## What is recorded and where
 
 | | |
 |---|---|
-| `data/pilot.ndjson` | the pilot that is the gate; every timing, recall, exclusion and schedule number above is recomputable from it with `analysis/pilot.py`, and the three named above are not |
+| `data/pilot.ndjson` | the second attempt; every timing, recall, exclusion and schedule number cited from it is recomputable with `analysis/pilot.py`, and the three named above were not |
 | `data/pilot-attempt-1.ndjson` | the first attempt, kept because its failures are the record of what the apparatus could not do before this date |
-| `data/pilot-attempt-3.ndjson` | the third attempt, schema 2, both flush policies; the gate candidate once it has run |
+| `data/pilot-attempt-3.ndjson` | **the gate**: the third attempt, schema 2, eight complete blocks across both flush policies; every number in the cache-state section is recomputable from it with `analysis/pilot.py` |
 | `data/pilot-settle.json` | every post-exit frame per condition, the cooldown's evidence |
-| `data/pilot-raw/`, `pilot-captures/`, `pilot-stores/` | raw tool output, Mac-side pcaps, and history stores for both attempts, by run id; git-ignored like collection's |
+| `data/pilot-raw/`, `pilot-captures/`, `pilot-stores/`, and `pilot-attempt-3-*/` | raw tool output, Mac-side pcaps, and history stores, by run id; git-ignored like collection's |
 | `harness/settle.py` | the cooldown measurement, re-runnable |
 | `analysis/pilot.py` | the report, standard library only |
 
 The apparatus commits: `91f7e31` (testbed rebuilt), `a0ab4f3` (the five defects, the
 injected fault, the sleep covariate), `05b0870` (the cooldown), `30584fc` (host sleep
 stops the block; the cache label), `f9e2d6c` (schema 2; flush per run runnable; testbed
-rebuilt after the power loss). The frozen packages are byte-identical to
+rebuilt after the power loss), `7ebad19` (the driver waits for AC), `cb30871` (a named
+attempt's output ignored). The frozen packages are byte-identical to
 `study/binary-2026-09-12b` at every one of them, checked each time the worktree moved.
