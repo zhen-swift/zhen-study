@@ -107,7 +107,7 @@ Two tags, not one:
   tag the appendix cites for the system under test, and the binary above is built from
   it. It does not move — and the `b` in its name is the record of one that did, which is
   why the superseded tag is left in place rather than deleted.
-- **`study/collection-2026-09-13`**, cut on `a792c58` when collection started, the
+- **`study/collection-2026-09-13`**, cut on `47113b8` when collection started, the
   `master` commit that carries the finished driver, schema 2, the 2026-09-13 amendment
   and `collection.sh`. The frozen-package diff against `study/binary-2026-09-12b` at
   that commit is empty and the binary in the collection worktree hashes `b4220600…`. The apparatus keeps being built after the binary is frozen —
