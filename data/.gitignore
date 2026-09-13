@@ -62,3 +62,4 @@ pilot-attempt-*-raw/
 pilot-attempt-*-captures/
 pilot-attempt-*-stores/
 *.driver.out
+COLLECTION-PAUSED
