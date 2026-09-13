@@ -161,9 +161,18 @@ def _nmap_condition(template: str, privileged: bool) -> Condition:
         # here, because this number decides whether a block is started near the end
         # of a stratum's window, and an optimistic estimate there runs the block into
         # the next stratum.
+        #
+        # Re-derived from the pilot's third attempt, 2026-09-13, eight blocks, four of
+        # them flushed before every run. The largest observed unprivileged -T2 rose to
+        # 2546 s (a cold run; the warm maximum was 2007 s), privileged -T2 to 482 s,
+        # and the faster templates to their largest across all fourteen admissible
+        # runs of each. Collection flushes once per block, per the amendment of that
+        # date, but the estimate keeps the cold figure: a run this long has now been
+        # seen, and the estimate's one job is to stop a block starting that cannot
+        # finish inside its window.
         observed_seconds=(
-            {"T2": 471.0, "T3": 7.9, "T4": 7.7, "T5": 4.5}[template] if privileged
-            else {"T2": 1735.0, "T3": 20.6, "T4": 22.3, "T5": 11.6}[template]
+            {"T2": 482.0, "T3": 8.4, "T4": 8.5, "T5": 4.6}[template] if privileged
+            else {"T2": 2546.0, "T3": 28.7, "T4": 23.3, "T5": 18.2}[template]
         ),
         notes=(
             "Unprivileged nmap on this build sends TCP connect probes to exactly ports "
@@ -247,7 +256,7 @@ CONDITIONS: tuple[Condition, ...] = (
         hypotheses=("H4",),
         purpose="nmap's nearest equivalent to the naming pipeline",
         parser="nmap_xml",
-        observed_seconds=25.0,
+        observed_seconds=31.0,  # largest of eleven pilot runs, 30.8 s
         notes="Documented in the paper as approximate. nmap's broadcast scripts are not "
               "the same task as name fusion and the protocol says so.",
     ),
@@ -265,6 +274,7 @@ CONDITIONS: tuple[Condition, ...] = (
         tool="netsanity",
         privilege="user",
         argv_template=_NS + ("--discovery-only", "--retransmit-timeout", "{fixed_ms}ms"),
+        observed_seconds=0.4,  # pilot, 0.36 s largest
         hypotheses=("H2",),
         purpose="netsanity with a fixed retransmit timeout, the ablation H2 needs",
         status=READY,
@@ -287,6 +297,7 @@ CONDITIONS: tuple[Condition, ...] = (
         tool="netsanity",
         privilege="user",
         argv_template=_NS + ("--discovery-only", "--shared-budget"),
+        observed_seconds=1.8,  # pilot, 1.75 s largest, warm
         hypotheses=("H5",),
         purpose="netsanity with one shared budget instead of the split, for H5",
         status=READY,
