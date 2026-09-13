@@ -306,20 +306,29 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
     wifi["sampled"] = "once per block, at block start"
 
     flush = capture_mod.flush_neighbour_table(stub=args.dry_run)
-    cache_state = "cold" if flush.get("flushed") or args.dry_run else "warm"
     if not args.dry_run and not flush.get("flushed"):
         raise SystemExit(
             "the neighbour table could not be flushed, so this block's cache state is "
             f"unknown and it is not evidence: {flush.get('error')}"
         )
 
-    print(f"block {block_id} seed {seed} cache {cache_state}: "
+    print(f"block {block_id} seed {seed}, flushed at start: "
           + " ".join(c.id for c in order))
 
     records = []
     for index, condition in enumerate(order):
         if index or args.cooldown_first:
             time.sleep(args.cooldown if not args.dry_run else 0.0)
+
+        # The flush is per block (PROTOCOL.md section 5), so only the first run of a
+        # block starts against an empty neighbour table. Every run after it starts
+        # against whatever the runs before it resolved — and the 0.6 pilot showed that
+        # is not a detail: netsanity reports neighbour-table entries as devices, so a
+        # second-in-block run found the two 500 ms responders whose ARP replies the
+        # first run had provoked and never waited for, with a discovery stage shorter
+        # than their round trip. The label is what "warm versus cold, analysed apart"
+        # keys on, and until the pilot every run in a block was stamped cold.
+        cache_state = "cold" if index == 0 else "warm"
 
         run_id = f"b{block_id:04d}-{index:02d}-{uuid.uuid4().hex[:8]}"
         xml_path = raw_dir / f"{run_id}.nmap.xml"
@@ -429,8 +438,18 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
             _break_responder(inject_fault[0], down=False)
 
         parsed = outcome["parsed"]
+        asleep = ((outcome["finished_at_unix"] - outcome["started_at_unix"])
+                  - outcome["wall_clock_seconds"])
         exclusion = None
-        if not parsed["ok"]:
+        if asleep > 1.0:
+            exclusion = {
+                "reason": "host_asleep",
+                "detail": f"the host slept for {asleep:.0f}s inside this run: the "
+                          f"monotonic clock stopped and the tool's own timers did not, "
+                          f"so neither the wall clock nor the address set is a "
+                          f"measurement",
+            }
+        elif not parsed["ok"]:
             exclusion = {"reason": "parse_failure", "detail": parsed["error"]}
         elif outcome["exit_status"] not in (0, None):
             exclusion = {"reason": "nonzero_exit",
@@ -513,6 +532,17 @@ def run_block(*, block_id: int, seed: int, args, provenance: dict,
         print(f"  {mark} {condition.id:26s} {outcome['wall_clock_seconds']:7.3f}s  "
               f"{len(parsed['addresses']):2d} hosts"
               + (f"  [{exclusion['reason']}]" if exclusion else ""))
+        if exclusion and exclusion["reason"] == "host_asleep":
+            # Recorded, excluded, and then the block stops: a host that sleeps under
+            # the driver's assertion will keep doing it, and a night of excluded runs
+            # is the silent failure the alarm file exists to prevent. The 0.6 pilot
+            # lost four runs of one block this way before the rule existed.
+            raise SystemExit(
+                f"the host slept for {asleep:.0f}s during {run_id}, under the driver's "
+                f"caffeinate assertion. The run is recorded and excluded; the block stops "
+                f"here because the next run will do the same. Wake the machine, check "
+                f"`pmset -g` and the power log, and restart the driver from a full wake."
+            )
     return records
 
 

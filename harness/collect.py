@@ -293,8 +293,16 @@ def hold_awake(log) -> subprocess.Popen | None:
     killed, so a crashed driver does not leave a Mac that will never sleep again.
     """
     try:
+        # `-u` first, for five seconds: it declares a user active, which is the only
+        # thing that turns a dark wake into a full one. The 0.6 pilot found that an
+        # `-i` assertion taken while the machine was already sleeping, or already
+        # committed to sleeping, held nothing — the host cycled through maintenance
+        # wakes for two hours with the assertion in place and four runs of that block
+        # spanned sleep. `-i` then holds idle sleep off for as long as this pid lives.
+        subprocess.run(["caffeinate", "-u", "-t", "5"], check=False)
         proc = subprocess.Popen(["caffeinate", "-i", "-w", str(os.getpid())])
-        log(f"caffeinate -i held for pid {os.getpid()} (caffeinate pid {proc.pid})")
+        log(f"caffeinate -u for 5s, then -i held for pid {os.getpid()} "
+            f"(caffeinate pid {proc.pid})")
         return proc
     except FileNotFoundError:
         log("! caffeinate not found: the host may sleep and blocks may be missed")

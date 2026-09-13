@@ -47,6 +47,10 @@ EXCLUSION_REASONS = {
     "oracle_not_configured",
     "nonzero_exit",
     "tool_missing",
+    # The host slept inside the run. time.monotonic() stops during sleep and the tool's
+    # own timers do not, so neither the wall clock nor the address set means anything.
+    # Found by the 0.6 pilot; see FINDINGS-0.6-pilot.md.
+    "host_asleep",
     # 0.6 breaks one run deliberately to prove this machinery works.
     "injected_fault",
 }

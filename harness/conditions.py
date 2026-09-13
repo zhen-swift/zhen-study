@@ -150,9 +150,20 @@ def _nmap_condition(template: str, privileged: bool) -> Condition:
         # than three hours.  Still inside the seven-day floor, which is why this is a
         # correction and not a redesign — but a matrix that cannot fit is a design error
         # and the cheapest place to catch it is while reading the matrix.
+        #
+        # Replaced by the 0.6 pilot, 2026-09-12, three blocks through the driver.
+        # Privileged -T2 ran to completion at 368, 452 and 471 s, so the extrapolation
+        # was slightly pessimistic. Unprivileged -T2 is the number that was wrong by an
+        # order of magnitude in the other direction: 228, 1580 and 1735 s. It
+        # serialises its connect probes and pays the scanning host's ARP resolution
+        # for every empty address, and how long that takes depends on kernel state
+        # earlier runs in the block left behind. The largest observed value is used
+        # here, because this number decides whether a block is started near the end
+        # of a stratum's window, and an optimistic estimate there runs the block into
+        # the next stratum.
         observed_seconds=(
-            {"T2": 510.0, "T3": 8.1, "T4": 8.1, "T5": 5.1}[template] if privileged
-            else {"T2": 60.0, "T3": 22.2, "T4": 22.2, "T5": 12.4}[template]
+            {"T2": 471.0, "T3": 7.9, "T4": 7.7, "T5": 4.5}[template] if privileged
+            else {"T2": 1735.0, "T3": 20.6, "T4": 22.3, "T5": 11.6}[template]
         ),
         notes=(
             "Unprivileged nmap on this build sends TCP connect probes to exactly ports "
@@ -314,15 +325,24 @@ def for_hypothesis(name: str) -> list[Condition]:
     return [c for c in CONDITIONS if name in c.hypotheses]
 
 
+#: Seconds the apparatus spends around each run that are neither the tool nor the
+#: cooldown: the two capture settles, starting and stopping the per-responder captures,
+#: reading the inventory. The 0.6 pilot measured a block's span against the sum of its
+#: tool times and cooldowns and the difference was 56 s over thirteen runs.
+OVERHEAD_PER_RUN_SECONDS = 5.0
+
+
 def estimated_block_seconds(cooldown_seconds: float) -> float:
-    """Roughly how long one block takes, from 0.2 and 0.3's observed wall clocks.
+    """Roughly how long one block takes, from the observed wall clocks.
 
     A diagnostic for planning the collection window, not a result. It exists here
     because a matrix that cannot fit in seven days is a design error, and the cheapest
-    time to notice is while reading the matrix.
+    time to notice is while reading the matrix. The driver also uses it to decide
+    whether a block can still start before a stratum's window closes.
     """
     return sum(
-        (c.observed_seconds or 0.0) + cooldown_seconds for c in ready()
+        (c.observed_seconds or 0.0) + cooldown_seconds + OVERHEAD_PER_RUN_SECONDS
+        for c in ready()
     )
 
 

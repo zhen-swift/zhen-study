@@ -42,7 +42,10 @@ collect.launchd.out
 collect.launchd.err
 COLLECTION-STOPPED.txt
 pilot.ndjson
+pilot-attempt-*.ndjson
 pilot.log
+pilot-attempt-*.log
+pilot-attempt-*-status.json
 pilot-status.json
 pilot-status.tmp
 PILOT-STOPPED.txt
