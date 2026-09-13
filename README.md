@@ -16,8 +16,8 @@ measured what cold costs for every condition — netsanity's default misses the 
 500 ms hosts on every cold run and none of the warm ones, and H5 holds warm and fails
 cold — so the choice of arm is the choice of answer. JC ruled to keep one flush per
 block; the amendment of 2026-09-13 records the ruling, its alternatives and their
-costs, and what the retained design can and cannot resolve. Collection runs from the
-next commit the collection worktree is moved to.
+costs, and what the retained design can and cannot resolve. Collection runs from
+`study/collection-2026-09-13`, started that evening.
 
 ## Read in this order
 
