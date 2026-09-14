@@ -132,6 +132,15 @@ Two tags, not one:
   `provenance.py` records that commit on every run, and the frozen packages at that
   commit are byte-identical to the tag's.
 
+  **Run once more on 2026-09-14, during collection.** The host rebooted after the
+  first five blocks and the testbed had to be rebuilt (above), which rewrites
+  `testbed/manifest.json` and `testbed/gate-0.4.json`; those live in the tree the
+  harness reads, so the worktree moved from `47113b8` (the collection tag) to the
+  commit carrying them. The command printed nothing, and the binary hashed
+  `b4220600…` before and after. Blocks 1 to 5 carry `47113b8` as their apparatus
+  commit and every later block carries the rebuild's; the frozen packages are
+  byte-identical at both.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
@@ -141,12 +150,23 @@ catches it if it happens anyway.
 The programmable segment is the primary testbed, per `PHASE0.md`'s amendment. Its
 composition, per-responder shaping, calibration and achieved round-trip times are in
 `testbed/manifest.json`, and `testbed/FINDINGS-0.1.md` records how it was built and what
-it cost to make repeatable. Ten responders, worst calibration error 1.22% at the rebuild
-of 2026-09-13 after the host lost power (1.3% at the pilot rebuild of 2026-09-12, 5.0%
-when first built) against a 10% tolerance. The three-oracle agreement that gate 0.4
-turns on is in `testbed/gate-0.4.json`, re-run after every rebuild: three consecutive
-rounds, manifest and inventory and capture all reporting the same ten addresses, no
-disagreements.
+it cost to make repeatable. Ten responders, worst calibration error 1.60% at the rebuild
+of 2026-09-14 (1.22% at the rebuild of 2026-09-13 after the host lost power, 1.3% at the
+pilot rebuild of 2026-09-12, 5.0% when first built) against a 10% tolerance. The
+three-oracle agreement that gate 0.4 turns on is in `testbed/gate-0.4.json`, re-run
+after every rebuild: three consecutive rounds, manifest and inventory and capture all
+reporting the same ten addresses, no disagreements.
+
+**The segment does not survive a host reboot, and collection has now crossed one.** The
+namespaces, the `netem` shaping and the spinners are transient inside the guests, so a
+rebuild is `netbed.py up`, `netbed.py configure` and `oracles.py`, in that order, and
+the manifest is rewritten with fresh achieved times. The host rebooted at 09:22 on
+2026-09-14 with five evening blocks of 2026-09-13 already in `runs.ndjson`; the rebuild
+that morning produced a manifest whose addresses, hardware addresses, roles, target
+times and open ports are identical to the one those five blocks were measured under —
+checked field by field against the committed file — and only the achieved column
+moved. `provenance.py` records the apparatus commit on every run, so which manifest a
+block was measured under is readable from the data.
 
 The physical segment is secondary and is `10.10.20.0/24`, the home LAN — a particular
 network and not "whatever the laptop is on". `Study/README.md`'s note of 2026-09-09
