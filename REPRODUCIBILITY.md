@@ -141,6 +141,10 @@ Two tags, not one:
   commit and every later block carries the rebuild's; the frozen packages are
   byte-identical at both.
 
+  **And again on 2026-09-15**, after the host slept and the segment was re-calibrated
+  (above): `1bf4371` to the commit carrying the re-measured manifest. The command
+  printed nothing; the binary hashed `b4220600…` before and after.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
@@ -167,6 +171,20 @@ times and open ports are identical to the one those five blocks were measured un
 checked field by field against the committed file — and only the achieved column
 moved. `provenance.py` records the apparatus commit on every run, so which manifest a
 block was measured under is readable from the data.
+
+**A host sleep degrades the segment without destroying it, and that is worth checking
+for rather than assuming.** The lid was closed at 02:34 on 2026-09-15 and the host slept
+five and a half hours mid-block; the harness excluded the run as `host_asleep` and
+halted, block 19 is partial, and the machines were still running when it woke. But
+they were not calibrated any more: twenty pings per responder before anything was
+touched put r02 at +10.45% against the 10% tolerance, r07 at +4.9%, r10 answering 17
+of 20 with an 801 ms tail, and every responder's maximum several times its median —
+the deep-idle jitter `testbed/FINDINGS-0.1.md` describes, back after the guests had
+idled through the sleep. `netbed.py configure` and `oracles.py` were run again, worst
+error 1.50%, identity fields unchanged, and the worktree moved to the commit carrying
+the new manifest. So the restart after any sleep is the rebuild, not just deleting the
+halt file: the halt file says the host slept, and the segment has to be re-measured
+before a block is.
 
 The physical segment is secondary and is `10.10.20.0/24`, the home LAN — a particular
 network and not "whatever the laptop is on". `Study/README.md`'s note of 2026-09-09
