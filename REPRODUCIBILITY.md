@@ -145,6 +145,10 @@ Two tags, not one:
   (above): `1bf4371` to the commit carrying the re-measured manifest. The command
   printed nothing; the binary hashed `b4220600…` before and after.
 
+  **And on 2026-09-16**, after the host lost power (below): `d286272` to the commit
+  carrying the rebuilt manifest, worst error 1.36%. The command printed nothing; the
+  binary hashed `b4220600…` before and after.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
@@ -189,6 +193,32 @@ before a block is.
 The physical segment is secondary and is `10.10.20.0/24`, the home LAN — a particular
 network and not "whatever the laptop is on". `Study/README.md`'s note of 2026-09-09
 records why that had to be written down.
+
+## Block 36 ran on battery and the record says it did not
+
+The power cable came out at 06:45:42 on 2026-09-16 with block 36 in flight (started
+06:15:32). The driver waits for AC before *starting* a block and does not stop one; the
+block's runs 3 to 12 ran from 06:55 to 07:07 on battery, the battery drained from 100%
+to empty under the load by 08:41, the OS shut the host down (the driver's log shows
+`signal 15` at 08:41:54), and it came back on AC at 09:12. The testbed was rebuilt the
+same way as on 2026-09-14.
+
+**Every one of block 36's thirteen records carries `on_ac_power: true`.** `provenance.py`
+is collected once per block, at 06:15:32 when the host was plugged in, and the same
+document is copied onto every run — `collected_at_unix` is identical on all thirteen.
+The covariate section 6 fixes was violated for ten runs and the record does not show
+it; `pmset -g log` is the only evidence, and it is not a study artifact. So this
+section is the evidence: **block 36 is admissible by the exclusion rules but its
+runs 3 to 12 violate the plugged-in control, and the analysis should treat the block
+as flagged.** The per-run covariate stays true for every other block, because the
+driver refuses to start a block on battery and this is the only unplugging during
+collection.
+
+The defect is in the apparatus, not in the frozen packages: per-block provenance is
+right for the binary hashes and the git state, which cannot change mid-block, and wrong
+for power, thermal pressure and uptime, which can. Whether to make the harness re-read
+those three per run mid-collection — a worktree move, not a rebuild — is JC's call and
+is not taken here.
 
 ## Unattended root, as installed
 
