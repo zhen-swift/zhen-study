@@ -157,6 +157,18 @@ Two tags, not one:
   command printed nothing; the binary hashed `b4220600…` before and after. The
   overnight window of the 18th and most of its morning window were lost.
 
+  **And on 2026-09-18, a second time.** The cable came out at 12:23 with block 74 in
+  flight, the battery was empty by 14:34 and the host shut down; back on AC at 16:33,
+  netbed1 left `Broken` by the crash (`limactl stop -f` cleared it), all five machines
+  brought up and re-calibrated. It took three `configure` passes: the first left r06 at
+  −5.12% at the four-round limit, the second left r05 at +18.4% because the ~5 ms of
+  extra delay that every rebuild has shown on the 25 ms pair's first round appeared
+  for three rounds and vanished on the fourth, so the final setting was tuned against
+  overhead that was no longer there. The third pass converged at 1.51% and an
+  independent thirty-ping pass agreed on every responder. `5ec05e4` to the commit
+  carrying it; the command printed nothing; the binary hashed `b4220600…` before and
+  after. The rest of the afternoon window was lost.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
@@ -221,6 +233,11 @@ runs 3 to 12 violate the plugged-in control, and the analysis should treat the b
 as flagged.** The per-run covariate stays true for every other block, because the
 driver refuses to start a block on battery and this is the only unplugging during
 collection.
+
+**Block 74 is the same case.** The cable came out at 12:23:46 on 2026-09-18 with block
+74 in flight (started 12:00:34); its runs 3 to 12 ran on battery and all thirteen records
+say `on_ac_power: true`. Same defect, same flag: admissible by the exclusion rules,
+runs 3 to 12 in violation of the plugged-in control, block flagged for the analysis.
 
 The defect is in the apparatus, not in the frozen packages: per-block provenance is
 right for the binary hashes and the git state, which cannot change mid-block, and wrong
