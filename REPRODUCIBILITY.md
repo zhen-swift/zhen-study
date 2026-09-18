@@ -149,6 +149,14 @@ Two tags, not one:
   carrying the rebuilt manifest, worst error 1.36%. The command printed nothing; the
   binary hashed `b4220600…` before and after.
 
+  **And on 2026-09-18.** The lid was closed for three seconds at 20:05 on 2026-09-17,
+  unplugged, with block 68 in flight; the harness excluded run 9 as `host_asleep` and
+  halted at 20:42, block 68 is partial, and with no driver holding an assertion the
+  host idle-slept until the morning. Re-calibrated at 09:05, worst error 1.50%,
+  identity fields unchanged, gate 0.4 met; `a77783a` to the commit carrying it. The
+  command printed nothing; the binary hashed `b4220600…` before and after. The
+  overnight window of the 18th and most of its morning window were lost.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
