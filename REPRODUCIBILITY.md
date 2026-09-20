@@ -239,6 +239,11 @@ collection.
 say `on_ac_power: true`. Same defect, same flag: admissible by the exclusion rules,
 runs 3 to 12 in violation of the plugged-in control, block flagged for the analysis.
 
+**And block 93.** Cable out at 13:34:33 on 2026-09-19 with block 93 in flight (started
+13:11:22); runs 2 to 12 on battery, records say AC, the battery at 7% when AC returned
+at 15:08:57. Flagged the same way. That makes three flagged blocks — 36, 74 and 93 —
+all afternoon or morning, none overnight or evening.
+
 The defect is in the apparatus, not in the frozen packages: per-block provenance is
 right for the binary hashes and the git state, which cannot change mid-block, and wrong
 for power, thermal pressure and uptime, which can. Whether to make the harness re-read
