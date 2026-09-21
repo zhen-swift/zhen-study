@@ -169,6 +169,28 @@ Two tags, not one:
   carrying it; the command printed nothing; the binary hashed `b4220600…` before and
   after. The rest of the afternoon window was lost.
 
+  **And on 2026-09-21, for the last block.** Cable out at 08:02, two minutes after the
+  morning stratum's thirtieth block finished at 08:00:16 — nothing in flight, nothing
+  to flag — battery empty by 09:27, shutdown, back on AC at 12:44 with 119 blocks in
+  the file and one overnight block owed. The rebuild took two and a half hours and
+  the reason is worth the appendix: **this machine idle-sleeps after one minute, and
+  nothing was holding it awake.** Every earlier rebuild happened either with the
+  driver's `caffeinate -i` still up or with someone at the keyboard; this one ran
+  unattended after a reboot, and `pmset -g log` shows the host entering sleep and
+  dark-waking every one to two minutes from 12:56 to 14:29, pausing the guests under
+  the calibration. The symptoms were an intermittent +10 ms on whichever responder
+  was being measured — the 25 ms pair at +40%, the 500 ms pair at +2% when they have
+  never been outside 0.1% — and three `configure` passes that each converged on a
+  manifest the next ping pass contradicted. `apfsd` at 88% and `photoanalysisd` at 35%
+  after the unclean shutdown were suspected first and were not it. With
+  `caffeinate -u` then `-i` held for the rebuild, zero sleeps: manifest worst 7.00%,
+  on r01 — 70 µs on the 1 ms responder, and a sixty-ping read gives both 1 ms
+  responders a mean of 1.10 ms — every other responder under 2.4% on an independent
+  thirty-ping pass, identity fields unchanged, gate 0.4 met. `cde9020` to the commit
+  carrying it; the command printed nothing; the binary hashed `b4220600…` before and
+  after. The lesson for the procedure: **hold the host awake before touching the
+  testbed**, the way the driver does before touching a block.
+
 The binary is not rebuilt when the worktree moves. `swift build` inside the collection
 worktree is not part of any procedure after the freeze, and the recorded sha256 is what
 catches it if it happens anyway.
