@@ -80,8 +80,13 @@ def _style(ax) -> None:
 def _save(fig, name: str) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for extension in ("png", "pdf"):
+        # No creation timestamp in either container.  A figure that differs from the
+        # committed one every time it is regenerated hides the times it differs for a
+        # reason, which is the only thing regenerating it is for.
+        metadata = ({"CreationDate": None} if extension == "pdf"
+                    else {"Software": None})
         fig.savefig(OUT / f"{name}.{extension}", dpi=200, bbox_inches="tight",
-                    facecolor=SURFACE)
+                    facecolor=SURFACE, metadata=metadata)
     plt.close(fig)
     print(f"  {OUT.relative_to(HERE.parent.parent)}/{name}.png / .pdf")
 
