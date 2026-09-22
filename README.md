@@ -5,8 +5,9 @@ A measurement study of what netsanity's sweep scheduling actually buys, against
 the same repository because the scanner is the thing under measurement and a study
 that drifts from the build it measured is worth nothing.
 
-**Nothing here has produced evidence yet.** Phase 0 is the apparatus, and collection
-does not begin until every one of its gates is met.
+**Phase 0 is the apparatus, and collection did not begin until every one of its gates
+was met. It has now run: `data/runs.ndjson` is the evidence, and nothing in this
+directory has analysed it yet.**
 
 **Every phase 0 gate is met as of 2026-09-13, and the one design question the pilot
 raised has been ruled on.** `PROTOCOL.md` section 5 asks for cache state analysed as a
@@ -16,8 +17,11 @@ measured what cold costs for every condition — netsanity's default misses the 
 500 ms hosts on every cold run and none of the warm ones, and H5 holds warm and fails
 cold — so the choice of arm is the choice of answer. JC ruled to keep one flush per
 block; the amendment of 2026-09-13 records the ruling, its alternatives and their
-costs, and what the retained design can and cannot resolve. Collection runs from
-`study/collection-2026-09-13`, started that evening.
+costs, and what the retained design can and cannot resolve. Collection ran from `study/collection-2026-09-13`, started that evening, and
+**completed on 2026-09-22 at 00:14: 120 blocks, 30 per stratum, across 10 days, 1,580
+runs, two exclusions.** `REPRODUCIBILITY.md` carries the end state and the eight
+interruptions the window survived. The evidence is `data/runs.ndjson`; the analysis,
+which has never touched the network, takes it from here.
 
 ## Read in this order
 

@@ -300,10 +300,45 @@ ends. The file's own header carries the reasoning and belongs in the appendix ve
   this machine. The driver takes `caffeinate -u` for five seconds and then holds `-i`;
   a run in which the host slept is excluded as `host_asleep` and stops the block.
 
+## Collection, as it ran
+
+Collection ran from 2026-09-13 18:19 to 2026-09-22 00:14 and is complete:
+**120 blocks, 30 per stratum, across 10 distinct days** against a seven-day floor.
+`Study/data/runs.ndjson` is the record, 1,580 records, committed with `git add -f` at
+the end of the window because a tracked file the harness appends to would abort the
+next block on a dirty tree.
+
+| | |
+|---|---|
+| runs | 1,580, all schema 2 |
+| exclusions | 2, both `host_asleep` — 0.13% against the protocol's 5% ceiling |
+| partial blocks | 19 and 68, the two the exclusions stopped; no census counts them |
+| conditions | 13, at 120 to 122 runs each |
+| cache arms | 1,458 warm, 122 cold — the amendment predicted about 9 cold per condition and got 9.4 |
+| oracles | `agree` on all 1,580 |
+| captures | `ok` on all 1,580 |
+| `git_dirty` | false on all 1,580 |
+| netsanity sha256 | `b4220600…` on all 1,580 — one binary, the whole window |
+| nmap sha256 | `b522bd2f…` on all 1,580 |
+| artifacts | every `stdout_path`, `stderr_path` and capture path referenced by the file exists on disk |
+
+The window was interrupted eight times and the interruptions are the reason this
+section can be checked rather than believed. Six were power or sleep — three battery
+shutdowns, one reboot, one three-second clamshell sleep, one five-hour one — and each
+cost a testbed rebuild, recorded above with its calibration. The apparatus commit
+recorded on each run says which rebuild a block was measured under: `47113b8` 65 runs,
+`1bf4371` 192, `d286272` 221, `a77783a` 413, `5ec05e4` 78, `cde9020` 598, `6273119` 13.
+The frozen packages are byte-identical to `study/binary-2026-09-12b` at every one of
+them.
+
+**Three blocks are flagged and are not excluded: 36, 74 and 93.** Their runs ran on
+battery under records that say `on_ac_power: true`, for the reason the section above
+gives. They are admissible under the protocol's exclusion rules and the analysis should
+report whether dropping them changes anything.
+
 ## Still open
 
-- **Nothing before collection.** The collection tag is cut and its diff check is
-  recorded above.
+- **Nothing. Collection is complete**, and the section above is its end state.
 - **Cache state: ruled on 2026-09-13, one flush per block.** `PROTOCOL.md` section 12
   carries the amendment, the alternatives with their measured costs, and the statement
   that the cold arm is analysed pooled at about nine runs per condition. Nothing about
