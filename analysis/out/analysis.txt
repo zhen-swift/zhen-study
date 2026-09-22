@@ -1,0 +1,344 @@
+netsanity study — phase 4 analysis
+generated 2026-09-22 from runs.ndjson (1580 records, 1578 admissible) and strata.json
+
+STAGE 1 — the stratum sidecar
+  collection machine UTC offset: -06:00 (-21600 s)
+  established from: collect.log
+  120 anchors, write lag 1.517-2.669 s (median 2.084), spread across the whole window 1.152 s — no drift, no DST step
+  the driver's own labels for all 122 blocks are reproduced: 0 disagreement(s)
+  complete blocks per stratum: {'afternoon': 30, 'evening': 30, 'morning': 30, 'overnight': 30}
+  partial blocks: [19, 68]
+
+STAGE 2 — REPRODUCIBILITY.md, recomputed
+  OK    the sidecar was built from this runs.ndjson                           05bba76fdb80...
+  OK    record count 1,580                                                    1580
+  OK    all schema 2                                                          {2: 1580}
+  OK    2 exclusions, both host_asleep                                        2 {'host_asleep': 2}
+  OK    exclusion rate 0.13%, under the 5% ceiling                            0.1266% (2/1580)
+  OK    partial blocks 19 and 68, counted by no census                        [19, 68]
+  OK    120 complete blocks, 30 per stratum                                   120 blocks, {'afternoon': 30, 'evening': 30, 'morning': 30, 'overnight': 30}
+  OK    10 distinct days                                                      10: 2026-09-13 to 2026-09-22
+  OK    13 conditions, 120 to 122 runs each                                   13 conditions, 120-122 runs
+  OK    1,458 warm and 122 cold                                               {'cold': 122, 'warm': 1458}; 9.4 cold per condition (range 5-15)
+  OK    netsanity sha256 constant                                             1 distinct, b4220600...
+  OK    nmap sha256 constant                                                  1 distinct, b522bd2f...
+  OK    git_dirty false throughout                                            {False: 1580}
+  OK    oracles agree on all 1,580                                            {'agree': 1580}
+  OK    captures ok on all 1,580                                              capture {'ok': 1580}, wire summary {'ok': 1580}
+  OK    Local Network permission granted, asserted per run                    {'granted': 1580}
+  OK    cooldown 10 s on every run                                            {10.0: 1580}
+  OK    runs per apparatus commit                                             {'cde9020': 598, 'a77783a': 413, 'd286272': 221, '1bf4371': 192, '5ec05e4': 78, '47113b8': 65, '6273119': 13}
+  OK    every stdout, stderr and capture path exists                          4740/4740 present
+  OK    window 2026-09-13 18:19 to 2026-09-22 00:14 local                     2026-09-13 18:19 to 2026-09-22 00:14 (UTC-06:00)
+  OK    at least seven consecutive days                                       8.25 days
+  OK    on_ac_power true on every record, including the three flagged blocks  {True: 1580}; flagged blocks present: [36, 74, 93] — the record does not show the battery runs and cannot
+  OK    frozen packages byte-identical to the tag at all seven commits        7/7 empty diffs
+  OK    no apparatus commit changed the harness, the analysis or the product  0 of 6 steps touched code
+  OK    testbed identity unchanged across all seven rebuilds                  addresses, hardware addresses, roles, target RTTs, loss and open ports identical at every commit
+  OK    every rebuild inside the 10% calibration tolerance                    worst 7.00% at 6273119
+  26/26 claims reconcile
+
+  apparatus commits, in the order the data uses them:
+    47113b8  blocks 0-4 (65 runs)  worst calibration 1.22% on r03
+    1bf4371  blocks 5-19 (192 runs)  worst calibration 1.60% on r02
+    d286272  blocks 20-36 (221 runs)  worst calibration 1.50% on r03
+    a77783a  blocks 37-68 (413 runs)  worst calibration 1.36% on r04
+    5ec05e4  blocks 69-74 (78 runs)  worst calibration 1.50% on r02
+    cde9020  blocks 75-120 (598 runs)  worst calibration 1.51% on r05
+    6273119  blocks 121-121 (13 runs)  worst calibration 7.00% on r01
+
+STAGE 3a — every distribution, before any median is reported
+  warm arm
+    nmap.naming.broadcast  (warm, n=108)   [notable: prose and a histogram]
+        median 28.117 [IQR 25.828-30.292] n=108
+        p10 22.5 s, p90 32.5 s, p90/p10 1.44x, max/p90 6.54x, CV 0.726; density peaks at 28.2 s (100%)
+        wall clock rank-correlates with: arp_requests +0.661, tcp_rst +0.623, tcp_synack +0.467, sequence_index +0.055, recall +0.007
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0096 s, max 0.0308 s  — clean
+    
+    nmap.sn.priv.T2  (warm, n=117)
+        median 466.367 [IQR 405.016-470.009] n=117
+        p10 367 s, p90 480 s, p90/p10 1.31x, max/p90 1.21x, CV 0.113; density peaks at 374 s (26%) | valley 76% of the lower peak, 467 s (74%)
+        wall clock rank-correlates with: arp_requests -0.279, tcp_synack -0.127, recall -0.090, sequence_index -0.059
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0192 s, max 0.0946 s  — clean
+    
+    nmap.sn.priv.T3  (warm, n=111)
+        median 7.684 [IQR 7.232-7.812] n=111
+        p10 5.19 s, p90 7.88 s, p90/p10 1.52x, max/p90 1.07x, CV 0.144; density peaks at 5.16 s (16%) | valley 57% of the lower peak, 7.7 s (84%)
+        wall clock rank-correlates with: recall +0.141, arp_requests +0.095, tcp_synack +0.050, sequence_index -0.048
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0202 s, max 0.0295 s  — clean
+    
+    nmap.sn.priv.T4  (warm, n=115)
+        median 7.592 [IQR 7.549-7.710] n=115
+        p10 5.19 s, p90 8.26 s, p90/p10 1.59x, max/p90 1.06x, CV 0.129; density peaks at 5.2 s (16%) | valley 29% of the lower peak, 7.66 s (84%)
+        wall clock rank-correlates with: tcp_synack -0.217, recall -0.163, sequence_index +0.047, arp_requests -0.006
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0190 s, max 0.0294 s  — clean
+    
+    nmap.sn.priv.T5  (warm, n=110)   [notable: prose and a histogram]
+        median 4.308 [IQR 4.242-4.328] n=110
+        p10 4.12 s, p90 4.62 s, p90/p10 1.12x, max/p90 3.25x, CV 0.250; density peaks at 4.29 s (100%)
+        wall clock rank-correlates with: arp_requests +0.255, tcp_synack -0.067, sequence_index +0.056, recall -0.027
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0191 s, max 0.0297 s  — clean
+    
+    nmap.sn.unpriv.T2  (warm, n=109)   [notable: prose and a histogram]
+        median 1445.978 [IQR 244.545-2030.005] n=109
+        p10 102 s, p90 2.39e+03 s, p90/p10 23.45x, max/p90 1.23x, CV 0.714; density peaks at 253 s (33%) | valley 97% of the lower peak, 1.89e+03 s (67%)
+        wall clock rank-correlates with: arp_requests +0.972, tcp_rst +0.900, recall +0.787, tcp_synack -0.451, sequence_index -0.105
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0126 s, max 0.1980 s  — clean
+    
+    nmap.sn.unpriv.T3  (warm, n=114)
+        median 20.299 [IQR 17.435-22.560] n=114
+        p10 13.8 s, p90 23.1 s, p90/p10 1.67x, max/p90 1.28x, CV 0.264; density peaks at 20.6 s (100%)
+        wall clock rank-correlates with: arp_requests +0.654, tcp_rst +0.606, tcp_synack +0.566, sequence_index -0.181, recall -0.039
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0080 s, max 0.0408 s  — clean
+    
+    nmap.sn.unpriv.T4  (warm, n=107)
+        median 19.944 [IQR 17.032-22.587] n=107
+        p10 14.1 s, p90 23.1 s, p90/p10 1.64x, max/p90 1.11x, CV 0.237; density peaks at 20.5 s (100%)
+        wall clock rank-correlates with: arp_requests +0.761, tcp_synack +0.672, tcp_rst +0.623, sequence_index -0.285, recall +0.126
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0085 s, max 0.0224 s  — clean
+    
+    nmap.sn.unpriv.T5  (warm, n=112)   [notable: prose and a histogram]
+        median 11.667 [IQR 9.905-12.660] n=112
+        p10 6.82 s, p90 14.2 s, p90/p10 2.08x, max/p90 1.26x, CV 0.277; density peaks at 11.9 s (100%)
+        wall clock rank-correlates with: arp_requests +0.722, tcp_rst +0.538, tcp_synack +0.530, sequence_index -0.069
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0085 s, max 0.1921 s  — clean
+    
+    ns.budget.shared  (warm, n=115)
+        median 1.681 [IQR 1.673-1.690] n=115
+        p10 1.36 s, p90 1.7 s, p90/p10 1.25x, max/p90 1.35x, CV 0.104; density peaks at 1.36 s (14%) | valley 37% of the lower peak, 1.68 s (86%)
+        wall clock rank-correlates with: arp_requests +0.204, tcp_synack -0.060, sequence_index -0.035
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0152 s, max 0.0318 s  — clean
+    
+    ns.disc.unpriv  (warm, n=115)
+        median 0.382 [IQR 0.377-0.386] n=115
+        p10 0.373 s, p90 0.391 s, p90/p10 1.05x, max/p90 1.05x, CV 0.019; density peaks at 0.382 s (100%)
+        wall clock rank-correlates with: arp_requests +0.213, tcp_synack +0.154, sequence_index -0.037
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0137 s, max 0.0298 s  — clean
+    
+    ns.fixed.timeout  (warm, n=111)
+        median 0.331 [IQR 0.327-0.335] n=111
+        p10 0.325 s, p90 0.338 s, p90/p10 1.04x, max/p90 1.09x, CV 0.022; density peaks at 0.332 s (100%)
+        wall clock rank-correlates with: recall -0.357, tcp_synack -0.313, arp_requests +0.297, sequence_index +0.058
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0143 s, max 0.0417 s  — clean
+    
+    ns.naming.full  (warm, n=112)
+        median 3.054 [IQR 3.049-3.063] n=112
+        p10 3.04 s, p90 3.07 s, p90/p10 1.01x, max/p90 1.00x, CV 0.004; density peaks at 3.05 s (100%)
+        wall clock rank-correlates with: arp_requests +0.213, tcp_synack +0.051, sequence_index +0.021
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0150 s, max 0.0294 s  — clean
+  cold arm
+    nmap.naming.broadcast  (cold, n=14)
+        median 30.250 [IQR 29.957-30.600] n=14
+        p10 29.7 s, p90 31.9 s, p90/p10 1.07x, max/p90 1.04x, CV 0.032; density peaks at 30.2 s (86%) | valley 93% of the lower peak, 32.6 s (14%)
+        wall clock rank-correlates with: tcp_rst +0.653, tcp_synack +0.178, arp_requests -0.160, recall +0.015
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0071 s, max 0.0242 s  — clean
+    
+    nmap.sn.priv.T2  (cold, n=5)
+        median 467.882 [IQR 464.946-471.535] n=5
+        p10 460 s, p90 472 s, p90/p10 1.03x, max/p90 1.00x, CV 0.012; density peaks at 469 s (100%)
+        wall clock rank-correlates with: tcp_synack +0.000
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0215 s, max 0.0362 s  — clean
+    
+    nmap.sn.priv.T3  (cold, n=11)
+        median 7.079 [IQR 5.205-7.642] n=11
+        p10 5.19 s, p90 7.67 s, p90/p10 1.48x, max/p90 1.00x, CV 0.193; density peaks at 5.28 s (45%) | valley 92% of the lower peak, 7.45 s (55%)
+        wall clock rank-correlates with: recall +0.345, arp_requests -0.236
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0193 s, max 0.0255 s  — clean
+    
+    nmap.sn.priv.T4  (cold, n=6)
+        median 7.622 [IQR 7.591-7.693] n=6
+        p10 7.1 s, p90 7.85 s, p90/p10 1.11x, max/p90 1.02x, CV 0.057; density peaks at 7.69 s (100%)
+        wall clock rank-correlates with: arp_requests +0.257
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0190 s, max 0.0234 s  — clean
+    
+    nmap.sn.priv.T5  (cold, n=12)
+        median 4.320 [IQR 4.271-4.425] n=12
+        p10 4.15 s, p90 4.44 s, p90/p10 1.07x, max/p90 1.05x, CV 0.032; density peaks at 4.33 s (100%)
+        wall clock rank-correlates with: arp_requests -0.266, tcp_synack -0.007
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0204 s, max 0.0239 s  — clean
+    
+    nmap.sn.unpriv.T2  (cold, n=11)   [notable: prose and a histogram]
+        median 2001.456 [IQR 1123.994-2507.464] n=11
+        p10 460 s, p90 2.78e+03 s, p90/p10 6.04x, max/p90 1.03x, CV 0.492; density peaks at 483 s (27%) | valley 87% of the lower peak, 2.26e+03 s (73%)
+        wall clock rank-correlates with: arp_requests +0.964, tcp_synack -0.927, tcp_rst +0.855, recall +0.645
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0290 s, max 0.0796 s  — clean
+    
+    nmap.sn.unpriv.T3  (cold, n=7)
+        median 23.184 [IQR 23.066-23.253] n=7
+        p10 22.8 s, p90 23.3 s, p90/p10 1.02x, max/p90 1.00x, CV 0.013; density peaks at 22.3 s (14%) | valley 90% of the lower peak, 23.2 s (86%)
+        wall clock rank-correlates with: recall -0.571, tcp_rst +0.500, arp_requests +0.393, tcp_synack +0.321
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0103 s, max 0.0110 s  — clean
+    
+    nmap.sn.unpriv.T4  (cold, n=15)
+        median 23.167 [IQR 23.058-23.310] n=15
+        p10 22.9 s, p90 23.5 s, p90/p10 1.02x, max/p90 1.01x, CV 0.011; density peaks at 23.2 s (100%)
+        wall clock rank-correlates with: tcp_rst +0.554, tcp_synack +0.450, arp_requests +0.207, recall +0.121
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0070 s, max 0.0129 s  — clean
+    
+    nmap.sn.unpriv.T5  (cold, n=9)
+        median 16.210 [IQR 14.660-17.323] n=9
+        p10 14.6 s, p90 18.1 s, p90/p10 1.24x, max/p90 1.09x, CV 0.107; density peaks at 15.2 s (100%)
+        wall clock rank-correlates with: arp_requests +0.817, tcp_rst +0.783, tcp_synack +0.633
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0093 s, max 0.0104 s  — clean
+    
+    ns.budget.shared  (cold, n=7)   [notable: prose and a histogram]
+        median 1.011 [IQR 1.003-1.365] n=7
+        p10 0.99 s, p90 2.12 s, p90/p10 2.14x, max/p90 1.29x, CV 0.455; density peaks at 1.02 s (100%)
+        wall clock rank-correlates with: arp_requests +0.143
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0179 s, max 0.0254 s  — clean
+    
+    ns.disc.unpriv  (cold, n=5)
+        median 0.422 [IQR 0.412-0.427] n=5
+        p10 0.401 s, p90 0.436 s, p90/p10 1.09x, max/p90 1.01x, CV 0.038; density peaks at 0.422 s (100%)
+        wall clock rank-correlates with: arp_requests +0.000
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0129 s, max 0.0178 s  — clean
+    
+    ns.fixed.timeout  (cold, n=10)
+        median 0.354 [IQR 0.346-0.361] n=10
+        p10 0.342 s, p90 0.361 s, p90/p10 1.06x, max/p90 1.00x, CV 0.033; density peaks at 0.323 s (10%) | valley 97% of the lower peak, 0.356 s (90%)
+        wall clock rank-correlates with: arp_requests +0.358, recall -0.164
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0135 s, max 0.0161 s  — clean
+    
+    ns.naming.full  (cold, n=10)
+        median 3.083 [IQR 3.078-3.089] n=10
+        p10 3.07 s, p90 3.09 s, p90/p10 1.01x, max/p90 1.00x, CV 0.004; density peaks at 3.08 s (100%)
+        wall clock rank-correlates with: recall -0.564, arp_requests -0.394
+        apparatus: exits [0], parse ok [True], |harness - self-reported| median 0.0138 s, max 0.0240 s  — clean
+
+STAGE 3b — the four hypotheses, each against the condition frozen before collection
+  family: H1, H2, H5, H6; alpha 0.05, Bonferroni 0.0125 across 4
+
+  --- WARM ARM (1456 runs) ---
+  H1: For host discovery alone on a heterogeneous /24, netsanity's median time-to-complete is lower than `nmap -sn` at every timing template that achieves equal or better recall.
+      pre-declared: Refuted if any nmap timing template matches netsanity's recall at equal or lower median time.
+      VERDICT: refutation condition NOT met — not refuted
+      n: netsanity n=115; nmap templates n=107-117
+      netsanity (adaptive default) median 0.382 s at median recall 1.00. Templates matching that recall: nmap.sn.priv.T2, nmap.sn.priv.T3, nmap.sn.priv.T4, nmap.sn.priv.T5; the fastest of them is nmap.sn.priv.T5 at 4.308 s. No template matches that recall at equal or lower median time.
+  H2: Per-host adaptive retransmission timing dominates fixed timing templates on a network whose round-trip times span orders of magnitude: for any nmap template, there exists a netsanity configuration that is both faster and at least as complete.
+      pre-declared: Refuted if the Pareto frontier of nmap's templates contains a point netsanity does not match or beat.
+      VERDICT: refutation condition NOT met — not refuted
+      n: nmap.sn.priv.T2 n=117; nmap.sn.priv.T3 n=111; nmap.sn.priv.T4 n=115; nmap.sn.priv.T5 n=110; nmap.sn.unpriv.T2 n=109; nmap.sn.unpriv.T3 n=114; nmap.sn.unpriv.T4 n=107; nmap.sn.unpriv.T5 n=112; ns.budget.shared n=115; ns.disc.unpriv n=115; ns.fixed.timeout n=111
+      nmap's frontier: nmap.sn.priv.T5 (4.308 s, recall 1.00). Every one of them is beaten by some netsanity configuration. The adaptive default alone beats every one of them.
+  H5: Separating the retransmission budget from the absence-declaration budget reduces total sweep time without reducing recall, relative to a single shared budget.
+      pre-declared: Refuted if recall drops, or if the reduction is within run-to-run noise.
+      VERDICT: refutation condition NOT met — not refuted
+      n: split n=115, shared n=115, 108 paired blocks, 1080 paired host observations
+      split median 0.382 [IQR 0.377-0.386] n=115 vs shared median 1.681 [IQR 1.673-1.690] n=115; median difference -1.2986 [-1.3022, -1.2966] (n=115). Recall: split 1.00, shared 1.00, unpaired median difference 0.0000 [0.0000, 0.0000] (n=115). McNemar 0 host(s) found only by split against 0 only by shared, p=1 (exact binomial (no discordant pairs)). Recall does not drop. The time reduction is outside run-to-run noise.
+  H6: On a local segment, losing root costs `nmap -sn` substantially more recall than it costs netsanity.
+      pre-declared: Refuted if the median per-block recall of unprivileged `nmap -sn` — at its best timing template — is less than 0.25 below unprivileged netsanity's on the pre-declared testbed composition, or if the difference is not significant under McNemar after Bonferroni correction.
+      VERDICT: refutation condition MET — refuted
+      n: netsanity n=115, nmap.sn.unpriv.T2 n=109, 104 paired blocks, 1040 paired host observations
+      best unprivileged template by median per-block recall is nmap.sn.unpriv.T2 at 0.90 (others: nmap.sn.unpriv.T3 0.40, nmap.sn.unpriv.T4 0.40, nmap.sn.unpriv.T5 0.40). Unprivileged netsanity 1.00. Gap +0.10 against the pre-declared 0.25; unpaired median difference 0.1000 [0.0000, 0.2000] (n=109). McNemar 257 host(s) found only by netsanity against 0 only by nmap, p=2.11e-57 (chi-square with continuity correction), Bonferroni alpha 0.0125. The gap is less than 0.25, so the refutation condition fires on its first disjunct alone. The difference is significant after correction.
+      [H2, the 2026-09-13 amendment's cold-regime clause] privileged nmap points at recall 1.0: ['nmap.sn.priv.T2', 'nmap.sn.priv.T3', 'nmap.sn.priv.T4', 'nmap.sn.priv.T5']; netsanity's adaptive default at 1.0, best netsanity configuration at 1.0. Clause fires for the adaptive default: False; for any configuration: False.
+
+  --- COLD ARM (122 runs) ---
+  H1: For host discovery alone on a heterogeneous /24, netsanity's median time-to-complete is lower than `nmap -sn` at every timing template that achieves equal or better recall.
+      pre-declared: Refuted if any nmap timing template matches netsanity's recall at equal or lower median time.
+      VERDICT: refutation condition NOT met — not refuted
+      n: netsanity n=5; nmap templates n=5-15
+      netsanity (adaptive default) median 0.422 s at median recall 0.80. Templates matching that recall: nmap.sn.priv.T2, nmap.sn.priv.T3, nmap.sn.priv.T4, nmap.sn.priv.T5, nmap.sn.unpriv.T2; the fastest of them is nmap.sn.priv.T5 at 4.320 s. No template matches that recall at equal or lower median time.
+  H2: Per-host adaptive retransmission timing dominates fixed timing templates on a network whose round-trip times span orders of magnitude: for any nmap template, there exists a netsanity configuration that is both faster and at least as complete.
+      pre-declared: Refuted if the Pareto frontier of nmap's templates contains a point netsanity does not match or beat.
+      VERDICT: refutation condition NOT met — not refuted
+      n: nmap.sn.priv.T2 n=5; nmap.sn.priv.T3 n=11; nmap.sn.priv.T4 n=6; nmap.sn.priv.T5 n=12; nmap.sn.unpriv.T2 n=11; nmap.sn.unpriv.T3 n=7; nmap.sn.unpriv.T4 n=15; nmap.sn.unpriv.T5 n=9; ns.budget.shared n=7; ns.disc.unpriv n=5; ns.fixed.timeout n=10
+      nmap's frontier: nmap.sn.priv.T5 (4.320 s, recall 1.00). Every one of them is beaten by some netsanity configuration. Unmatched by the adaptive default alone: nmap.sn.priv.T5.
+  H5: Separating the retransmission budget from the absence-declaration budget reduces total sweep time without reducing recall, relative to a single shared budget.
+      pre-declared: Refuted if recall drops, or if the reduction is within run-to-run noise.
+      VERDICT: refutation condition MET — refuted
+      n: split n=5, shared n=7, no within-block pairs exist in this arm
+      split median 0.422 [IQR 0.412-0.427] n=5 vs shared median 1.011 [IQR 1.003-1.365] n=7; median difference -0.5896 [-1.3075, -0.5658] (n=5). Recall: split 0.80, shared 1.00, unpaired median difference -0.2000 [-0.2000, -0.2000] (n=5). McNemar as pre-declared is unrunnable here: no block holds both conditions in this cache arm; with one flush per block exactly one run per block is cold, so the within-block pairing PROTOCOL.md section 7 specifies does not exist in the cold arm for any pair of conditions. Recall drops. The time reduction is outside run-to-run noise.
+  H6: On a local segment, losing root costs `nmap -sn` substantially more recall than it costs netsanity.
+      pre-declared: Refuted if the median per-block recall of unprivileged `nmap -sn` — at its best timing template — is less than 0.25 below unprivileged netsanity's on the pre-declared testbed composition, or if the difference is not significant under McNemar after Bonferroni correction.
+      VERDICT: refutation condition MET — refuted
+      n: netsanity n=5, nmap.sn.unpriv.T2 n=11, no within-block pairs exist in this arm
+      best unprivileged template by median per-block recall is nmap.sn.unpriv.T2 at 1.00 (others: nmap.sn.unpriv.T3 0.40, nmap.sn.unpriv.T4 0.40, nmap.sn.unpriv.T5 0.40). Unprivileged netsanity 0.80. Gap -0.20 against the pre-declared 0.25; unpaired median difference -0.2000 [-0.2000, 0.4000] (n=5). McNemar as pre-declared is unrunnable here: no block holds both conditions in this cache arm; with one flush per block exactly one run per block is cold, so the within-block pairing PROTOCOL.md section 7 specifies does not exist in the cold arm for any pair of conditions. The gap is less than 0.25, so the refutation condition fires on its first disjunct alone. The second disjunct cannot be evaluated in this arm.
+      [H2, the 2026-09-13 amendment's cold-regime clause] privileged nmap points at recall 1.0: ['nmap.sn.priv.T2', 'nmap.sn.priv.T3', 'nmap.sn.priv.T4', 'nmap.sn.priv.T5']; netsanity's adaptive default at 0.8, best netsanity configuration at 1.0. Clause fires for the adaptive default: True; for any configuration: False.
+
+STAGE 3c — flagged blocks 36, 74 and 93, with and without
+  They ran on battery under records that say on_ac_power: true. They are admissible; neither the protocol's exclusion rules nor this analysis removes them.
+    warm  with 36/74/93     n=1456  {'H1': 'not refuted', 'H2': 'not refuted', 'H5': 'not refuted', 'H6': 'refuted'}
+    warm  without 36/74/93  n=1420  {'H1': 'not refuted', 'H2': 'not refuted', 'H5': 'not refuted', 'H6': 'refuted'}
+      warm  ns.disc.unpriv       median 0.382 s -> 0.382 s (n 115 -> 112)
+      warm  ns.budget.shared     median 1.681 s -> 1.680 s (n 115 -> 112)
+      warm  nmap.sn.unpriv.T2    median 1445.978 s -> 1377.550 s (n 109 -> 106)
+      warm  nmap.sn.priv.T5      median 4.308 s -> 4.308 s (n 110 -> 108)
+    cold  with 36/74/93     n=122   {'H1': 'not refuted', 'H2': 'not refuted', 'H5': 'refuted', 'H6': 'refuted'}
+    cold  without 36/74/93  n=119   {'H1': 'not refuted', 'H2': 'not refuted', 'H5': 'refuted', 'H6': 'refuted'}
+      cold  ns.disc.unpriv       median 0.422 s -> 0.422 s (n 5 -> 5)
+      cold  ns.budget.shared     median 1.011 s -> 1.011 s (n 7 -> 7)
+      cold  nmap.sn.unpriv.T2    median 2001.456 s -> 2001.456 s (n 11 -> 11)
+      cold  nmap.sn.priv.T5      median 4.320 s -> 4.324 s (n 12 -> 11)
+
+STAGE 3d — does the stratum matter? (exploratory, warm arm)
+    nmap.sn.priv.T2        H=   0.12 p=0.99       medians [466.486, 466.215, 466.507, 465.008] spread 1.499 s n [29, 29, 30, 29]
+    nmap.sn.priv.T3        H=   1.80 p=0.614      medians [7.539, 7.773, 7.697, 7.661] spread 0.2338 s n [24, 28, 28, 31]
+    nmap.sn.priv.T4        H=   2.76 p=0.431      medians [7.565, 7.596, 7.595, 7.602] spread 0.03789 s n [28, 30, 28, 29]
+    nmap.sn.priv.T5        H=   0.48 p=0.922      medians [4.309, 4.312, 4.309, 4.303] spread 0.008196 s n [28, 27, 27, 28]
+    nmap.sn.unpriv.T2      H=   2.01 p=0.57       medians [1647.199, 431.07, 1395.937, 1704.181] spread 1273 s n [30, 26, 26, 27]
+    nmap.sn.unpriv.T3      H=   1.06 p=0.786      medians [20.285, 21.162, 20.351, 18.593] spread 2.569 s n [31, 29, 26, 28]
+    nmap.sn.unpriv.T4      H=   0.89 p=0.828      medians [18.693, 20.517, 20.069, 19.13] spread 1.824 s n [28, 24, 28, 27]
+    nmap.sn.unpriv.T5      H=   3.77 p=0.288      medians [11.825, 10.96, 11.868, 12.256] spread 1.296 s n [30, 27, 27, 28]
+    ns.budget.shared       H=   8.81 p=0.032      medians [1.684, 1.675, 1.683, 1.68] spread 0.008828 s n [28, 29, 29, 29]
+    ns.disc.unpriv         H=  11.01 p=0.0117     medians [0.385, 0.38, 0.379, 0.383] spread 0.005352 s n [27, 29, 29, 30]
+    ns.fixed.timeout       H=   1.21 p=0.751      medians [0.331, 0.332, 0.331, 0.331] spread 0.001019 s n [28, 28, 28, 27]
+    The Wi-Fi covariate section 6 names is 'not_applicable' on every run: the primary testbed is a virtual bridge, so household contention cannot reach it.
+
+STAGE 3e — the secondary metrics PROTOCOL.md section 4 names
+    nmap.naming.broadcast  precision 1.000  Jaccard median 1.000 (min 0.400)  probes/host not reported by this tool
+    nmap.sn.priv.T2        precision 0.909  Jaccard median 1.000 (min 0.909)  probes/host not reported by this tool
+    nmap.sn.priv.T3        precision 0.909  Jaccard median 1.000 (min 0.909)  probes/host not reported by this tool
+    nmap.sn.priv.T4        precision 0.909  Jaccard median 1.000 (min 0.909)  probes/host not reported by this tool
+    nmap.sn.priv.T5        precision 0.909  Jaccard median 1.000 (min 0.909)  probes/host not reported by this tool
+    nmap.sn.unpriv.T2      precision 1.000  Jaccard median 0.700 (min 0.400)  probes/host not reported by this tool
+    nmap.sn.unpriv.T3      precision 1.000  Jaccard median 1.000 (min 0.571)  probes/host not reported by this tool
+    nmap.sn.unpriv.T4      precision 1.000  Jaccard median 1.000 (min 1.000)  probes/host not reported by this tool
+    nmap.sn.unpriv.T5      precision 1.000  Jaccard median 1.000 (min 1.000)  probes/host not reported by this tool
+    ns.budget.shared       precision 0.909  Jaccard median 1.000 (min 1.000)  probes/host 62.5
+    ns.disc.unpriv         precision 0.909  Jaccard median 1.000 (min 1.000)  probes/host 61.7
+    ns.fixed.timeout       precision 0.909  Jaccard median 1.000 (min 0.818)  probes/host 64.1
+    ns.naming.full         precision 0.909  Jaccard median 1.000 (min 1.000)  probes/host 64.5
+    NOT in the record, and therefore not recomputable from it:
+      time_to_first_host: not recorded by the harness on any run
+      peak_in_flight_probes: not recorded by the harness on any run
+      energy_per_scan: powermetrics is not in the schema; the driver requires AC power, which is the opposite of the on-battery, screen-off condition section 4 specifies
+      wifi_airtime_utilisation: 'not_applicable' on all 1,578 admissible runs — bridge100 is not a Wi-Fi interface
+      H4_naming_fractions: parse carries no naming fields; the fraction of hosts named, the fraction given a model and the fraction of randomised-MAC hosts named are in the artifact at stdout_path and not in the NDJSON
+
+STAGE 3f — what the measurements say about THEORY.md
+    P2 'recall is invariant to the budget split': split 1.00 vs shared 1.00 warm (n 115/115); 0.80 vs 1.00 cold (n 5/7). CONTRADICTED in the cold arm.
+    P1/H2's mechanism, priced: fixed 50 ms retransmit 0.331 s against the adaptive default 0.382 s (warm); median difference -0.0509 [-0.0524, -0.0486] (n=111), Cliff's delta -1.000 (large), p=1.44e-38; recall 1.00 against 1.00.
+    P1/H2's mechanism, priced: fixed 50 ms retransmit 0.354 s against the adaptive default 0.422 s (cold); median difference -0.0676 [-0.0876, -0.0391] (n=5), Cliff's delta -1.000 (large), p=0.000666; recall 0.80 against 0.80.
+    P1's enabling condition (a late reply is still attributed to its probe), read off parse.discovery:
+      ns.disc.unpriv/warm          replies 8, reported 11, recall 1.00, n=115
+      ns.fixed.timeout/warm        replies 8, reported 11, recall 1.00, n=111
+      ns.budget.shared/warm        replies 13, reported 11, recall 1.00, n=115
+      ns.disc.unpriv/cold          replies 8, reported 9, recall 0.80, n=5
+      ns.fixed.timeout/cold        replies 9, reported 9, recall 0.80, n=10
+      ns.budget.shared/cold        replies 7, reported 11, recall 1.00, n=7
+    Predictions this collection cannot test:
+      P1 (advantage scales with RTT dispersion): the testbed holds one dispersion, 500x (1 ms to 500 ms target RTT), identical at all seven apparatus commits. Nothing in this collection varies it, so the central mechanism claim is not tested here.
+      C8 (correlated loss): nine of ten responders carry loss_percent 0.0 and the tenth carries a flat 15%; no burst process was imposed and the capture's burstiness was never estimated, so the arm where H5 was predicted to fail hardest is not sampled.
+      P7 / C7 (the cost form): the record carries probes_sent but neither the concurrency c nor the retransmission interval r nor the declaration budget t, so the wave form cannot be fitted from the NDJSON.
+      P4 (Little's Law on peak in-flight probes): peak in-flight probes is not recorded.
+      P5 (marginal recall of attempt three, Wi-Fi against wired): per-attempt outcomes are not recorded and the segment has no Wi-Fi.
+
+STAGE 4 — amendments this analysis made, recorded and dated
+    2026-09-22  Kruskal-Wallis across the four strata, per condition, warm arm
+        why: The design stratifies by time of day and the plan never says how to check whether the strata differ. Reporting four medians and leaving the reader to compare them by eye is worse than running the test and labelling it.
+        status: exploratory; not in the family; no hypothesis reads it
+    2026-09-22  Gaussian kernel density on log10 wall clock, to describe the shape of each condition's distribution before its median is reported
+        why: A median over a bimodal sample describes nothing and the plan does not ask whether the samples are unimodal. The density is reported, never used to decide anything.
+        status: exploratory; descriptive only
+    2026-09-22  Unpaired bootstrap intervals on recall differences in the cold arm
+        why: PROTOCOL.md section 7 pairs per-host outcomes within a block. One flush per block makes exactly one run per block cold, so no two conditions are ever cold in the same block and the paired test has nothing to pair. The unpaired interval is reported in its place and labelled.
+        status: exploratory; the pre-declared McNemar is reported unrunnable rather than replaced
+    2026-09-22  netsanity's adaptive default against its own fixed-retransmit ablation, on wall clock and recall
+        why: The condition matrix contains the comparison and no hypothesis asks for it. THEORY.md's contribution is per-host adaptive retransmission timing, and the ablation that removes the adaptation while keeping the split is the only thing in the study that prices it.
+        status: exploratory; reported as a result, not as a hypothesis test
+    2026-09-22  Jaccard set stability between consecutive blocks of a condition
+        why: PROTOCOL.md section 4 names run-to-run set stability as a secondary metric and section 7 names no test for it. The number is reported without one.
+        status: secondary metric, reported; no test attached
+
+figures, regenerated from the collected data:
+    Study/figures/measured/*.png and *.pdf
+
