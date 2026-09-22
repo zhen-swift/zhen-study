@@ -1,0 +1,2027 @@
+{
+ "sidecar_schema": 1,
+ "generated_by": "Study/analysis/strata.py",
+ "what_this_is": "A derived index, not evidence. runs.ndjson stores no stratum and no timezone; this file records the collection machine's UTC offset, how it was established, and the block-to-stratum map that follows from it. runs.ndjson is unmodified and must stay so.",
+ "source_file": "runs.ndjson",
+ "source_sha256": "05bba76fdb807c7de88cf5a20808d4f23deb1092e6ed4f129b645e03bda4c258",
+ "source_records": 1580,
+ "collection_utc_offset_seconds": -21600,
+ "collection_utc_offset": "-06:00",
+ "offset_established_by": {
+  "source": "collect.log",
+  "method": "collect.py stamps every log line with a naive datetime.now(); each 'block finished' line follows that block's last record, whose epoch time is in the NDJSON. Reading the stamp as UTC and subtracting the record's finished_at_unix gives offset + write-lag. The offset is the unique quarter-hour value leaving every lag in [0, 120) seconds.",
+  "anchors": 120,
+  "offset_seconds": -21600,
+  "write_lag_seconds": {
+   "min": 1.517,
+   "max": 2.669,
+   "median": 2.084
+  },
+  "drift_across_window_seconds": 1.152,
+  "driver_labels": {
+   "0": "evening",
+   "1": "evening",
+   "2": "evening",
+   "3": "evening",
+   "4": "evening",
+   "5": "afternoon",
+   "6": "afternoon",
+   "7": "afternoon",
+   "8": "afternoon",
+   "9": "afternoon",
+   "10": "evening",
+   "11": "evening",
+   "12": "evening",
+   "13": "evening",
+   "14": "evening",
+   "15": "overnight",
+   "16": "overnight",
+   "17": "overnight",
+   "18": "overnight",
+   "19": "overnight",
+   "20": "afternoon",
+   "21": "afternoon",
+   "22": "afternoon",
+   "23": "afternoon",
+   "24": "afternoon",
+   "25": "evening",
+   "26": "evening",
+   "27": "evening",
+   "28": "evening",
+   "29": "evening",
+   "30": "overnight",
+   "31": "overnight",
+   "32": "overnight",
+   "33": "overnight",
+   "34": "overnight",
+   "35": "morning",
+   "36": "morning",
+   "37": "morning",
+   "38": "morning",
+   "39": "morning",
+   "40": "afternoon",
+   "41": "afternoon",
+   "42": "afternoon",
+   "43": "afternoon",
+   "44": "afternoon",
+   "45": "evening",
+   "46": "evening",
+   "47": "evening",
+   "48": "evening",
+   "49": "evening",
+   "50": "overnight",
+   "51": "overnight",
+   "52": "overnight",
+   "53": "overnight",
+   "54": "overnight",
+   "55": "morning",
+   "56": "morning",
+   "57": "morning",
+   "58": "morning",
+   "59": "morning",
+   "60": "afternoon",
+   "61": "afternoon",
+   "62": "afternoon",
+   "63": "afternoon",
+   "64": "afternoon",
+   "65": "evening",
+   "66": "evening",
+   "67": "evening",
+   "68": "evening",
+   "69": "morning",
+   "70": "morning",
+   "71": "morning",
+   "72": "morning",
+   "73": "morning",
+   "74": "afternoon",
+   "75": "afternoon",
+   "76": "evening",
+   "77": "evening",
+   "78": "evening",
+   "79": "evening",
+   "80": "evening",
+   "81": "overnight",
+   "82": "overnight",
+   "83": "overnight",
+   "84": "overnight",
+   "85": "overnight",
+   "86": "morning",
+   "87": "morning",
+   "88": "morning",
+   "89": "morning",
+   "90": "morning",
+   "91": "afternoon",
+   "92": "afternoon",
+   "93": "afternoon",
+   "94": "afternoon",
+   "95": "afternoon",
+   "96": "evening",
+   "97": "evening",
+   "98": "overnight",
+   "99": "overnight",
+   "100": "overnight",
+   "101": "overnight",
+   "102": "overnight",
+   "103": "morning",
+   "104": "morning",
+   "105": "morning",
+   "106": "morning",
+   "107": "morning",
+   "108": "afternoon",
+   "109": "afternoon",
+   "110": "afternoon",
+   "111": "overnight",
+   "112": "overnight",
+   "113": "overnight",
+   "114": "overnight",
+   "115": "overnight",
+   "116": "morning",
+   "117": "morning",
+   "118": "morning",
+   "119": "morning",
+   "120": "morning",
+   "121": "overnight"
+  },
+  "per_anchor": [
+   {
+    "block_id": 0,
+    "log_local": "2026-09-13T19:15:24",
+    "block_last_finished_unix": 1789348521.753874,
+    "offset_plus_lag_seconds": -21597.753874
+   },
+   {
+    "block_id": 1,
+    "log_local": "2026-09-13T19:35:59",
+    "block_last_finished_unix": 1789349756.733499,
+    "offset_plus_lag_seconds": -21597.733499
+   },
+   {
+    "block_id": 2,
+    "log_local": "2026-09-13T19:56:22",
+    "block_last_finished_unix": 1789350980.134083,
+    "offset_plus_lag_seconds": -21598.134083
+   },
+   {
+    "block_id": 3,
+    "log_local": "2026-09-13T20:12:35",
+    "block_last_finished_unix": 1789351953.263419,
+    "offset_plus_lag_seconds": -21598.263419
+   },
+   {
+    "block_id": 4,
+    "log_local": "2026-09-13T21:01:12",
+    "block_last_finished_unix": 1789354869.487586,
+    "offset_plus_lag_seconds": -21597.487586
+   },
+   {
+    "block_id": 5,
+    "log_local": "2026-09-14T12:14:26",
+    "block_last_finished_unix": 1789409664.273283,
+    "offset_plus_lag_seconds": -21598.273283
+   },
+   {
+    "block_id": 6,
+    "log_local": "2026-09-14T12:29:46",
+    "block_last_finished_unix": 1789410583.97045,
+    "offset_plus_lag_seconds": -21597.97045
+   },
+   {
+    "block_id": 7,
+    "log_local": "2026-09-14T13:08:05",
+    "block_last_finished_unix": 1789412882.723352,
+    "offset_plus_lag_seconds": -21597.723352
+   },
+   {
+    "block_id": 8,
+    "log_local": "2026-09-14T13:39:46",
+    "block_last_finished_unix": 1789414784.15282,
+    "offset_plus_lag_seconds": -21598.15282
+   },
+   {
+    "block_id": 9,
+    "log_local": "2026-09-14T14:39:43",
+    "block_last_finished_unix": 1789418380.827964,
+    "offset_plus_lag_seconds": -21597.827964
+   },
+   {
+    "block_id": 10,
+    "log_local": "2026-09-14T18:43:56",
+    "block_last_finished_unix": 1789433033.838503,
+    "offset_plus_lag_seconds": -21597.838503
+   },
+   {
+    "block_id": 11,
+    "log_local": "2026-09-14T19:36:53",
+    "block_last_finished_unix": 1789436211.129022,
+    "offset_plus_lag_seconds": -21598.129022
+   },
+   {
+    "block_id": 12,
+    "log_local": "2026-09-14T20:21:25",
+    "block_last_finished_unix": 1789438882.597474,
+    "offset_plus_lag_seconds": -21597.597474
+   },
+   {
+    "block_id": 13,
+    "log_local": "2026-09-14T20:40:51",
+    "block_last_finished_unix": 1789440049.290882,
+    "offset_plus_lag_seconds": -21598.290882
+   },
+   {
+    "block_id": 14,
+    "log_local": "2026-09-14T20:55:36",
+    "block_last_finished_unix": 1789440933.766406,
+    "offset_plus_lag_seconds": -21597.766406
+   },
+   {
+    "block_id": 15,
+    "log_local": "2026-09-15T00:37:15",
+    "block_last_finished_unix": 1789454233.157212,
+    "offset_plus_lag_seconds": -21598.157212
+   },
+   {
+    "block_id": 16,
+    "log_local": "2026-09-15T01:01:52",
+    "block_last_finished_unix": 1789455709.698576,
+    "offset_plus_lag_seconds": -21597.698576
+   },
+   {
+    "block_id": 17,
+    "log_local": "2026-09-15T01:46:04",
+    "block_last_finished_unix": 1789458362.256064,
+    "offset_plus_lag_seconds": -21598.256064
+   },
+   {
+    "block_id": 18,
+    "log_local": "2026-09-15T02:20:42",
+    "block_last_finished_unix": 1789460439.7204,
+    "offset_plus_lag_seconds": -21597.7204
+   },
+   {
+    "block_id": 20,
+    "log_local": "2026-09-15T13:15:22",
+    "block_last_finished_unix": 1789499719.916844,
+    "offset_plus_lag_seconds": -21597.916844
+   },
+   {
+    "block_id": 21,
+    "log_local": "2026-09-15T14:10:37",
+    "block_last_finished_unix": 1789503035.416246,
+    "offset_plus_lag_seconds": -21598.416246
+   },
+   {
+    "block_id": 22,
+    "log_local": "2026-09-15T15:02:48",
+    "block_last_finished_unix": 1789506165.914911,
+    "offset_plus_lag_seconds": -21597.914911
+   },
+   {
+    "block_id": 23,
+    "log_local": "2026-09-15T15:46:37",
+    "block_last_finished_unix": 1789508794.851975,
+    "offset_plus_lag_seconds": -21597.851975
+   },
+   {
+    "block_id": 24,
+    "log_local": "2026-09-15T16:33:16",
+    "block_last_finished_unix": 1789511594.020269,
+    "offset_plus_lag_seconds": -21598.020269
+   },
+   {
+    "block_id": 25,
+    "log_local": "2026-09-15T18:41:12",
+    "block_last_finished_unix": 1789519269.5196,
+    "offset_plus_lag_seconds": -21597.5196
+   },
+   {
+    "block_id": 26,
+    "log_local": "2026-09-15T19:17:33",
+    "block_last_finished_unix": 1789521451.231571,
+    "offset_plus_lag_seconds": -21598.231571
+   },
+   {
+    "block_id": 27,
+    "log_local": "2026-09-15T19:58:03",
+    "block_last_finished_unix": 1789523880.779404,
+    "offset_plus_lag_seconds": -21597.779404
+   },
+   {
+    "block_id": 28,
+    "log_local": "2026-09-15T20:48:20",
+    "block_last_finished_unix": 1789526897.485622,
+    "offset_plus_lag_seconds": -21597.485622
+   },
+   {
+    "block_id": 29,
+    "log_local": "2026-09-15T21:07:04",
+    "block_last_finished_unix": 1789528022.0863,
+    "offset_plus_lag_seconds": -21598.0863
+   },
+   {
+    "block_id": 30,
+    "log_local": "2026-09-16T00:48:06",
+    "block_last_finished_unix": 1789541283.44851,
+    "offset_plus_lag_seconds": -21597.44851
+   },
+   {
+    "block_id": 31,
+    "log_local": "2026-09-16T01:34:08",
+    "block_last_finished_unix": 1789544046.398157,
+    "offset_plus_lag_seconds": -21598.398157
+   },
+   {
+    "block_id": 32,
+    "log_local": "2026-09-16T02:27:53",
+    "block_last_finished_unix": 1789547271.444816,
+    "offset_plus_lag_seconds": -21598.444816
+   },
+   {
+    "block_id": 33,
+    "log_local": "2026-09-16T03:15:05",
+    "block_last_finished_unix": 1789550102.649792,
+    "offset_plus_lag_seconds": -21597.649792
+   },
+   {
+    "block_id": 34,
+    "log_local": "2026-09-16T03:50:08",
+    "block_last_finished_unix": 1789552206.313661,
+    "offset_plus_lag_seconds": -21598.313661
+   },
+   {
+    "block_id": 35,
+    "log_local": "2026-09-16T06:15:32",
+    "block_last_finished_unix": 1789560929.742307,
+    "offset_plus_lag_seconds": -21597.742307
+   },
+   {
+    "block_id": 36,
+    "log_local": "2026-09-16T07:07:01",
+    "block_last_finished_unix": 1789564019.361677,
+    "offset_plus_lag_seconds": -21598.361677
+   },
+   {
+    "block_id": 37,
+    "log_local": "2026-09-16T09:39:28",
+    "block_last_finished_unix": 1789573166.008359,
+    "offset_plus_lag_seconds": -21598.008359
+   },
+   {
+    "block_id": 38,
+    "log_local": "2026-09-16T10:39:51",
+    "block_last_finished_unix": 1789576789.483168,
+    "offset_plus_lag_seconds": -21598.483168
+   },
+   {
+    "block_id": 39,
+    "log_local": "2026-09-16T11:02:12",
+    "block_last_finished_unix": 1789578129.614584,
+    "offset_plus_lag_seconds": -21597.614584
+   },
+   {
+    "block_id": 40,
+    "log_local": "2026-09-16T12:46:28",
+    "block_last_finished_unix": 1789584385.553652,
+    "offset_plus_lag_seconds": -21597.553652
+   },
+   {
+    "block_id": 41,
+    "log_local": "2026-09-16T13:14:12",
+    "block_last_finished_unix": 1789586049.743384,
+    "offset_plus_lag_seconds": -21597.743384
+   },
+   {
+    "block_id": 42,
+    "log_local": "2026-09-16T13:30:11",
+    "block_last_finished_unix": 1789587009.055101,
+    "offset_plus_lag_seconds": -21598.055101
+   },
+   {
+    "block_id": 43,
+    "log_local": "2026-09-16T14:31:56",
+    "block_last_finished_unix": 1789590714.116252,
+    "offset_plus_lag_seconds": -21598.116252
+   },
+   {
+    "block_id": 44,
+    "log_local": "2026-09-16T15:14:40",
+    "block_last_finished_unix": 1789593278.1945,
+    "offset_plus_lag_seconds": -21598.1945
+   },
+   {
+    "block_id": 45,
+    "log_local": "2026-09-16T18:15:12",
+    "block_last_finished_unix": 1789604110.167691,
+    "offset_plus_lag_seconds": -21598.167691
+   },
+   {
+    "block_id": 46,
+    "log_local": "2026-09-16T18:42:41",
+    "block_last_finished_unix": 1789605759.074422,
+    "offset_plus_lag_seconds": -21598.074422
+   },
+   {
+    "block_id": 47,
+    "log_local": "2026-09-16T18:56:17",
+    "block_last_finished_unix": 1789606575.467398,
+    "offset_plus_lag_seconds": -21598.467398
+   },
+   {
+    "block_id": 48,
+    "log_local": "2026-09-16T19:17:50",
+    "block_last_finished_unix": 1789607867.745521,
+    "offset_plus_lag_seconds": -21597.745521
+   },
+   {
+    "block_id": 49,
+    "log_local": "2026-09-16T19:58:57",
+    "block_last_finished_unix": 1789610335.067272,
+    "offset_plus_lag_seconds": -21598.067272
+   },
+   {
+    "block_id": 50,
+    "log_local": "2026-09-17T00:40:38",
+    "block_last_finished_unix": 1789627235.648405,
+    "offset_plus_lag_seconds": -21597.648405
+   },
+   {
+    "block_id": 51,
+    "log_local": "2026-09-17T01:06:45",
+    "block_last_finished_unix": 1789628802.843708,
+    "offset_plus_lag_seconds": -21597.843708
+   },
+   {
+    "block_id": 52,
+    "log_local": "2026-09-17T01:48:52",
+    "block_last_finished_unix": 1789631330.167544,
+    "offset_plus_lag_seconds": -21598.167544
+   },
+   {
+    "block_id": 53,
+    "log_local": "2026-09-17T02:03:03",
+    "block_last_finished_unix": 1789632180.867199,
+    "offset_plus_lag_seconds": -21597.867199
+   },
+   {
+    "block_id": 54,
+    "log_local": "2026-09-17T02:17:48",
+    "block_last_finished_unix": 1789633066.144261,
+    "offset_plus_lag_seconds": -21598.144261
+   },
+   {
+    "block_id": 55,
+    "log_local": "2026-09-17T06:44:10",
+    "block_last_finished_unix": 1789649048.227125,
+    "offset_plus_lag_seconds": -21598.227125
+   },
+   {
+    "block_id": 56,
+    "log_local": "2026-09-17T07:00:02",
+    "block_last_finished_unix": 1789649999.525976,
+    "offset_plus_lag_seconds": -21597.525976
+   },
+   {
+    "block_id": 57,
+    "log_local": "2026-09-17T07:54:25",
+    "block_last_finished_unix": 1789653262.67132,
+    "offset_plus_lag_seconds": -21597.67132
+   },
+   {
+    "block_id": 58,
+    "log_local": "2026-09-17T08:09:15",
+    "block_last_finished_unix": 1789654152.87118,
+    "offset_plus_lag_seconds": -21597.87118
+   },
+   {
+    "block_id": 59,
+    "log_local": "2026-09-17T08:59:50",
+    "block_last_finished_unix": 1789657187.636361,
+    "offset_plus_lag_seconds": -21597.636361
+   },
+   {
+    "block_id": 60,
+    "log_local": "2026-09-17T12:34:23",
+    "block_last_finished_unix": 1789670060.995697,
+    "offset_plus_lag_seconds": -21597.995697
+   },
+   {
+    "block_id": 61,
+    "log_local": "2026-09-17T13:34:32",
+    "block_last_finished_unix": 1789673669.461929,
+    "offset_plus_lag_seconds": -21597.461929
+   },
+   {
+    "block_id": 62,
+    "log_local": "2026-09-17T13:49:42",
+    "block_last_finished_unix": 1789674580.217232,
+    "offset_plus_lag_seconds": -21598.217232
+   },
+   {
+    "block_id": 63,
+    "log_local": "2026-09-17T14:22:36",
+    "block_last_finished_unix": 1789676553.755494,
+    "offset_plus_lag_seconds": -21597.755494
+   },
+   {
+    "block_id": 64,
+    "log_local": "2026-09-17T15:11:50",
+    "block_last_finished_unix": 1789679507.691905,
+    "offset_plus_lag_seconds": -21597.691905
+   },
+   {
+    "block_id": 65,
+    "log_local": "2026-09-17T18:55:42",
+    "block_last_finished_unix": 1789692939.638944,
+    "offset_plus_lag_seconds": -21597.638944
+   },
+   {
+    "block_id": 66,
+    "log_local": "2026-09-17T19:12:14",
+    "block_last_finished_unix": 1789693931.80771,
+    "offset_plus_lag_seconds": -21597.80771
+   },
+   {
+    "block_id": 67,
+    "log_local": "2026-09-17T19:51:36",
+    "block_last_finished_unix": 1789696293.971421,
+    "offset_plus_lag_seconds": -21597.971421
+   },
+   {
+    "block_id": 69,
+    "log_local": "2026-09-18T09:23:17",
+    "block_last_finished_unix": 1789744994.94814,
+    "offset_plus_lag_seconds": -21597.94814
+   },
+   {
+    "block_id": 70,
+    "log_local": "2026-09-18T09:38:02",
+    "block_last_finished_unix": 1789745879.448261,
+    "offset_plus_lag_seconds": -21597.448261
+   },
+   {
+    "block_id": 71,
+    "log_local": "2026-09-18T10:18:50",
+    "block_last_finished_unix": 1789748327.485247,
+    "offset_plus_lag_seconds": -21597.485247
+   },
+   {
+    "block_id": 72,
+    "log_local": "2026-09-18T10:33:55",
+    "block_last_finished_unix": 1789749232.488173,
+    "offset_plus_lag_seconds": -21597.488173
+   },
+   {
+    "block_id": 73,
+    "log_local": "2026-09-18T11:18:28",
+    "block_last_finished_unix": 1789751906.376859,
+    "offset_plus_lag_seconds": -21598.376859
+   },
+   {
+    "block_id": 74,
+    "log_local": "2026-09-18T12:35:25",
+    "block_last_finished_unix": 1789756522.600393,
+    "offset_plus_lag_seconds": -21597.600393
+   },
+   {
+    "block_id": 75,
+    "log_local": "2026-09-18T17:09:08",
+    "block_last_finished_unix": 1789772946.03879,
+    "offset_plus_lag_seconds": -21598.03879
+   },
+   {
+    "block_id": 76,
+    "log_local": "2026-09-18T18:45:30",
+    "block_last_finished_unix": 1789778728.458101,
+    "offset_plus_lag_seconds": -21598.458101
+   },
+   {
+    "block_id": 77,
+    "log_local": "2026-09-18T19:32:28",
+    "block_last_finished_unix": 1789781545.745145,
+    "offset_plus_lag_seconds": -21597.745145
+   },
+   {
+    "block_id": 78,
+    "log_local": "2026-09-18T20:14:13",
+    "block_last_finished_unix": 1789784050.605886,
+    "offset_plus_lag_seconds": -21597.605886
+   },
+   {
+    "block_id": 79,
+    "log_local": "2026-09-18T20:34:21",
+    "block_last_finished_unix": 1789785259.162515,
+    "offset_plus_lag_seconds": -21598.162515
+   },
+   {
+    "block_id": 80,
+    "log_local": "2026-09-18T20:52:43",
+    "block_last_finished_unix": 1789786360.935534,
+    "offset_plus_lag_seconds": -21597.935534
+   },
+   {
+    "block_id": 81,
+    "log_local": "2026-09-19T00:44:25",
+    "block_last_finished_unix": 1789800262.974835,
+    "offset_plus_lag_seconds": -21597.974835
+   },
+   {
+    "block_id": 82,
+    "log_local": "2026-09-19T01:24:16",
+    "block_last_finished_unix": 1789802653.557153,
+    "offset_plus_lag_seconds": -21597.557153
+   },
+   {
+    "block_id": 83,
+    "log_local": "2026-09-19T02:13:57",
+    "block_last_finished_unix": 1789805635.335514,
+    "offset_plus_lag_seconds": -21598.335514
+   },
+   {
+    "block_id": 84,
+    "log_local": "2026-09-19T02:32:19",
+    "block_last_finished_unix": 1789806736.592033,
+    "offset_plus_lag_seconds": -21597.592033
+   },
+   {
+    "block_id": 85,
+    "log_local": "2026-09-19T02:59:48",
+    "block_last_finished_unix": 1789808386.063797,
+    "offset_plus_lag_seconds": -21598.063797
+   },
+   {
+    "block_id": 86,
+    "log_local": "2026-09-19T06:15:19",
+    "block_last_finished_unix": 1789820116.551492,
+    "offset_plus_lag_seconds": -21597.551492
+   },
+   {
+    "block_id": 87,
+    "log_local": "2026-09-19T06:30:10",
+    "block_last_finished_unix": 1789821007.655088,
+    "offset_plus_lag_seconds": -21597.655088
+   },
+   {
+    "block_id": 88,
+    "log_local": "2026-09-19T07:17:13",
+    "block_last_finished_unix": 1789823831.44381,
+    "offset_plus_lag_seconds": -21598.44381
+   },
+   {
+    "block_id": 89,
+    "log_local": "2026-09-19T07:30:27",
+    "block_last_finished_unix": 1789824625.055754,
+    "offset_plus_lag_seconds": -21598.055754
+   },
+   {
+    "block_id": 90,
+    "log_local": "2026-09-19T08:14:07",
+    "block_last_finished_unix": 1789827244.876484,
+    "offset_plus_lag_seconds": -21597.876484
+   },
+   {
+    "block_id": 91,
+    "log_local": "2026-09-19T12:19:42",
+    "block_last_finished_unix": 1789841980.357772,
+    "offset_plus_lag_seconds": -21598.357772
+   },
+   {
+    "block_id": 92,
+    "log_local": "2026-09-19T13:11:22",
+    "block_last_finished_unix": 1789845080.291168,
+    "offset_plus_lag_seconds": -21598.291168
+   },
+   {
+    "block_id": 93,
+    "log_local": "2026-09-19T13:56:02",
+    "block_last_finished_unix": 1789847759.610925,
+    "offset_plus_lag_seconds": -21597.610925
+   },
+   {
+    "block_id": 94,
+    "log_local": "2026-09-19T15:59:24",
+    "block_last_finished_unix": 1789855161.778621,
+    "offset_plus_lag_seconds": -21597.778621
+   },
+   {
+    "block_id": 95,
+    "log_local": "2026-09-19T16:12:21",
+    "block_last_finished_unix": 1789855938.33141,
+    "offset_plus_lag_seconds": -21597.33141
+   },
+   {
+    "block_id": 96,
+    "log_local": "2026-09-19T18:45:00",
+    "block_last_finished_unix": 1789865097.756392,
+    "offset_plus_lag_seconds": -21597.756392
+   },
+   {
+    "block_id": 97,
+    "log_local": "2026-09-19T19:31:20",
+    "block_last_finished_unix": 1789867878.047274,
+    "offset_plus_lag_seconds": -21598.047274
+   },
+   {
+    "block_id": 98,
+    "log_local": "2026-09-20T00:55:06",
+    "block_last_finished_unix": 1789887304.343397,
+    "offset_plus_lag_seconds": -21598.343397
+   },
+   {
+    "block_id": 99,
+    "log_local": "2026-09-20T01:09:14",
+    "block_last_finished_unix": 1789888152.150504,
+    "offset_plus_lag_seconds": -21598.150504
+   },
+   {
+    "block_id": 100,
+    "log_local": "2026-09-20T01:57:45",
+    "block_last_finished_unix": 1789891062.572373,
+    "offset_plus_lag_seconds": -21597.572373
+   },
+   {
+    "block_id": 101,
+    "log_local": "2026-09-20T02:10:28",
+    "block_last_finished_unix": 1789891826.404899,
+    "offset_plus_lag_seconds": -21598.404899
+   },
+   {
+    "block_id": 102,
+    "log_local": "2026-09-20T02:57:11",
+    "block_last_finished_unix": 1789894628.485184,
+    "offset_plus_lag_seconds": -21597.485184
+   },
+   {
+    "block_id": 103,
+    "log_local": "2026-09-20T06:50:36",
+    "block_last_finished_unix": 1789908634.148749,
+    "offset_plus_lag_seconds": -21598.148749
+   },
+   {
+    "block_id": 104,
+    "log_local": "2026-09-20T07:20:47",
+    "block_last_finished_unix": 1789910444.864385,
+    "offset_plus_lag_seconds": -21597.864385
+   },
+   {
+    "block_id": 105,
+    "log_local": "2026-09-20T08:06:36",
+    "block_last_finished_unix": 1789913194.013799,
+    "offset_plus_lag_seconds": -21598.013799
+   },
+   {
+    "block_id": 106,
+    "log_local": "2026-09-20T08:54:55",
+    "block_last_finished_unix": 1789916092.858356,
+    "offset_plus_lag_seconds": -21597.858356
+   },
+   {
+    "block_id": 107,
+    "log_local": "2026-09-20T09:15:36",
+    "block_last_finished_unix": 1789917334.022117,
+    "offset_plus_lag_seconds": -21598.022117
+   },
+   {
+    "block_id": 108,
+    "log_local": "2026-09-20T12:53:56",
+    "block_last_finished_unix": 1789930433.700339,
+    "offset_plus_lag_seconds": -21597.700339
+   },
+   {
+    "block_id": 109,
+    "log_local": "2026-09-20T13:07:51",
+    "block_last_finished_unix": 1789931268.585056,
+    "offset_plus_lag_seconds": -21597.585056
+   },
+   {
+    "block_id": 110,
+    "log_local": "2026-09-20T14:05:02",
+    "block_last_finished_unix": 1789934699.429589,
+    "offset_plus_lag_seconds": -21597.429589
+   },
+   {
+    "block_id": 111,
+    "log_local": "2026-09-21T00:18:17",
+    "block_last_finished_unix": 1789971494.906174,
+    "offset_plus_lag_seconds": -21597.906174
+   },
+   {
+    "block_id": 112,
+    "log_local": "2026-09-21T00:57:46",
+    "block_last_finished_unix": 1789973863.571246,
+    "offset_plus_lag_seconds": -21597.571246
+   },
+   {
+    "block_id": 113,
+    "log_local": "2026-09-21T01:40:24",
+    "block_last_finished_unix": 1789976422.100873,
+    "offset_plus_lag_seconds": -21598.100873
+   },
+   {
+    "block_id": 114,
+    "log_local": "2026-09-21T02:23:00",
+    "block_last_finished_unix": 1789978978.004642,
+    "offset_plus_lag_seconds": -21598.004642
+   },
+   {
+    "block_id": 115,
+    "log_local": "2026-09-21T02:45:53",
+    "block_last_finished_unix": 1789980350.476521,
+    "offset_plus_lag_seconds": -21597.476521
+   },
+   {
+    "block_id": 116,
+    "log_local": "2026-09-21T06:48:07",
+    "block_last_finished_unix": 1789994885.01183,
+    "offset_plus_lag_seconds": -21598.01183
+   },
+   {
+    "block_id": 117,
+    "log_local": "2026-09-21T07:04:55",
+    "block_last_finished_unix": 1789995893.363558,
+    "offset_plus_lag_seconds": -21598.363558
+   },
+   {
+    "block_id": 118,
+    "log_local": "2026-09-21T07:21:15",
+    "block_last_finished_unix": 1789996872.647349,
+    "offset_plus_lag_seconds": -21597.647349
+   },
+   {
+    "block_id": 119,
+    "log_local": "2026-09-21T07:40:58",
+    "block_last_finished_unix": 1789998056.258898,
+    "offset_plus_lag_seconds": -21598.258898
+   },
+   {
+    "block_id": 120,
+    "log_local": "2026-09-21T08:00:16",
+    "block_last_finished_unix": 1789999214.195743,
+    "offset_plus_lag_seconds": -21598.195743
+   },
+   {
+    "block_id": 121,
+    "log_local": "2026-09-22T00:14:45",
+    "block_last_finished_unix": 1790057683.393063,
+    "offset_plus_lag_seconds": -21598.393063
+   }
+  ]
+ },
+ "stratum_boundaries_local_hours": {
+  "overnight": [
+   0,
+   6
+  ],
+  "morning": [
+   6,
+   12
+  ],
+  "afternoon": [
+   12,
+   18
+  ],
+  "evening": [
+   18,
+   24
+  ]
+ },
+ "assignment_rule": "stratum = the local-time hour bucket of the earliest started_at_unix among the block's records, which is exactly what collect.census() did when it decided the collection was finished.",
+ "complete_blocks_per_stratum": {
+  "afternoon": 30,
+  "evening": 30,
+  "morning": 30,
+  "overnight": 30
+ },
+ "complete_blocks": 120,
+ "partial_blocks": [
+  19,
+  68
+ ],
+ "per_stratum_day": {
+  "afternoon/2026-09-14": 5,
+  "afternoon/2026-09-15": 5,
+  "afternoon/2026-09-16": 5,
+  "afternoon/2026-09-17": 5,
+  "afternoon/2026-09-18": 2,
+  "afternoon/2026-09-19": 5,
+  "afternoon/2026-09-20": 3,
+  "evening/2026-09-13": 5,
+  "evening/2026-09-14": 5,
+  "evening/2026-09-15": 5,
+  "evening/2026-09-16": 5,
+  "evening/2026-09-17": 3,
+  "evening/2026-09-18": 5,
+  "evening/2026-09-19": 2,
+  "morning/2026-09-16": 5,
+  "morning/2026-09-17": 5,
+  "morning/2026-09-18": 5,
+  "morning/2026-09-19": 5,
+  "morning/2026-09-20": 5,
+  "morning/2026-09-21": 5,
+  "overnight/2026-09-15": 4,
+  "overnight/2026-09-16": 5,
+  "overnight/2026-09-17": 5,
+  "overnight/2026-09-19": 5,
+  "overnight/2026-09-20": 5,
+  "overnight/2026-09-21": 5,
+  "overnight/2026-09-22": 1
+ },
+ "blocks": {
+  "0": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789345189.279031,
+   "block_started_local": "2026-09-13T18:19:49-06:00",
+   "local_day": "2026-09-13",
+   "apparatus_commit": "47113b8"
+  },
+  "1": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789348527.625125,
+   "block_started_local": "2026-09-13T19:15:27-06:00",
+   "local_day": "2026-09-13",
+   "apparatus_commit": "47113b8"
+  },
+  "2": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789349762.870541,
+   "block_started_local": "2026-09-13T19:36:02-06:00",
+   "local_day": "2026-09-13",
+   "apparatus_commit": "47113b8"
+  },
+  "3": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789350986.042876,
+   "block_started_local": "2026-09-13T19:56:26-06:00",
+   "local_day": "2026-09-13",
+   "apparatus_commit": "47113b8"
+  },
+  "4": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789351959.173473,
+   "block_started_local": "2026-09-13T20:12:39-06:00",
+   "local_day": "2026-09-13",
+   "apparatus_commit": "47113b8"
+  },
+  "5": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789408828.338567,
+   "block_started_local": "2026-09-14T12:00:28-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "6": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789409669.982392,
+   "block_started_local": "2026-09-14T12:14:29-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "7": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789410589.827245,
+   "block_started_local": "2026-09-14T12:29:49-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "8": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789412888.448902,
+   "block_started_local": "2026-09-14T13:08:08-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "9": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789414789.86789,
+   "block_started_local": "2026-09-14T13:39:49-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "10": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789430450.315068,
+   "block_started_local": "2026-09-14T18:00:50-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "11": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789433039.628837,
+   "block_started_local": "2026-09-14T18:43:59-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "12": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789436216.957818,
+   "block_started_local": "2026-09-14T19:36:56-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "13": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789438888.465979,
+   "block_started_local": "2026-09-14T20:21:28-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "14": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789440055.111479,
+   "block_started_local": "2026-09-14T20:40:55-06:00",
+   "local_day": "2026-09-14",
+   "apparatus_commit": "1bf4371"
+  },
+  "15": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789452044.22982,
+   "block_started_local": "2026-09-15T00:00:44-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "1bf4371"
+  },
+  "16": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789454239.046564,
+   "block_started_local": "2026-09-15T00:37:19-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "1bf4371"
+  },
+  "17": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789455715.514981,
+   "block_started_local": "2026-09-15T01:01:55-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "1bf4371"
+  },
+  "18": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789458368.161576,
+   "block_started_local": "2026-09-15T01:46:08-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "1bf4371"
+  },
+  "19": {
+   "stratum": "overnight",
+   "complete": false,
+   "runs": 10,
+   "block_started_unix": 1789460445.63538,
+   "block_started_local": "2026-09-15T02:20:45-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "1bf4371"
+  },
+  "20": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789498716.790873,
+   "block_started_local": "2026-09-15T12:58:36-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "21": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789499725.865136,
+   "block_started_local": "2026-09-15T13:15:25-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "22": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789503041.15701,
+   "block_started_local": "2026-09-15T14:10:41-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "23": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789506172.224128,
+   "block_started_local": "2026-09-15T15:02:52-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "24": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789508800.602303,
+   "block_started_local": "2026-09-15T15:46:40-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "25": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789516822.146743,
+   "block_started_local": "2026-09-15T18:00:22-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "26": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789519275.415927,
+   "block_started_local": "2026-09-15T18:41:15-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "27": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789521457.133131,
+   "block_started_local": "2026-09-15T19:17:37-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "28": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789523886.750297,
+   "block_started_local": "2026-09-15T19:58:06-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "29": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789526903.420083,
+   "block_started_local": "2026-09-15T20:48:23-06:00",
+   "local_day": "2026-09-15",
+   "apparatus_commit": "d286272"
+  },
+  "30": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789538412.824727,
+   "block_started_local": "2026-09-16T00:00:12-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "31": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789541289.74978,
+   "block_started_local": "2026-09-16T00:48:09-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "32": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789544052.286266,
+   "block_started_local": "2026-09-16T01:34:12-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "33": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789547277.340341,
+   "block_started_local": "2026-09-16T02:27:57-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "34": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789550108.620465,
+   "block_started_local": "2026-09-16T03:15:08-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "35": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789560016.29113,
+   "block_started_local": "2026-09-16T06:00:16-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "36": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789560935.625228,
+   "block_started_local": "2026-09-16T06:15:35-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "d286272"
+  },
+  "37": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789571967.661484,
+   "block_started_local": "2026-09-16T09:19:27-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "38": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789573171.855726,
+   "block_started_local": "2026-09-16T09:39:31-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "39": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789576795.238158,
+   "block_started_local": "2026-09-16T10:39:55-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "40": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789581617.433452,
+   "block_started_local": "2026-09-16T12:00:17-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "41": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789584391.403558,
+   "block_started_local": "2026-09-16T12:46:31-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "42": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789586055.668243,
+   "block_started_local": "2026-09-16T13:14:15-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "43": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789587014.941901,
+   "block_started_local": "2026-09-16T13:30:14-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "44": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789590720.124748,
+   "block_started_local": "2026-09-16T14:32:00-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "45": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789603249.892012,
+   "block_started_local": "2026-09-16T18:00:49-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "46": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789604116.055683,
+   "block_started_local": "2026-09-16T18:15:16-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "47": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789605764.931716,
+   "block_started_local": "2026-09-16T18:42:44-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "48": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789606581.314134,
+   "block_started_local": "2026-09-16T18:56:21-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "49": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789607873.61993,
+   "block_started_local": "2026-09-16T19:17:53-06:00",
+   "local_day": "2026-09-16",
+   "apparatus_commit": "a77783a"
+  },
+  "50": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789624809.866654,
+   "block_started_local": "2026-09-17T00:00:09-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "51": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789627241.553078,
+   "block_started_local": "2026-09-17T00:40:41-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "52": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789628808.731238,
+   "block_started_local": "2026-09-17T01:06:48-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "53": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789631336.034422,
+   "block_started_local": "2026-09-17T01:48:56-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "54": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789632186.741963,
+   "block_started_local": "2026-09-17T02:03:06-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "55": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789646460.560615,
+   "block_started_local": "2026-09-17T06:01:00-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "56": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789649054.131275,
+   "block_started_local": "2026-09-17T06:44:14-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "57": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789650005.539418,
+   "block_started_local": "2026-09-17T07:00:05-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "58": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789653269.199773,
+   "block_started_local": "2026-09-17T07:54:29-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "59": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789654158.717762,
+   "block_started_local": "2026-09-17T08:09:18-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "60": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789668061.146203,
+   "block_started_local": "2026-09-17T12:01:01-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "61": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789670067.209006,
+   "block_started_local": "2026-09-17T12:34:27-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "62": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789673675.4409,
+   "block_started_local": "2026-09-17T13:34:35-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "63": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789674586.156451,
+   "block_started_local": "2026-09-17T13:49:46-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "64": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789676560.096639,
+   "block_started_local": "2026-09-17T14:22:40-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "65": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789689661.347514,
+   "block_started_local": "2026-09-17T18:01:01-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "66": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789692945.753671,
+   "block_started_local": "2026-09-17T18:55:45-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "67": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789693937.915065,
+   "block_started_local": "2026-09-17T19:12:17-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "68": {
+   "stratum": "evening",
+   "complete": false,
+   "runs": 10,
+   "block_started_unix": 1789696300.021969,
+   "block_started_local": "2026-09-17T19:51:40-06:00",
+   "local_day": "2026-09-17",
+   "apparatus_commit": "a77783a"
+  },
+  "69": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789743998.150462,
+   "block_started_local": "2026-09-18T09:06:38-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "70": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789745000.801209,
+   "block_started_local": "2026-09-18T09:23:20-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "71": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789745885.336211,
+   "block_started_local": "2026-09-18T09:38:05-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "72": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789748333.388434,
+   "block_started_local": "2026-09-18T10:18:53-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "73": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789749238.48807,
+   "block_started_local": "2026-09-18T10:33:58-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "74": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789754434.671823,
+   "block_started_local": "2026-09-18T12:00:34-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "5ec05e4"
+  },
+  "75": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789771780.333691,
+   "block_started_local": "2026-09-18T16:49:40-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "76": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789776038.729987,
+   "block_started_local": "2026-09-18T18:00:38-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "77": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789778734.294303,
+   "block_started_local": "2026-09-18T18:45:34-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "78": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789781551.587882,
+   "block_started_local": "2026-09-18T19:32:31-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "79": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789784056.605381,
+   "block_started_local": "2026-09-18T20:14:16-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "80": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789785264.986806,
+   "block_started_local": "2026-09-18T20:34:24-06:00",
+   "local_day": "2026-09-18",
+   "apparatus_commit": "cde9020"
+  },
+  "81": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789797656.641689,
+   "block_started_local": "2026-09-19T00:00:56-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "82": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789800268.939872,
+   "block_started_local": "2026-09-19T00:44:28-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "83": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789802659.529156,
+   "block_started_local": "2026-09-19T01:24:19-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "84": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789805641.30927,
+   "block_started_local": "2026-09-19T02:14:01-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "85": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789806742.593738,
+   "block_started_local": "2026-09-19T02:32:22-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "86": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789819261.870877,
+   "block_started_local": "2026-09-19T06:01:01-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "87": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789820122.43141,
+   "block_started_local": "2026-09-19T06:15:22-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "88": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789821013.624902,
+   "block_started_local": "2026-09-19T06:30:13-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "89": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789823837.365931,
+   "block_started_local": "2026-09-19T07:17:17-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "90": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789824630.961213,
+   "block_started_local": "2026-09-19T07:30:30-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "91": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789840823.223002,
+   "block_started_local": "2026-09-19T12:00:23-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "92": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789841986.265996,
+   "block_started_local": "2026-09-19T12:19:46-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "93": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789845086.183361,
+   "block_started_local": "2026-09-19T13:11:26-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "94": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789852150.434653,
+   "block_started_local": "2026-09-19T15:09:10-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "95": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789855168.322689,
+   "block_started_local": "2026-09-19T15:59:28-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "96": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789862431.00103,
+   "block_started_local": "2026-09-19T18:00:31-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "97": {
+   "stratum": "evening",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789865103.809085,
+   "block_started_local": "2026-09-19T18:45:03-06:00",
+   "local_day": "2026-09-19",
+   "apparatus_commit": "cde9020"
+  },
+  "98": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789884039.729556,
+   "block_started_local": "2026-09-20T00:00:39-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "99": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789887310.309977,
+   "block_started_local": "2026-09-20T00:55:10-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "100": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789888158.109047,
+   "block_started_local": "2026-09-20T01:09:18-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "101": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789891068.540552,
+   "block_started_local": "2026-09-20T01:57:48-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "102": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789891832.33736,
+   "block_started_local": "2026-09-20T02:10:32-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "103": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789905625.471612,
+   "block_started_local": "2026-09-20T06:00:25-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "104": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789908640.088751,
+   "block_started_local": "2026-09-20T06:50:40-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "105": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789910450.784415,
+   "block_started_local": "2026-09-20T07:20:50-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "106": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789913199.982874,
+   "block_started_local": "2026-09-20T08:06:39-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "107": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789916099.471689,
+   "block_started_local": "2026-09-20T08:54:59-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "108": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789927251.18863,
+   "block_started_local": "2026-09-20T12:00:51-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "109": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789930440.205502,
+   "block_started_local": "2026-09-20T12:54:00-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "110": {
+   "stratum": "afternoon",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789931274.714983,
+   "block_started_local": "2026-09-20T13:07:54-06:00",
+   "local_day": "2026-09-20",
+   "apparatus_commit": "cde9020"
+  },
+  "111": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789970443.547565,
+   "block_started_local": "2026-09-21T00:00:43-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "112": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789971500.842104,
+   "block_started_local": "2026-09-21T00:18:20-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "113": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789973869.609617,
+   "block_started_local": "2026-09-21T00:57:49-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "114": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789976428.058245,
+   "block_started_local": "2026-09-21T01:40:28-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "115": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789978984.438055,
+   "block_started_local": "2026-09-21T02:23:04-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "116": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789992009.617382,
+   "block_started_local": "2026-09-21T06:00:09-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "117": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789994890.980214,
+   "block_started_local": "2026-09-21T06:48:10-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "118": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789995899.318534,
+   "block_started_local": "2026-09-21T07:04:59-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "119": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789996878.626057,
+   "block_started_local": "2026-09-21T07:21:18-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "120": {
+   "stratum": "morning",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1789998062.560938,
+   "block_started_local": "2026-09-21T07:41:02-06:00",
+   "local_day": "2026-09-21",
+   "apparatus_commit": "cde9020"
+  },
+  "121": {
+   "stratum": "overnight",
+   "complete": true,
+   "runs": 13,
+   "block_started_unix": 1790056833.127432,
+   "block_started_local": "2026-09-22T00:00:33-06:00",
+   "local_day": "2026-09-22",
+   "apparatus_commit": "6273119"
+  }
+ }
+}
