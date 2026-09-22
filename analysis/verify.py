@@ -75,22 +75,35 @@ MANIFEST_IDENTITY = ("name", "address", "mac", "target_rtt_ms", "loss_percent",
 
 
 class Ledger:
-    def __init__(self) -> None:
-        self.rows: list[tuple[str, bool, str]] = []
+    """OK, FAIL, or SKIP.
 
-    def check(self, claim: str, ok: bool, detail: str) -> bool:
+    SKIP exists for exactly one row: the artefact-existence check needs the raw stdout,
+    stderr and pcap files, which are git-ignored by design and ship as a release bundle.
+    A reviewer who has the repository and not the bundle should be told that the check
+    did not run, not that the collection failed it.  A partial bundle is a FAIL.
+    """
+
+    def __init__(self) -> None:
+        self.rows: list[tuple[str, bool | None, str]] = []
+
+    def check(self, claim: str, ok: bool | None, detail: str) -> bool | None:
         self.rows.append((claim, ok, detail))
         return ok
 
     @property
-    def failures(self) -> list[tuple[str, bool, str]]:
-        return [row for row in self.rows if not row[1]]
+    def failures(self) -> list[tuple[str, bool | None, str]]:
+        return [row for row in self.rows if row[1] is False]
+
+    @property
+    def skipped(self) -> list[tuple[str, bool | None, str]]:
+        return [row for row in self.rows if row[1] is None]
 
     def render(self) -> str:
         width = max(len(c) for c, _, _ in self.rows)
+        label = {True: "OK  ", False: "FAIL", None: "SKIP"}
         lines = []
         for claim, ok, detail in self.rows:
-            lines.append(f"  {'OK  ' if ok else 'FAIL'}  {claim:<{width}}  {detail}")
+            lines.append(f"  {label[ok]}  {claim:<{width}}  {detail}")
         return "\n".join(lines)
 
 
@@ -211,10 +224,16 @@ def verify_records(records: list[dict], sidecar: dict, ledger: Ledger,
             checked += 1
         else:
             missing.append(str(target))
-    ledger.check("every stdout, stderr and capture path exists",
-                 not missing,
-                 f"{checked}/{len(referenced)} present"
-                 + (f"; first missing {missing[0]}" if missing else ""))
+    if checked == 0 and artifact_root is None:
+        ledger.check("every stdout, stderr and capture path exists", None,
+                     f"0 of {len(referenced)} found where the records say they are; "
+                     f"the raw artefacts are git-ignored and ship separately — pass "
+                     f"--artifact-root to check them")
+    else:
+        ledger.check("every stdout, stderr and capture path exists",
+                     not missing,
+                     f"{checked}/{len(referenced)} present"
+                     + (f"; first missing {missing[0]}" if missing else ""))
 
     offset = sidecar["collection_utc_offset_seconds"]
     first = min(r["started_at_unix"] for r in records)
@@ -359,7 +378,9 @@ def main(argv: list[str] | None = None) -> int:
     print("REPRODUCIBILITY.md, recomputed from data/runs.ndjson")
     print(ledger.render())
     print()
-    print(f"{len(ledger.rows) - len(ledger.failures)}/{len(ledger.rows)} claims reconcile")
+    checked = len(ledger.rows) - len(ledger.skipped)
+    print(f"{checked - len(ledger.failures)}/{checked} claims reconcile"
+          + (f", {len(ledger.skipped)} not checkable here" if ledger.skipped else ""))
     for claim, _, detail in ledger.failures:
         print(f"  ! {claim}: {detail}")
 

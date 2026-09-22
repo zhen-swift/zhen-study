@@ -152,8 +152,9 @@ def section_verify(records: list[dict], sidecar: dict, runs_path: Path,
 
     out.append("STAGE 2 — REPRODUCIBILITY.md, recomputed")
     out.append(ledger.render())
-    out.append(f"  {len(ledger.rows) - len(ledger.failures)}/{len(ledger.rows)} claims "
-               f"reconcile")
+    checkable = len(ledger.rows) - len(ledger.skipped)
+    out.append(f"  {checkable - len(ledger.failures)}/{checkable} claims reconcile"
+               + (f", {len(ledger.skipped)} not checkable here" if ledger.skipped else ""))
     out.append("")
     out.append("  apparatus commits, in the order the data uses them:")
     block_spans = collections.defaultdict(list)
@@ -169,6 +170,7 @@ def section_verify(records: list[dict], sidecar: dict, runs_path: Path,
     out.append("")
     return {"claims": [{"claim": c, "ok": ok, "detail": d} for c, ok, d in ledger.rows],
             "failures": [c for c, _, _ in ledger.failures],
+            "skipped": [c for c, _, _ in ledger.skipped],
             "apparatus": findings, "commit_order": commits}
 
 
