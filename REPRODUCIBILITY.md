@@ -10,6 +10,28 @@ If the two ever disagree, the JSON is the record and this document is the explan
 
 ---
 
+## The project was renamed on 2026-09-22
+
+`netsanity` became `zhen`, and the bundle identifier `dev.jc.netsanity` became
+`com.jctec.zhen`. **Every record written before that date carries the former name**, and
+none of it has been edited to say otherwise.
+
+That includes `data/runs.ndjson`, whose 1,580 records carry `netsanity_path`,
+`netsanity_sha256` and `netsanity_version`; `frozen-binary.json`; the
+`study/binary-2026-09-12b` tag and the tree it points at, which still builds a binary
+called `netsanity`; and every `FINDINGS-*.md` quoting measured output.
+
+Those fields are measurements of a binary that existed under that name, not references
+to a product. Rewriting them to match the current name would make the data file
+disagree with the artifacts it describes and with the tag anyone reproducing this would
+check out — which is the one thing a reproducibility record cannot afford. A dated note
+is the ordinary practice here and this is it.
+
+Study 2 measures the renamed binary and records its own provenance under the new name,
+which is why v2's paths differ from study 1's rather than matching them.
+
+---
+
 ## The system under test, frozen
 
 | | |
