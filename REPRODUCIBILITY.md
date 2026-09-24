@@ -358,6 +358,24 @@ battery under records that say `on_ac_power: true`, for the reason the section a
 gives. They are admissible under the protocol's exclusion rules and the analysis should
 report whether dropping them changes anything.
 
+## The artifact schema became 2 on 2026-09-24, after collection
+
+`PortState` gained a fourth case, `open_filtered`, because UDP silence means *open or
+filtered* and the two cannot honestly be separated. That is a breaking change to the
+artifact, so `ScanReport.schemaVersion` is 2.
+
+**Nothing in `data/` is rewritten and nothing about the collection changes.** The 1,580
+runs were produced by a binary emitting schema 1, which each run records for itself in
+`parse.schema`. What changes is that a run made with a later build emits schema 2, so an
+analysis spanning that boundary has to know the boundary is there — which is the reason
+the field exists.
+
+Reading across it is safe in one direction only, and the code now says so:
+`validateSchema` accepts any schema from `minimumReadableSchema` up to the current one
+and refuses anything newer. Schema 2 added an enum case and removed nothing, so a
+schema-1 artifact is exactly as readable as it was. A schema-2 artifact read by a
+schema-1 build is the dangerous direction and is what the refusal is for.
+
 ## Still open
 
 - **Nothing. Collection is complete**, and the section above is its end state.
