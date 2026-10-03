@@ -1,3 +1,25 @@
+# zhen-study
+
+> **This study is frozen.** It is the record of a measurement that has been made, not a
+> project that continues.
+>
+> - **The data records what was measured.** `data/runs.ndjson` and everything else under
+>   `data/` are the evidence as collected, and are never edited, re-derived in place or
+>   "cleaned". A correction is a new, dated document that says what is wrong and why.
+> - **The scripts name paths as they were at collection time** — `Study/data/…`,
+>   `Packages/netsanity-cli/…`, `/Users/jc/Dev/InfinityCastle-collection/…` — because that
+>   is where they ran. This repository's root was `Study/` in the monorepo it was split
+>   from on 2026-10-03, so those paths do not resolve here, and they are **not to be
+>   updated**: a script that names where it ran is evidence; one rewritten afterwards is
+>   not.
+> - **The paper is outstanding**, on the `paper` branch.
+>
+> The binary under measurement is identified in `frozen-binary.json` by commit and tag in
+> the archived monorepo, [`JCTec/zhen`](https://github.com/JCTec/zhen), which is where the
+> scanner's code at collection time lives. The scanner itself is now
+> [`zhen-core`](https://github.com/zhen-swift/zhen-core). `CITATION.cff` is how to cite the
+> software; `LICENSE` and `NOTICE` cover this repository.
+
 # The study
 
 A measurement study of what netsanity's sweep scheduling actually buys, against

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: "Zhen: fast, complete host discovery for macOS local networks"
+message: "If you use this software or its results, please cite it."
+type: software
+authors:
+  - given-names: "Juan Carlos"
+    family-names: "Estévez Rodríguez"
+    alias: JCTec
+repository-code: "https://github.com/JCTec/zhen"
+abstract: >-
+  A native macOS network scanner written entirely in Swift 6, with no
+  subprocesses and no external binaries. Host discovery runs unprivileged over
+  ICMP datagram sockets; retransmission timing adapts per host and is decoupled
+  from the budget used to declare a host absent, which is what makes the sweep
+  fast without trading away completeness. Device names come from fusing mDNS,
+  SSDP and NetBIOS rather than from OS fingerprinting, and identity survives
+  randomised hardware addresses.
+keywords:
+  - network scanning
+  - host discovery
+  - Swift
+  - macOS
+  - mDNS
+  - adaptive timing
+license: Apache-2.0
+version: 0.5.0
+date-released: "2026-09-04"
