@@ -1,3 +1,2 @@
-# The study's own ignore rules are in data/.gitignore. This file only keeps the
-# platform's clutter out of a frozen record.
-.DS_Store
+.venv/
+__pycache__/
