@@ -23,13 +23,16 @@ If the two ever disagree, the JSON is the record and this document is the explan
 | built from | `/Users/jc/Dev/InfinityCastle-collection` (worktree, detached at the tag) |
 | binary path | `Packages/netsanity-cli/.build/release/netsanity` inside that worktree |
 
-Rebuild:
+Rebuild, from a clone of the archived monorepo this repository was split from — the source
+at that tag is there and nowhere else; zhen-core's history begins 2026-09-26:
 
 ```bash
-git clone https://github.com/JCTec/netsanity && cd netsanity
 git checkout study/binary-2026-09-12b
 cd Packages/netsanity-cli && swift build -c release
 ```
+
+> *Amended 2026-10-05:* the clone command above named the archived repository's URL, and
+> was removed when it was archived. Nothing else in this file changed.
 
 **It supersedes `study/binary-2026-09-12`, and the paper should say why.** That tag
 stood for about six hours and no block was ever collected under it. Five defects that
