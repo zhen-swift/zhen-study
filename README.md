@@ -15,8 +15,8 @@
 > - **The paper is outstanding**, on the `paper` branch.
 >
 > The binary under measurement is identified in `frozen-binary.json` by commit and tag in
-> the archived monorepo, [`JCTec/zhen`](https://github.com/JCTec/zhen), which is where the
-> scanner's code at collection time lives. The scanner itself is now
+> the archived monorepo this repository was split from, which is where the scanner's code
+> at collection time lives. The scanner itself is now
 > [`zhen-core`](https://github.com/zhen-swift/zhen-core). `CITATION.cff` is how to cite the
 > software; `LICENSE` and `NOTICE` cover this repository.
 

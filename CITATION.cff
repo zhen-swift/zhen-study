@@ -6,7 +6,7 @@ authors:
   - given-names: "Juan Carlos"
     family-names: "Estévez Rodríguez"
     alias: JCTec
-repository-code: "https://github.com/JCTec/zhen"
+repository-code: "https://github.com/zhen-swift/zhen-core"
 abstract: >-
   A native macOS network scanner written entirely in Swift 6, with no
   subprocesses and no external binaries. Host discovery runs unprivileged over
