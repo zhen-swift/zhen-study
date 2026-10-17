@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "what": "The zhen build study 2 measures. Frozen before phase 1.",
+  "tag": "0.8.0",
+  "commit": "f629ba242533be893ca7d49ba4a789d598647d9d",
+  "frozen_on": "2026-10-17",
+  "version": "0.8.0",
+  "sha256": "e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c",
+  "size_bytes": 6493272,
+  "mach_o_uuid": "8AFFF598-0C6E-344A-ABA9-8F833171EEB6",
+  "path": "/Users/jc/Dev/zhen-study2-binary/.build/release/zhen",
+  "worktree": "/Users/jc/Dev/zhen-study2-binary",
+  "build_command": "swift build -c release",
+  "build_directory": ".",
+  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), swift-driver 1.148.6",
+  "target": "arm64-apple-macosx26.0",
+  "host": {
+    "os": "macOS 26.6.2",
+    "build": "25G83",
+    "model": "Mac16,8"
+  },
+  "sha256_is_reproducible": false,
+  "sha256_meaning": "Identifies this artifact, not this source. Two builds of the same commit at the same path differ; see REPRODUCIBILITY.md, 'What the checksum is for'. The binary reports its own commit (zhen --version, run.tool in every artifact), and harness/provenance.py hashes the binary it runs, so a replacement is visible in the data.",
+  "frozen_packages": [
+    "zhen-swift/zhen-core (the whole package: ZhenCore, ZhenDarwin, zhen)"
+  ],
+  "deferred_defects": "zhen-core Docs/process/0.8.0-questions.md: Q5, Q7, Q13, Q20 and Q22 are open; none blocks the freeze. Gate evidence is in Docs/process/0.8.0-progress.md (gate T, and G9 against this binary on 2026-10-17).",
+  "supersedes": {
+    "tag": "study/binary-2026-09-12b",
+    "sha256": "b4220600b75acd10b46d033cb315a9e5c035021494a93afe381e0014eff6e4ed",
+    "why": "Study 1's binary (netsanity 0.4.0). Study 2 measures zhen 0.8.0, whose default waits per address; study 1's mechanism stays reachable in this binary as --reach learned --no-neighbor-watch."
+  }
+}
