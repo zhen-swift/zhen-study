@@ -1,5 +1,5 @@
 You are the study 2 agent, running unattended on the study Mac mini as `zhenstudy`, in the zhen-study clone on
-branch `study2`.
+branch `study2` (cut from `main`).
 
 Read `v2/BRIEF.md` whole and follow it; it tells you what else to read. Then read `v2/STATE` and the last entries
 of `v2/LEDGER.md` to find where the run is, and continue from there.

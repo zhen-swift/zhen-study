@@ -4,6 +4,9 @@
 what authority, and where it stops. `PLAN.md` says *what* is measured; `BRIEF.md` is the agent's step list.
 A change to anything here is a commit to this file, dated, before the run acts on it.
 
+**2026-11-02:** `main` is the only branch. The paper moved into `paper/` on `main`; the agent cuts `study2`
+from `main` and the final PR goes into `main`.
+
 ```
  JC, once                      the agent, unattended                          JC
  ─────────                     ─────────────────────────────────────────      ──────────
@@ -50,7 +53,7 @@ do what `zhenstudy` can do, so the limits that matter are the account's.
 | | Allowed | Not allowed |
 |---|---|---|
 | Files | the zhen-study clone, `~/.zhen-study2/`, `~/zhen-study2-private/`, its own LaunchAgents | anything outside |
-| Git | commit; push branches `study2` and `study2-*`; tags `study2/*`; open and edit PRs; comment | **merge**, push to `main` or `paper`, force-push |
+| Git | commit; push branches `study2` and `study2-*`; tags `study2/*`; open and edit PRs; comment | **merge**, push to `main`, force-push |
 | zhen-core | read | any change. The binary is frozen |
 | Root | `sudo -n` on `nmap`, `tcpdump`, `arp`, `wdutil` — and the frozen `zhen` **only after the freeze stop** | any other root |
 | Network | GitHub, PyPI (the analysis venv), Ubuntu cloud images (the testbed), CTAN via TeX | web search, web fetch |

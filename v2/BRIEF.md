@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Runs in | `zhen-swift/zhen-study`, branch `study2`, on the study Mac mini as `zhenstudy` |
+| Runs in | `zhen-swift/zhen-study`, branch `study2` (cut from `main` at the start), on the study Mac mini as `zhenstudy` |
 | Ledger | `v2/LEDGER.md` — append-only, one entry per gate and per decision |
 | State | `v2/STATE` — first line is the state, the rest is why |
 | Read first, whole | `v2/PLAN.md`, `v2/RUN.md`, `v2/REVIEW-PR.md`, `PROTOCOL.md`, `HARNESS.md`, `REPRODUCIBILITY.md`, `DEFERRED-DEFECTS.md` |
@@ -19,7 +19,7 @@ push. Make every call you can make; record each in the ledger with its reason. S
 - Scan `10.10.20.0/24` outside 00:00–06:00 `America/Los_Angeles`, or on a skipped night.
 - Run two scanners at once.
 - Push phase 3 raw data, or anything naming a household device, address or MAC.
-- Merge, push to `main` or `paper`, or force-push.
+- Merge, push to `main`, or force-push.
 - Contact JC except by stopping. Ask nothing mid-run: decide, and log the decision.
 - Supply, read or work around a password. Anything needing root that the grant does not cover is a **Blocked** stop.
 
@@ -51,7 +51,7 @@ Each step ends at its gate. A gate that fails is retried after the fix; three fa
 | **S9** | **History priming**, overlapping the last seven nights of S8 under the lock: zhen default on the home network, a few scans per night inside the window, history kept | seven nights of history in `ZHEN_HISTORY` |
 | **S10** | **Phase 3 collection.** ~30 blocks spread across the three night slots, conditions per `PLAN.md`, Wi-Fi channel load as a covariate. Raw to `~/zhen-study2-private/`; hashed data to `v2/data/` | blocks complete; no raw data in git (check `git log -p` for addresses) |
 | **S11** | **Analysis.** Exactly `PROTOCOL-v2.md`'s plan, then anything exploratory, labelled as such. `v2/RESULTS.md`, figures in `v2/figures/` | regenerates byte-identical |
-| **S12** | **The paper.** Branch `study2-paper` off `paper`: one paper for both studies. Study 1's results stay; rewrite the system and method sections; add study 2's results and the home-network arm; extend threats to validity. Figure-led, low word count. Build the PDF. Open the **final PR** into `paper` per `REVIEW-PR.md`, with the root-removal command | PDF builds; PR open → `STATE` = `DONE`. **Stop.** |
+| **S12** | **The paper.** Branch `study2-paper` off `study2`: one paper, in `paper/`, for both studies. Study 1's results stay; rewrite the system and method sections; add study 2's results and the home-network arm; extend threats to validity. Figure-led, low word count. Build the PDF. Open the **final PR** into `main` per `REVIEW-PR.md`, with the root-removal command | PDF builds; PR open → `STATE` = `DONE`. **Stop.** |
 
 ## Decisions already made — do not reopen
 

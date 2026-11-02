@@ -36,7 +36,7 @@ printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen-0.8.0\n' > /t
 
 **JC's responses:** review comments → revised. A comment that is exactly `/freeze`, by `JCTec` → the freeze.
 
-## Final PR — `study2-paper` → `paper`
+## Final PR — `study2-paper` → `main`
 
 **Title:** `Study 2 results and the combined paper`
 
@@ -54,4 +54,4 @@ sudo rm /etc/sudoers.d/zhen-study2-zhen /etc/sudoers.d/zhen-study2
 sudo launchctl bootout gui/$(id -u zhenstudy)/dev.zhen.study2.agent
 ```
 
-**JC's response:** merges. Merging `study2` into `main` for the record is part of the same review.
+**JC's response:** merges. `study2-paper` is cut from `study2`, so this one merge brings all of study 2 into `main`.

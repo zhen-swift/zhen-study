@@ -12,7 +12,7 @@
 >   from on 2026-10-03, so those paths do not resolve here, and they are **not to be
 >   updated**: a script that names where it ran is evidence; one rewritten afterwards is
 >   not.
-> - **The paper is outstanding**, on the `paper` branch.
+> - **The paper is outstanding**, in `paper/`.
 >
 > The binary under measurement is identified in `frozen-binary.json` by commit and tag in
 > the archived monorepo this repository was split from, which is where the scanner's code

@@ -65,7 +65,7 @@ git config --global user.email "jc_mex_root@proton.me"
 As `zhenstudy`:
 
 ```bash
-/opt/homebrew/bin/gh repo clone zhen-swift/zhen-study ~/Dev/zhen-study -- -b study2 && ~/Dev/zhen-study/v2/agent/start.sh install
+/opt/homebrew/bin/gh repo clone zhen-swift/zhen-study ~/Dev/zhen-study && git -C ~/Dev/zhen-study switch -c study2 && ~/Dev/zhen-study/v2/agent/start.sh install
 ```
 
 It installs the hourly LaunchAgent and starts the first run. From then on the run is in `v2/LEDGER.md` and
