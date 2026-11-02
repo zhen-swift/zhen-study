@@ -1,0 +1,9 @@
+# LaTeX build products. paper.pdf is kept: it is the artefact people read.
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+__pycache__/
+missfont.log
