@@ -4,6 +4,9 @@
 shape with dispersion added. This revision follows a change to the system under test and three rulings by JC.
 `PROTOCOL-v2.md` comes after phase 1 and is the thing that gets frozen.
 
+**Run decisions, 2026-11-02:** how, where and when the study runs — the Mac mini, the unattended agent, the
+home-network window, the stops — are in `RUN.md`. Where they change this plan, the change is, marked *(RUN.md)* below.
+
 Study 1 is complete and is not revised by anything here.
 
 ---
@@ -96,8 +99,8 @@ Question: does phase 2's ordering hold on real devices — sleeping phones, Wi-F
 | | |
 |---|---|
 | Network | `10.10.20.0/24` only — the hub rule |
-| Conditions | zhen default (history primed by a week of normal use), zhen root, nmap root `-T5`, nmap user `-T4` |
-| Schedule | ~30 blocks, split across day and night, because device sleep is the variable here |
+| Conditions | zhen default (history primed by a week of scans inside the window *(RUN.md)*), zhen root, nmap root `-T5`, nmap user `-T4` |
+| Schedule | ~30 blocks, **night-only**: 00:00–06:00 `America/Los_Angeles`, three slots per night (00–02, 02–04, 04–06). The day stratum is dropped because the household window has no day; stated as a threat to validity *(RUN.md)* |
 | Ground truth | no manifest exists: recall is against the **union of every condition's finds in the block plus the capture**, declared in advance as a pseudo-ground truth and labelled as one everywhere |
 | Covariates | Wi-Fi channel utilisation, which study 1 collected as `not_applicable` on every run |
 
@@ -135,4 +138,4 @@ So the only core work left before collection is the 0.8.0 brief, ending at G9.
 
 ## Still open, and JC's
 
-Nothing that blocks step 1. Phase 3's day and night windows are JC's to choose, because they are his household.
+Nothing. Phase 3's window was chosen by JC on 2026-10-31 *(RUN.md)*.

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- The study 2 agent's hourly tick. Installed by `v2/agent/start.sh install`; see v2/RUN.md. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.zhen.study2.agent</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>__REPO__/v2/agent/start.sh</string>
+    <string>tick</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__REPO__</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>3600</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.zhen-study2/logs/launchd.out</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.zhen-study2/logs/launchd.err</string>
+</dict>
+</plist>
