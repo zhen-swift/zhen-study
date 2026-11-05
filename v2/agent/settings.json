@@ -2,7 +2,7 @@
   "permissions": {
     "allow": [
       "Read", "Glob", "Grep", "TodoWrite",
-      "Edit(~/Dev/zhen-study/**)", "Write(~/Dev/zhen-study/**)",
+      "Edit(~/Dev/InfinityCastle/zhen-study/**)", "Write(~/Dev/InfinityCastle/zhen-study/**)",
       "Edit(~/.zhen-study2/**)", "Write(~/.zhen-study2/**)",
       "Edit(~/zhen-study2-private/**)", "Write(~/zhen-study2-private/**)",
       "Edit(~/Library/LaunchAgents/dev.zhen.study2.*)", "Write(~/Library/LaunchAgents/dev.zhen.study2.*)",
@@ -13,7 +13,7 @@
       "Bash(git tag study2/:*)", "Bash(git worktree:*)",
       "Bash(git push origin study2:*)", "Bash(git push origin study2-:*)", "Bash(git push origin study2/:*)",
       "Bash(git push -u origin study2:*)", "Bash(git push -u origin study2-:*)",
-      "Bash(git -C ~/Dev/zhen-core log:*)", "Bash(git -C ~/Dev/zhen-core show:*)",
+      "Bash(git -C ~/Dev/InfinityCastle/zhen-core log:*)", "Bash(git -C ~/Dev/InfinityCastle/zhen-core show:*)",
       "Bash(gh repo clone zhen-swift/zhen-core:*)",
       "Bash(gh pr create:*)", "Bash(gh pr view:*)", "Bash(gh pr edit:*)", "Bash(gh pr comment:*)",
       "Bash(gh pr list:*)", "Bash(gh pr diff:*)", "Bash(gh api repos/zhen-swift/zhen-study/:*)",
@@ -22,7 +22,7 @@
       "Bash(make:*)", "Bash(pdflatex:*)", "Bash(latexmk:*)", "Bash(bibtex:*)",
 
       "Bash(limactl:*)", "Bash(tcpdump -r:*)", "Bash(shasum:*)", "Bash(jq:*)",
-      "Bash(/usr/local/zhen-study2/zhen-0.8.0:*)", "Bash(/usr/local/zhen-study2/netsanity-0.4.0:*)",
+      "Bash(/usr/local/zhen-study2/zhen-0.8.0:*)",
       "Bash(sudo -n -l:*)",
       "Bash(sudo -n /opt/homebrew/bin/nmap:*)", "Bash(sudo -n /usr/sbin/tcpdump:*)",
       "Bash(sudo -n /usr/sbin/arp:*)", "Bash(sudo -n /usr/bin/wdutil:*)",

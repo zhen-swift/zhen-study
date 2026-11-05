@@ -7,6 +7,10 @@ A change to anything here is a commit to this file, dated, before the run acts o
 **2026-11-02:** `main` is the only branch. The paper moved into `paper/` on `main`; the agent cuts `study2`
 from `main` and the final PR goes into `main`.
 
+**2026-11-05:** netsanity 0.4.0 is dropped from study 2: the binary no longer exists and cannot be rebuilt to the same
+artifact (`PLAN.md`, *The bridge*). The repositories on the mini live in `~/Dev/InfinityCastle`, the same layout as the
+development hub.
+
 ```
  JC, once                      the agent, unattended                          JC
  ─────────                     ─────────────────────────────────────────      ──────────
@@ -84,15 +88,14 @@ PR layout for both review stops: `REVIEW-PR.md`.
 | macOS update | automatic installs are off for the study |
 | a block fails | the harness's own retry rules (`HARNESS.md`); failures are recorded, never deleted |
 
-## Binaries
+## Binary
 
-Copied from the machine they were frozen on, not rebuilt: a rebuild on this mini's Swift 6.4 would be a different
+Copied from the machine it was frozen on, not rebuilt: a rebuild on this mini's Swift 6.4 would be a different
 artifact from a different compiler. The checksum is the identity; only the path changes.
 
 | | Path on the mini | sha256 |
 |---|---|---|
 | zhen 0.8.0 (study 2) | `/usr/local/zhen-study2/zhen-0.8.0` | `e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c` |
-| netsanity 0.4.0 (study 1, the bridge) | `/usr/local/zhen-study2/netsanity-0.4.0` | `b4220600b75acd10b46d033cb315a9e5c035021494a93afe381e0014eff6e4ed` |
 
 ## Private data
 

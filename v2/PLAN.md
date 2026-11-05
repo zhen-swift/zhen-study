@@ -7,6 +7,9 @@ shape with dispersion added. This revision follows a change to the system under 
 **Run decisions, 2026-11-02:** how, where and when the study runs — the Mac mini, the unattended agent, the
 home-network window, the stops — are in `RUN.md`. Where they change this plan, the change is, marked *(RUN.md)* below.
 
+**2026-11-05:** netsanity 0.4.0 is dropped as a phase 2 condition. That binary no longer exists and cannot be rebuilt
+to the same artifact. See *The bridge* below.
+
 Study 1 is complete and is not revised by anything here.
 
 ---
@@ -61,8 +64,7 @@ whether the 1.5 s first-scan wait should move. They become **the flags phase 2 p
 Conditions, all in every block, shuffled:
 
 ```
-zhen        default · first scan (empty history) · root (H3) · --reach learned (study 1's mechanism)
-zhen 0.4.0  the frozen study 1 binary, at the 500× level only — the bridge
+zhen        default · first scan (empty history) · root (H3) · --reach learned --no-neighbor-watch (study 1's mechanism)
 nmap root   -T3 · -T4 · -T5      (+ -T2, one block in four)
 nmap user   -T3 · -T4 · -T5      (+ -T2, one block in four)
 ```
@@ -84,13 +86,15 @@ Hypotheses, written properly with refutation conditions in `PROTOCOL-v2.md`:
 | **H7** *(new)* | the default reaches recall 1.00 cold at every dispersion — the claim 0.8.0 exists to make |
 | **H8** *(new)* | primed history is faster than empty history at equal recall |
 
-H5 (split against shared budget) is retired: 0.8.0 replaces the budget split as the mechanism, and `--reach learned`
-carries the comparison H5 was for. H6 is answered by study 1 and nmap stays a comparator, not a hypothesis.
+H5 (split against shared budget) is retired: 0.8.0 replaces the budget split as the mechanism, and
+`--reach learned --no-neighbor-watch` carries the comparison H5 was for. H6 is answered by study 1 and nmap stays a comparator, not a hypothesis.
 
-**The bridge.** The 2026-09-29 plan asked to *prove* the unprivileged path unchanged between the two binaries. It
-has changed — the neighbour table re-read after the sweep, the late-reply counter, `discovered_via` — so that gate is
-replaced by measurement: the 0.4.0 binary runs as a condition at 500×, and study 1 and study 2 meet in data, not in
-an argument.
+**The bridge** *(rewritten 2026-11-05)*. The 2026-09-29 plan asked to *prove* the unprivileged path unchanged between
+the two binaries. It has changed — the neighbour table re-read after the sweep, the late-reply counter,
+`discovered_via` — so that gate is replaced by measurement. The 0.4.0 binary no longer exists and cannot be rebuilt to
+the same artifact, so study 1's mechanism runs inside the frozen 0.8.0 as `--reach learned --no-neighbor-watch`. At
+500× it runs on study 1's exact manifest, and that is where study 1 and study 2 meet. Its difference from study 1's
+results covers the binary and the machine together, and the paper says so.
 
 ### Phase 3 — replicate (home LAN, pre-registered)
 

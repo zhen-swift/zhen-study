@@ -26,20 +26,18 @@ sudo visudo -c -f /tmp/zhen-study2 && sudo install -m 0440 -o root -g wheel /tmp
 sudo mkdir -p /usr/local/zhen-study2
 ```
 
-## 2 · The two frozen binaries
+## 2 · The frozen binary
 
 Copy from the MacBook to the mini's `~/Downloads` (AirDrop or your remote tool):
 
 - `~/Dev/zhen-study2-binary/.build/release/zhen`
-- `~/Dev/InfinityCastle-collection/Packages/netsanity-cli/.build/release/netsanity`
 
 ```bash
-sudo install -m 0755 -o root -g wheel ~/Downloads/zhen      /usr/local/zhen-study2/zhen-0.8.0
-sudo install -m 0755 -o root -g wheel ~/Downloads/netsanity /usr/local/zhen-study2/netsanity-0.4.0
+sudo install -m 0755 -o root -g wheel ~/Downloads/zhen /usr/local/zhen-study2/zhen-0.8.0
 shasum -a 256 /usr/local/zhen-study2/*
 ```
 
-Must print `e1f95ea9…742c` for zhen and `b4220600…6eff6e4ed` for netsanity. The agent checks again in its first step.
+Must print `e1f95ea9…742c` for zhen. The agent checks again in its first step.
 
 ## 3 · As `zhenstudy`
 
@@ -65,7 +63,7 @@ git config --global user.email "jc_mex_root@proton.me"
 As `zhenstudy`:
 
 ```bash
-/opt/homebrew/bin/gh repo clone zhen-swift/zhen-study ~/Dev/zhen-study && git -C ~/Dev/zhen-study switch -c study2 && ~/Dev/zhen-study/v2/agent/start.sh install
+/opt/homebrew/bin/gh repo clone zhen-swift/zhen-study ~/Dev/InfinityCastle/zhen-study && git -C ~/Dev/InfinityCastle/zhen-study switch -c study2 && ~/Dev/InfinityCastle/zhen-study/v2/agent/start.sh install
 ```
 
 It installs the hourly LaunchAgent and starts the first run. From then on the run is in `v2/LEDGER.md` and
