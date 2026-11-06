@@ -11,10 +11,14 @@ from `main` and the final PR goes into `main`.
 artifact (`PLAN.md`, *The bridge*). The repositories on the mini live in `~/Dev/InfinityCastle`, the same layout as the
 development hub.
 
+**2026-11-06:** the repository starts itself. `START.md` takes a fresh mini to a running study from one
+prompt; the binary comes from this repository's release `study2-binary`, so nothing is copied by hand. The agent
+and the collection run as LaunchDaemons under `zhenstudy`, so no one has to be logged in.
+
 ```
  JC, once                      the agent, unattended                          JC
  ─────────                     ─────────────────────────────────────────      ──────────
- mini/SETUP.md ──► one-liner ──► prep ─► phase 1 ─► freeze PR ══ STOP ══►  /freeze + root line
+ START.md ─────► one prompt ──► prep ─► phase 1 ─► freeze PR ══ STOP ══►  /freeze + root line
                                                                                │
                      final PR ══ STOP ══◄ paper ◄ analysis ◄ phase 3 ◄ phase 2 ◄┘
                         │
@@ -28,8 +32,9 @@ development hub.
 |---|---|
 | Machine | Mac mini, Apple M6 (`Mac18,5`), macOS 27.0.1, dedicated to the study |
 | Account | `zhenstudy`, a standard (non-admin) user. Nothing personal on it |
-| Agent | Claude Code, headless (`claude -p`), started hourly by launchd through `agent/start.sh` |
-| Scanning link | Ethernet `en0`, `10.10.20.111` on `10.10.20.0/24`. Wi-Fi `en1` is read for channel load only |
+| Agent | Claude Code, headless (`claude -p`), started hourly by the LaunchDaemon `dev.zhen.study2.agent` through `agent/start.sh`, as `zhenstudy`, with nobody logged in |
+| Collection | the LaunchDaemon `dev.zhen.study2.collect`, kept alive: runs the harness argv the agent writes to `~/.zhen-study2/collect.args`, idle while the file is absent |
+| Scanning link | Ethernet `en0` on the home network. Wi-Fi `en1` is read for channel load only |
 | Clean network | no VPN, no network filter or system extension (checked 2026-10-31: none) |
 | Disk | 146 GiB free at setup |
 
@@ -56,7 +61,7 @@ do what `zhenstudy` can do, so the limits that matter are the account's.
 
 | | Allowed | Not allowed |
 |---|---|---|
-| Files | the zhen-study clone, `~/.zhen-study2/`, `~/zhen-study2-private/`, its own LaunchAgents | anything outside |
+| Files | the zhen-study clone, `~/.zhen-study2/`, `~/zhen-study2-private/` | anything outside; the tokens in `~/.config/zhen/` are read only by `start.sh` |
 | Git | commit; push branches `study2` and `study2-*`; tags `study2/*`; open and edit PRs; comment | **merge**, push to `main`, force-push |
 | zhen-core | read | any change. The binary is frozen |
 | Root | `sudo -n` on `nmap`, `tcpdump`, `arp`, `wdutil` — and the frozen `zhen` **only after the freeze stop** | any other root |
@@ -84,14 +89,15 @@ PR layout for both review stops: `REVIEW-PR.md`.
 | Event | What happens |
 |---|---|
 | usage limit, crash, agent exits | launchd starts the wrapper every hour; it resumes from `LEDGER.md` |
-| power cut | the mini is on a battery; JC wakes it remotely, unlocks FileVault, logs `zhenstudy` in, and says so in the ledger |
+| power cut | the mini is on a battery; JC wakes it remotely and unlocks FileVault; the daemons start by themselves |
 | macOS update | automatic installs are off for the study |
 | a block fails | the harness's own retry rules (`HARNESS.md`); failures are recorded, never deleted |
 
 ## Binary
 
-Copied from the machine it was frozen on, not rebuilt: a rebuild on this mini's Swift 6.4 would be a different
-artifact from a different compiler. The checksum is the identity; only the path changes.
+The build frozen on 2026-10-17, attached unchanged to the release `study2-binary` and downloaded by `START.md`.
+Not rebuilt: a rebuild on this mini's Swift 6.4 would be a different artifact from a different compiler. The
+checksum is the identity; only the path changes.
 
 | | Path on the mini | sha256 |
 |---|---|---|

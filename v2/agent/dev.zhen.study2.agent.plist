@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- The study 2 agent's hourly tick. Installed by `v2/agent/start.sh install`; see v2/RUN.md. -->
+<!-- Study 2, run as the study user with nobody logged in. Installed by `sudo v2/agent/start.sh install`. -->
 <plist version="1.0">
 <dict>
   <key>Label</key>
   <string>dev.zhen.study2.agent</string>
+  <key>UserName</key>
+  <string>__USER__</string>
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
@@ -13,6 +15,13 @@
   </array>
   <key>WorkingDirectory</key>
   <string>__REPO__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>__HOME__</string>
+    <key>USER</key>
+    <string>__USER__</string>
+  </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>StartInterval</key>
@@ -20,8 +29,8 @@
   <key>ProcessType</key>
   <string>Background</string>
   <key>StandardOutPath</key>
-  <string>__HOME__/.zhen-study2/logs/launchd.out</string>
+  <string>__HOME__/.zhen-study2/logs/agent.launchd.out</string>
   <key>StandardErrorPath</key>
-  <string>__HOME__/.zhen-study2/logs/launchd.err</string>
+  <string>__HOME__/.zhen-study2/logs/agent.launchd.err</string>
 </dict>
 </plist>

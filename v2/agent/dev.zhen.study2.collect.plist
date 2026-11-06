@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Study 2, run as the study user with nobody logged in. Installed by `sudo v2/agent/start.sh install`. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.zhen.study2.collect</string>
+  <key>UserName</key>
+  <string>__USER__</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>__REPO__/v2/agent/start.sh</string>
+    <string>collect</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__REPO__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>__HOME__</string>
+    <key>USER</key>
+    <string>__USER__</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>60</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.zhen-study2/logs/collect.launchd.out</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.zhen-study2/logs/collect.launchd.err</string>
+</dict>
+</plist>

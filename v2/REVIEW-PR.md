@@ -28,7 +28,7 @@ the PR has failed. Files are there for depth.
 9  WHAT /freeze DOES and the one command to run after it
 ```
 
-Section 9 ends with the command, ready to paste on the mini as `jc-mini`:
+Section 9 ends with the command, ready to paste on the mini in the admin account:
 
 ```bash
 printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen-0.8.0\n' > /tmp/zhen-study2-zhen && sudo visudo -c -f /tmp/zhen-study2-zhen && sudo install -m 0440 -o root -g wheel /tmp/zhen-study2-zhen /etc/sudoers.d/zhen-study2-zhen
@@ -51,7 +51,8 @@ printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen-0.8.0\n' > /t
 
 ```bash
 sudo rm /etc/sudoers.d/zhen-study2-zhen /etc/sudoers.d/zhen-study2
-sudo launchctl bootout gui/$(id -u zhenstudy)/dev.zhen.study2.agent
+sudo launchctl bootout system/dev.zhen.study2.agent; sudo launchctl bootout system/dev.zhen.study2.collect
+sudo rm /Library/LaunchDaemons/dev.zhen.study2.agent.plist /Library/LaunchDaemons/dev.zhen.study2.collect.plist
 ```
 
 **JC's response:** merges. `study2-paper` is cut from `study2`, so this one merge brings all of study 2 into `main`.
