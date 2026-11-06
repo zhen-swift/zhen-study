@@ -1,9 +1,15 @@
 # Starting study 2 on a fresh Mac mini
 
-This file makes the repository self-starting. On the study Mac mini, in an admin account, JC opens Claude and
-says:
+This file makes the repository self-starting. On the study Mac mini, in an admin account, JC first adds a temporary passwordless sudo line for that account, so
+the setup never needs a password:
 
-> Clone github.com/zhen-swift/zhen-study and follow v2/START.md. The sudo password is [PASSWORD].
+```bash
+echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/zz-study2-setup >/dev/null && sudo chmod 440 /etc/sudoers.d/zz-study2-setup && sudo visudo -c
+```
+
+Then opens Claude and says:
+
+> Clone github.com/zhen-swift/zhen-study and follow v2/START.md.
 
 Everything else is here. The run contract is `RUN.md`; this file only gets the machine to the point where the
 unattended agent takes over.
@@ -18,7 +24,8 @@ unattended agent takes over.
 
 - **Explore first.** For every item below, check whether it is already true before changing anything. Leave what
   is right alone, change only what is missing, and check each change after making it.
-- Use the sudo password only through `sudo -S`, and never write it into a file, script, log or commit.
+- Use `sudo -n` only. The temporary grant `/etc/sudoers.d/zz-study2-setup` makes it work; if it is missing, stop
+  and tell JC. No password is ever asked for, typed or stored.
 - Anything found that could affect a network measurement and is not covered here (another VPN app, a firewall
   rule, low disk): do not fix it. Report it.
 - Never scan a network (`nmap --version` is fine), or sign in to anything for anyone. The one zhen build is
@@ -38,8 +45,9 @@ unattended agent takes over.
 
 ## 2 · The study account
 
-- A **standard, non-admin** user `zhenstudy`. If it does not exist, create it with `sysadminctl`, with the same
-  password as the admin account for now, and tell JC to change it.
+- A **standard, non-admin** user `zhenstudy`. If it does not exist, create it with `sysadminctl`, with a
+  random password you do not keep (`openssl rand -base64 24`, passed straight to `sysadminctl`, never shown or
+  stored). Nobody logs in as `zhenstudy`; JC resets it from the admin account if ever needed.
 - `/etc/sudoers.d/zhen-study2`, mode 0440, `root:wheel`, exactly:
   ```
   zhenstudy ALL=(root) NOPASSWD: /opt/homebrew/bin/nmap, /usr/sbin/tcpdump, /usr/sbin/arp, /usr/bin/wdutil
@@ -93,7 +101,13 @@ step S0.
 Check `sudo launchctl print system/dev.zhen.study2.agent` shows the job, and that
 `~zhenstudy/.zhen-study2/logs/start.log` has a "starting agent" line.
 
-## 7 · Report to JC
+## 7 · Close the setup
 
-In plain words: what was already there, what you changed, what you flagged, and that the study is running. Remind
-JC to change the passwords. Commit nothing from the admin account.
+Remove `/etc/sudoers.d/zz-study2-setup`, then confirm `sudo -n true` now **fails** for the admin account. This is
+the last thing you do with root. The study's own grant (`zhen-study2`) stays.
+
+## 8 · Report to JC
+
+In plain words: what was already there, what you changed, what you flagged, that the setup grant is gone, and that
+the study is running. Commit nothing from the admin
+account.
