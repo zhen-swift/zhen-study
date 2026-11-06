@@ -7,6 +7,10 @@ shape with dispersion added. This revision follows a change to the system under 
 **Run decisions, 2026-11-02:** how, where and when the study runs — the Mac mini, the unattended agent, the
 home-network window, the stops — are in `RUN.md`. Where they change this plan, the change is, marked *(RUN.md)* below.
 
+**2026-11-06:** study 2 measures zhen-core **0.8.1**, built from source on the study mini before phase 1
+(`RUN.md`, *Binary*). It differs from 0.8.0 only by the version string and a macOS 15.6 compiler fix; where this
+plan says 0.8.0, the mechanism meant is the same.
+
 **2026-11-05:** netsanity 0.4.0 is dropped as a phase 2 condition. That binary no longer exists and cannot be rebuilt
 to the same artifact. See *The bridge* below.
 

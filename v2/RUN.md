@@ -11,8 +11,11 @@ from `main` and the final PR goes into `main`.
 artifact (`PLAN.md`, *The bridge*). The repositories on the mini live in `~/Dev/InfinityCastle`, the same layout as the
 development hub.
 
+**2026-11-06:** the binary is built from source on the mini at zhen-core 0.8.1, not copied: a hand-carried
+build is a link nobody can check. See *Binary*.
+
 **2026-11-06:** the repository starts itself. `START.md` takes a fresh mini to a running study from one
-prompt; the binary comes from this repository's release `study2-binary`, so nothing is copied by hand. The agent
+prompt; nothing is copied by hand. The agent
 and the collection run as LaunchDaemons under `zhenstudy`, so no one has to be logged in.
 
 ```
@@ -95,13 +98,19 @@ PR layout for both review stops: `REVIEW-PR.md`.
 
 ## Binary
 
-The build frozen on 2026-10-17, attached unchanged to the release `study2-binary` and downloaded by `START.md`.
-Not rebuilt: a rebuild on this mini's Swift 6.4 would be a different artifact from a different compiler. The
-checksum is the identity; only the path changes.
+**zhen-core 0.8.1** (commit `b6636fa63d5e906a727139a2547490a30fbf0bda`), built from source on the mini by `START.md` with `swift build -c release`,
+installed once at `/usr/local/zhen-study2/zhen`, and never rebuilt until the study ends.
 
-| | Path on the mini | sha256 |
-|---|---|---|
-| zhen 0.8.0 (study 2) | `/usr/local/zhen-study2/zhen-0.8.0` | `e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c` |
+| Link | Where it is recorded |
+|---|---|
+| source | the public commit above |
+| how it was built | the build command, toolchain and host, in `frozen-binary-v2.json` |
+| which file | its sha256, taken at install, before phase 1 |
+| which file ran | `zhen --version` and `run.tool.commit` in every artifact; the harness hashes the binary on every run |
+
+Builds are not reproducible byte for byte, so the sha256 identifies *this* build within the study, and the
+commit plus the recipe is how anyone else gets an equivalent one. 0.8.1 differs from the 0.8.0 frozen on
+2026-10-17 by the version string and a compiler fix for macOS 15.6 (19 lines, no change to how a scan runs).
 
 ## Private data
 

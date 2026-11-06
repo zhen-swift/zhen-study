@@ -9,7 +9,7 @@ set -euo pipefail
 STUDY_USER="zhenstudy"
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 V2="$REPO/v2"
-ZHEN="/usr/local/zhen-study2/zhen-0.8.0"
+ZHEN="/usr/local/zhen-study2/zhen"
 DAEMONS="dev.zhen.study2.agent dev.zhen.study2.collect"
 export PATH="/opt/homebrew/bin:/Library/TeX/texbin:/usr/bin:/bin:/usr/sbin:/sbin"
 

@@ -11,7 +11,7 @@ unattended agent takes over.
 ```
  admin account, Claude, JC present                                  zhenstudy, unattended
  ───────────────────────────────────────────────────────────        ─────────────────────
- explore ─► machine ─► account ─► binary ─► clone ─► tokens (JC) ─► daemons ─► study runs
+ explore ─► machine ─► account ─► build zhen ─► clone ─► tokens (JC) ─► daemons ─► study runs
 ```
 
 ## How to work
@@ -21,7 +21,8 @@ unattended agent takes over.
 - Use the sudo password only through `sudo -S`, and never write it into a file, script, log or commit.
 - Anything found that could affect a network measurement and is not covered here (another VPN app, a firewall
   rule, low disk): do not fix it. Report it.
-- Never scan a network (`nmap --version` is fine), build a zhen binary, or sign in to anything for anyone.
+- Never scan a network (`nmap --version` is fine), or sign in to anything for anyone. The one zhen build is
+  section 3's; nothing else is built.
 - This is the only part of study 2 with a person present. Ask JC only where this file says to.
 
 ## 1 · The machine
@@ -45,22 +46,24 @@ unattended agent takes over.
   ```
   Checked with `visudo -c -f` before it is installed. zhen's own line is added at the freeze stop, not now.
 
-## 3 · The binary
+## 3 · The binary, built from source
 
-The frozen zhen 0.8.0 is attached to this repository's release `study2-binary`:
+Study 2 measures **zhen-core 0.8.1**, built here, once, before the study starts. It is never rebuilt after that.
 
-```
-https://github.com/zhen-swift/zhen-study/releases/download/study2-binary/zhen-0.8.0
-sha256 e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c
-```
+- Clone `github.com/zhen-swift/zhen-core` into `~zhenstudy/Dev/InfinityCastle/zhen-core`, as `zhenstudy`.
+- Check out the tag `0.8.1` and confirm it resolves to commit `b6636fa63d5e906a727139a2547490a30fbf0bda`. **Any other commit is a stop.**
+- Confirm the tree is clean (`git status --porcelain` empty), then build with exactly `swift build -c release`.
+- Install `.build/release/zhen` as `/usr/local/zhen-study2/zhen`, mode 0755, `root:wheel`.
+- Record for the agent, in `~zhenstudy/.zhen-study2/build.json`: tag, commit, build command, `swift --version`,
+  `sw_vers`, model, the sha256 of the **installed** file, and `zhen --version`. The agent turns this into the
+  freeze record in its first step.
 
-Download it, check the sha256 (**a mismatch is a stop**: do not install it), and install it as
-`/usr/local/zhen-study2/zhen-0.8.0`, mode 0755, `root:wheel`. Run `--version` and note it.
+A build that fails is a stop: report the error, change nothing in zhen-core.
 
 ## 4 · The clones, as `zhenstudy`
 
 - `~/Dev/InfinityCastle/zhen-study` — this repository, on `main`
-- `~/Dev/InfinityCastle/zhen-core` — read-only reference, on `main`
+- `~/Dev/InfinityCastle/zhen-core` — the source the binary was built from (section 3), left at the tag
 - git identity: the name and email of this repository's latest commit (`git log -1 --format='%an %ae'`)
 - folders: `~/.zhen-study2/logs`, `~/zhen-study2-private` (700), `~/.config/zhen` (700)
 - Claude Code installed for `zhenstudy` (`curl -fsSL https://claude.ai/install.sh | bash`), not signed in

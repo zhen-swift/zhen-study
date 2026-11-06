@@ -31,7 +31,7 @@ the PR has failed. Files are there for depth.
 Section 9 ends with the command, ready to paste on the mini in the admin account:
 
 ```bash
-printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen-0.8.0\n' > /tmp/zhen-study2-zhen && sudo visudo -c -f /tmp/zhen-study2-zhen && sudo install -m 0440 -o root -g wheel /tmp/zhen-study2-zhen /etc/sudoers.d/zhen-study2-zhen
+printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen\n' > /tmp/zhen-study2-zhen && sudo visudo -c -f /tmp/zhen-study2-zhen && sudo install -m 0440 -o root -g wheel /tmp/zhen-study2-zhen /etc/sudoers.d/zhen-study2-zhen
 ```
 
 **JC's responses:** review comments → revised. A comment that is exactly `/freeze`, by `JCTec` → the freeze.
