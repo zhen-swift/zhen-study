@@ -79,3 +79,12 @@ instruments, or the scanners under test, in background policy. `netbed2.py` refu
 background policy, records `host_conditions` with every result, fails a calibration that corrects more than 1 ms,
 and reads the neighbour table as root (`arp` is in `zhenstudy`'s grant). For S2: the harness reads the neighbour
 table the same way and needs the same fix. Every `netbed2.py` job also leaves background policy itself at start (`setpriority(PRIO_DARWIN_PROCESS)`, checked, recorded as `host_conditions.at_start`), so the testbed does not wait on the plist being reinstalled, which needs root. Rebuild, recalibrate, re-verify.
+
+## 2026-11-19 · S1 · a job cannot leave launchd's background policy
+What: `netbed2.py` now calls `setpriority(PRIO_DARWIN_PROCESS, 0, 0)` at start. It clears `taskpolicy -b`, but under
+the runner (plist still `ProcessType Background`) the status job of 11:31 `-0600` stayed at priority 4 (rc 0), with the
+five host agents at 4. So the plist must be reinstalled as root before any testbed job; the jobs refuse until then.
+Also fixed: `status` lost its `machines` and `bridge100` keys to a misplaced comment, and now compares the
+neighbour table as root and from Python over the whole segment.  ·  Evidence: the mini's
+`data/testbed/status-20261119-113138.json`  ·  Decision: none new; JC's root step `Mini/.run/2026-11-19-1100-runner-interactive.sh`
+in the hub.

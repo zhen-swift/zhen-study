@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 import re
@@ -139,10 +140,10 @@ STARTED_IN = {}
 def leave_background():
     """Take this process, and so everything it starts, out of macOS background policy.
 
-    `setpriority(PRIO_DARWIN_PROCESS, 0, 0)` clears darwinbg for the calling process; the runner's own plist says
-    `ProcessType Interactive` from 2026-11-19, and this makes a job independent of the plist being reinstalled.
-    Tested: under `taskpolicy -b`, priority 4 becomes 31, and children start at 31. Whether it worked is checked,
-    not assumed: `require_foreground` reads the priority again.
+    `setpriority(PRIO_DARWIN_PROCESS, 0, 0)` clears darwinbg set by `taskpolicy -b` (tested: 4 becomes 31, and
+    children start at 31), but **not** the background that launchd's `ProcessType Background` imposes (tested on the
+    mini 2026-11-19 11:31: rc 0, priority stays 4). Only the runner's plist fixes that, which takes root. Kept
+    because it is harmless and its result is recorded; `require_foreground` decides from the priority it reads.
     """
     import ctypes
     before = priority_of(os.getpid())
@@ -261,12 +262,14 @@ def cmd_status(args):
         machines.append(entry)
     as_root, source = neighbour_table()
     plain = verify_gate.neighbour_table()
-    on_bridge = [i["address"] for m in machines for i in m.get("root_namespace_interfaces", [])]
+    segment = ipaddress.ip_network(plan.SEGMENT)
+    who = [" ".join(line.split()[:2]) for line in text(["who"]).splitlines()]  # user and line only: no remote hosts
     out = {"schema_version": 2, "what": "netbed2 status", "provenance": provenance(),
-           "users_logged_in": [" ".join(line.split()[:2]) for line in text(["who"]).splitlines()],  # no remote hosts "bridge100": bridge_address(), "machines": machines,
+           "users_logged_in": who, "bridge100": bridge_address(), "machines": machines,
            "neighbour_table": {"source": source,
-                               "found": {a: as_root.get(a) for a in on_bridge},
-                               "found_by_plain_arp_from_python": {a: plain.get(a) for a in on_bridge}}}
+                               "as_root": {a: m for a, m in sorted(as_root.items()) if ipaddress.ip_address(a) in segment},
+                               "plain_arp_from_python": {a: m for a, m in sorted(plain.items())
+                                                         if ipaddress.ip_address(a) in segment}}}
     write_json(OUT / f"status-{stamp()}.json", out)
     for m in machines:
         print(f"  {m['name']}: {m['status']}", flush=True)
