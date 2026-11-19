@@ -1,2 +1,2 @@
 S3
-S2 done 2026-11-19: dry run of every condition clean, tests pass, contract met (row 5 deferred to the root run). Next: S3, phase 1 collection.
+Phase 1 queued 2026-11-19 (80 jobs, seed 348798216, repo 17f9320). Gate: every cell complete, every skipped or failed job accounted for.
