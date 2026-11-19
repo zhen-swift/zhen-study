@@ -139,3 +139,17 @@ macOS it is not. Not changed since 0.8.1 on zhen-core `main` (0.9.0 included). U
 with Local Network permission, gets the table.  ·  Evidence: the mini's `data/contract/g9-20261119-131949/`,
 `data/testbed/status-20261119-131312.json`, `v2/harness/diag/llinfo.c`  ·  Decision: none. Changing zhen-core or the
 frozen binary is outside this step (`STEPS.md`, *Never*); the study's options go to JC.
+
+## 2026-11-19 · S2 · the core fix JC chose does not work; nothing a non-Apple binary starts sees the table
+What: JC chose "fix core, re-freeze". The fix (zhen-core branch `fix/arp-tool-fallback`, `2145e8c`, on
+`release/0.8.x` cut at 0.8.1; pushed, no PR, not released): when the sysctl comes back empty, read the table through
+`/usr/sbin/arp -an`. Built on the mini and run once on the testbed as `jc-mini` (14:30 `-0600`, outside the study):
+the fallback ran (`table_source: arp_tool`) and `arp`, started by zhen, printed **0 bytes**; every device still had
+no MAC. On the MacBook, `arp` spawned by zhen's test binary also printed 0 bytes while `arp` from the shell listed 4.
+Further: a Developer ID–signed build of `llinfo.c` also gets a 0-byte dump (signing is not the key); from Homebrew's
+python, `arp` behind one or two Apple shells (`sh -c '…; true'`, forced fork) still prints nothing. What fits every
+observation: on macOS 27 a non-Apple executable is the responsible process for itself and everything it starts, and
+the link-layer table is withheld unless that process holds Local Network permission, which a command-line tool in a
+launchd job cannot be granted. Apple binaries under Apple parents (a shell, `/usr/bin/python3`, the runner) see it.
+Untested: root.  ·  Evidence: `Mini/.run/2026-11-19-1430-zhen-0.8.2-precheck.sh` (hub), zhen-core `2145e8c`
+·  Decision: none; back to JC. No zhen-core release is made from this branch.
