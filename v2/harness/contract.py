@@ -7,7 +7,8 @@ same flags, in the same order. Ported rather than run because the script needs `
 (nothing is installed for this), and because it prints rows without judging them; this judges each one. The
 function's text at the tag is saved beside the results, with its blob hash, so the port can be checked against it.
 
-Row 7 (zhen as root) is excluded: zhen's root line is added at the freeze (S5). Row 8: this build reports no commit
+Row 5 is judged and shown but deferred (`DEFERRED`): it needs the neighbour table, which macOS 27 gives zhen only as
+root. Row 7 (zhen as root) is excluded: zhen's root line is added at the freeze (S5). Row 8: this build reports no commit
 (`frozen-binary-v2.json` → `version_note`), so its commit half is judged against the freeze record, and the
 binary's sha256 against the frozen one is what identifies the file.
 
@@ -44,6 +45,12 @@ ROW1_FLAGS = ["--reach-percentile", "0.9", "--first-scan-wait", "1200ms", "--rea
 ROW1_ECHO = {"percentile": 0.9, "first_scan_wait_millis": 1200, "cap_millis": 4000, "min_samples": 10,
              "device_min_samples": 3, "device_margin": 1.5, "miss_backoff": 3, "attempts_step_millis": 400,
              "attempts_cap": 7}
+
+
+#: Rows judged, shown, and left out of `passed`, each with why and where it is met instead (LEDGER.md).
+DEFERRED = {"5": "macOS 27 withholds the neighbour table from unprivileged zhen (LEDGER.md, 2026-11-19, root "
+                 "reads the table); row 5 is re-run as root with the frozen binary after zhen's root line (S5), "
+                 "before the pilot (S6)"}
 
 
 def sha256(path):
@@ -175,14 +182,16 @@ def main():
     rows = judge(a, version_text, store_unchanged)
     record.update({"version_text": version_text, "rows": rows, "excluded": {"7": "zhen as root: its line comes at S5"},
                    "finished_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                   "passed": all(r["passed"] for r in rows)})
+                   "deferred": DEFERRED,
+                   "passed": all(r["passed"] for r in rows if r["row"] not in DEFERRED)})
     (out / "contract.json").write_text(json.dumps(record, indent=1) + "\n")
     for r in rows:
         bad = [c for c in r["checks"] if not c["ok"]]
-        print(f"row {r['row']:<3} {'ok' if r['passed'] else 'FAILED'}" +
+        verdict = "ok" if r["passed"] else ("FAILED, deferred: " + DEFERRED[r["row"]]) if r["row"] in DEFERRED else "FAILED"
+        print(f"row {r['row']:<3} {verdict}" +
               "".join(f"\n      {c['what']}: expected {c['expected']!r}, got {c['got']!r}" for c in bad) +
               (f"\n      {r['note']}" if r.get("note") else ""), flush=True)
-    print(f"wrote {out}/contract.json; G9 rows 1-6 and 8 {'met' if record['passed'] else 'NOT MET'}", flush=True)
+    print(f"wrote {out}/contract.json; G9 rows {', '.join(r['row'] for r in rows if r['row'] not in DEFERRED)} {'met' if record['passed'] else 'NOT MET'}", flush=True)
     return 0 if record["passed"] else 1
 
 

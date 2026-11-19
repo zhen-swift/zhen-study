@@ -1,0 +1,58 @@
+{
+ "design": "dryrun",
+ "seed": 20261119,
+ "generator": "v2/harness/generate.py",
+ "config": {
+  "phase1": {
+   "blocks_per_cell": 20
+  },
+  "phase2": {
+   "blocks_per_cell": 30
+  },
+  "testbed": {
+   "_what": "The virtual network inside the mini (phases 1 and 2). Never leaves the machine, so it runs at any time.",
+   "cidr": "192.168.64.0/24",
+   "interface": "bridge100"
+  }
+ },
+ "conditions": [
+  "p1.learned.empty",
+  "p1.learned.primed",
+  "p1.fixed0.5s.empty",
+  "p1.fixed0.5s.primed",
+  "p1.fixed1s.empty",
+  "p1.fixed1s.primed",
+  "p1.fixed1.5s.empty",
+  "p1.fixed1.5s.primed",
+  "p1.fixed2s.empty",
+  "p1.fixed2s.primed",
+  "p1.fixed3s.empty",
+  "p1.fixed3s.primed",
+  "p1.history0.90.empty",
+  "p1.history0.90.primed",
+  "p1.history0.97.empty",
+  "p1.history0.97.primed",
+  "p1.history0.99.empty",
+  "p1.history0.99.primed",
+  "p2.zhen.default",
+  "p2.zhen.first",
+  "p2.zhen.root",
+  "p2.zhen.learned",
+  "p2.zhen.product",
+  "p2.nmap.root.T2",
+  "p2.nmap.root.T3",
+  "p2.nmap.root.T4",
+  "p2.nmap.root.T5",
+  "p2.nmap.user.T2",
+  "p2.nmap.user.T3",
+  "p2.nmap.user.T4",
+  "p2.nmap.user.T5"
+ ],
+ "jobs": 3,
+ "minutes": 72,
+ "order": [
+  "dryrun-0001-p2-d50-block-001-dry",
+  "dryrun-0002-p1-d500-run-000-dry",
+  "dryrun-0003-p2-d500-run-000-dry"
+ ]
+}

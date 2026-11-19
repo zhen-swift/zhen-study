@@ -170,3 +170,15 @@ recall 1.00 cold) and phase 1's recall ceiling were written for a zhen that sees
 tcp-only and silent responders (r06, r08) were not found in the contract run, so the unprivileged default's
 ceiling on the testbed is 8 of 10. Phase 1 measures that ceiling; `PROTOCOL-v2.md` restates H7 against it or as a
 root-run hypothesis, and says why, before the freeze.
+
+## 2026-11-19 · S2 · the harness, and phase 1's block count
+What: the harness port in `v2/harness/` (`conditions.py`, `zhen.py`, `record.py`, `run_block.py`, `generate.py`,
+`check.py`; decisions in `v2/harness/README.md`), 22 tests passing under `/usr/bin/python3` 3.9 against three
+artifacts the frozen binary wrote (`fixtures/`). `config.json` gains `phase1.blocks_per_cell: 20` (it had none;
+the generator needs it): 80 phase 1 blocks, ~18 conditions each. `contract.py` now leaves row 5 out of `passed`
+with the reason recorded in every contract file (decision of the entry above). Dry-run jobs generated with seed
+20261119 (`v2/jobs/dryrun-20261119/`): one phase 1 block, two phase 2 blocks (flush per run with -T2, flush per
+block), every condition once, zhen as root stubbed.  ·  Evidence: this commit
+·  Decision (Claude, JC to overrule before the freeze): 20 blocks per phase 1 cell, because phase 1 never enters a
+hypothesis test and 20 blocks × 10 responders gives 200 host trials per condition and dispersion, enough to tell
+P97 from P99 near recall 1 at ~6 h of machine time. pcaps stay on the mini outside `data/`.

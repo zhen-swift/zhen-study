@@ -22,5 +22,7 @@
     "max_ntp_offset_seconds": 1.0
   },
 
+  "phase1": { "blocks_per_cell": 20 },
+
   "phase2": { "blocks_per_cell": 30 }
 }
