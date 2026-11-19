@@ -16,6 +16,9 @@ set -o pipefail   # not -u: macOS bash 3.2 treats an empty array as unset
 S=/Users/Shared/zhen-study2
 R="$S/repo"
 export PATH=/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin PYTHONDONTWRITEBYTECODE=1
+# repo/ belongs to the admin account and this runs as zhenstudy, so git refuses it ("dubious ownership") unless
+# told otherwise. Command-scope config, inherited by every job, so the harness's provenance checks can read it too.
+export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0="$R"
 cd "$S" || exit 1
 mkdir -p queue running done failed data logs
 log() { printf '%s\n' "$1" >> logs/runner.ndjson; }

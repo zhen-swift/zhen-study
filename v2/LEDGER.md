@@ -47,3 +47,10 @@ supersedes the 2026-10-17 record of 0.8.0. Setup grant removed, `sudo -n true` f
 empty.  ·  Evidence: `v2/mini/MACHINE.md`, `v2/frozen-binary-v2.json`, hub `Mini/.run/2026-11-18-2050…2059-*.sh`
 ·  Decision (JC): Homebrew `zhen` 0.9.0 (tap `zhen-swift/zhen`), which `SETUP.md` does not name, stays on the
 mini; the harness calls the frozen binary by its full path.
+
+## 2026-11-18 · S0 · runner reads its repo's commit
+What: as `zhenstudy`, git refused `repo/` (owned by the admin account: "dubious ownership"), so `runner.sh` would log
+`"repo":"none"` and `harness/provenance.py` would fail every job on `git status`. `runner.sh` now exports
+`safe.directory` for `repo/` as command-scope git config, which jobs inherit. Tested on the mini against a repo
+owned by another user.  ·  Evidence: `v2/runner/runner.sh`  ·  Decision (JC): fix it now, before any job runs;
+the mini gets it when `/study-run` pins the repo.
