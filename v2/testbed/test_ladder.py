@@ -130,6 +130,11 @@ class HostRecords(unittest.TestCase):
                    {"name": "r09", "designed_rtt_ms": 500.0, "netem_delay_ms": 499.789}]
         self.assertEqual(netbed2.large_corrections(entries), [])
 
+    def test_one_cpu_and_an_idle_priority_spinner(self):
+        self.assertIn("\ncpus: 1\n", netbed2.TEMPLATE.read_text())
+        self.assertIn("CPUSchedulingPolicy=idle", netbed2.IDLE_INHIBITOR)
+        self.assertNotIn("CPUSchedulingPolicy=other", netbed2.IDLE_INHIBITOR)
+
     def test_the_10_ms_artefact_is_caught(self):
         # d500.json of 2026-11-19: r07 calibrated to 89.87 ms for a 100 ms design.
         entries = [{"name": "r07", "designed_rtt_ms": 100.0, "netem_delay_ms": 89.8705},

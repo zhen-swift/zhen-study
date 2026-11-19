@@ -88,3 +88,17 @@ Also fixed: `status` lost its `machines` and `bridge100` keys to a misplaced com
 neighbour table as root and from Python over the whole segment.  ·  Evidence: the mini's
 `data/testbed/status-20261119-113138.json`  ·  Decision: none new; JC's root step `Mini/.run/2026-11-19-1100-runner-interactive.sh`
 in the hub.
+
+## 2026-11-19 · S1 · background was not the cause; the sleeping CPU is
+What: with the runner `Interactive` (JC reinstalled the plist, 11:4x `-0600`) and every job and host agent at priority
+31, all four calibrations (s1b-03…06, 11:44–12:12) still met the extra delay, now on more responders, and the 1 ms guard
+failed all four. The cleaner law: the delivered delay is netem's plus min(half of netem's, ~10 ms), following netem
+down through calibration (16.18 ms set gives +8.1). The virtualization processes had been at 31 in attempt 1 too, so
+background policy was never the mechanism; the 2026-11-19 entries above that say so are wrong about the cause. What
+fits: each machine has two virtual CPUs and study 1's spinner keeps one busy; the other sleeps, and a sleeping VZ
+virtual CPU is woken by a host timer that fires late by that rule. Responders whose packets land on it are late. The
+neighbour-table fix is confirmed (as root: hardware addresses; from Python: none).  ·  Evidence: the mini's
+`failed/s1b-03…06-configure-*.log`, `data/testbed/status-20261119-114409.json`  ·  Decision ("fix what you need"):
+one virtual CPU per machine (`lima-responder.yaml` `cpus: 1`), and study 1's spinner at `SCHED_IDLE` so the CPU never
+sleeps and the spinner yields to all real work; same host cost (one busy core per machine). `Interactive` stays: a
+timing study should not run its scanners in background policy either. Rebuild, recalibrate, re-verify.

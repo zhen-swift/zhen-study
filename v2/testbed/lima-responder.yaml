@@ -16,7 +16,10 @@ images:
     arch: "aarch64"
     digest: "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e"
 
-cpus: 2
+# One CPU, not study 1's two (2026-11-19, S1 attempt 2). An idle virtual CPU sleeps on a host timer that macOS fires
+# late by min(half the wait, ~10 ms); netem's timers on that CPU came back late by exactly that. With one CPU kept
+# busy by an idle-priority spinner (netbed2.IDLE_INHIBITOR) no CPU ever sleeps.
+cpus: 1
 memory: "1GiB"
 disk: "10GiB"
 

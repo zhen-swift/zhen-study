@@ -63,6 +63,15 @@ MAX_CORRECTION_MS = 1.0
 BACKGROUND_PRIORITY = 4
 
 
+#: The machine has one virtual CPU (lima-responder.yaml) and this keeps it from ever sleeping: study 1's spinner,
+#: run at `SCHED_IDLE` instead of `other`, so it takes only time nothing else wants (softirqs, the listeners and
+#: sshd all preempt it at once). Study 1 had two CPUs and one spinner; the second CPU slept, and netem timers armed
+#: on it fired late by min(half the delay, ~10 ms), on whichever responders' packets landed there (S1 attempt 2).
+IDLE_INHIBITOR = netbed.IDLE_INHIBITOR.replace("CPUSchedulingPolicy=other", "CPUSchedulingPolicy=idle")
+assert IDLE_INHIBITOR != netbed.IDLE_INHIBITOR, "study 1's spinner changed shape; check netbed.IDLE_INHIBITOR"
+GUEST_CPUS = 1
+
+
 def now_iso():
     return time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
@@ -344,7 +353,10 @@ def cold_first_contact(r, address):
 
 def prepare_machine(vm, responders):
     """Study 1's sequence up to shaping: spinner, reset, namespaces, listeners. Returns the interfaces."""
-    netbed.guest(vm, netbed.IDLE_INHIBITOR)
+    cpus = netbed.guest(vm, "nproc", check=False).stdout.strip()
+    if cpus != str(GUEST_CPUS):
+        raise SystemExit(f"{vm} has {cpus} CPUs, the template says {GUEST_CPUS}: `netbed2.py rebuild` first")
+    netbed.guest(vm, IDLE_INHIBITOR)
     netbed.reset_machine(vm, responders)
     interfaces = netbed.wait_for_interfaces(vm, len(responders))
     if len(interfaces) < len(responders):
@@ -383,7 +395,8 @@ def segment_header(d):
             "designed_dispersion": round(ladder.achieved_dispersion(d), 3),
             "segment": plan.SEGMENT, "composition": plan.composition(),
             "declared_web_fraction": plan.DECLARED_WEB_FRACTION,
-            "responders_per_machine": plan.RESPONDERS_PER_VM}
+            "responders_per_machine": plan.RESPONDERS_PER_VM,
+            "machine": {"cpus": GUEST_CPUS, "spinner_policy": "SCHED_IDLE"}}
 
 
 def large_corrections(entries):
