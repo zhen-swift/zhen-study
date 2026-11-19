@@ -32,3 +32,9 @@ window is on the mini's own clock, whatever its zone, and daylight-saving nights
 offset, not by date. `STEPS.md` replaces `BRIEF.md`, `SETUP.md` replaces `START.md`, `agent/` is removed, and the
 freeze is a merge, not a comment. Decision (JC): Claude stays on the machine with the Touch ID key; the plans
 follow the machine instead of naming it.
+
+## 2026-11-19 · setup · leftovers from the 2026-11-18 run
+What: `SETUP.md` now opens with every item the old-design `/study-start` run may have left on the mini, each with
+exactly one outcome: keep (`zhenstudy`, its grant, the built binary if its record checks out), move (`build.json`),
+or remove (Claude Code, the token folder, the old clone, `gh`, MacTeX, any old daemons). Anything not named is
+listed, not acted on. Decision (JC): no ambiguity for the setup to resolve by itself.
