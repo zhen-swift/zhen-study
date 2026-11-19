@@ -122,3 +122,20 @@ attempt 2's status; both redacted in the copies, the VMs' lima addresses rewritt
 mini's bridge address had been used as a fixture in `test_ladder.py` (`173a7ab`, pushed); replaced, though it stays in
 history. `v2/testbed/manifests/2026-11-19-attempt-1-background/` (committed in `173a7ab`, VM addresses unhashed) stays as
 written; from here `v2/data/testbed/` is where testbed records live.
+
+## 2026-11-19 · S2 · jobs run under Apple's python3; zhen cannot read the neighbour table on macOS 27
+What: (1) `runner.sh` now starts jobs with `/usr/bin/python3` (3.9.6; all study code parses and its tests pass under
+3.9): under it, a job reads the full neighbour table without root (s2-00-status, 13:13 `-0600`: 11 entries, equal to
+root's). (2) The study-contract job (`v2/harness/contract.py`, a port of zhen-core 0.8.1's `verify-reach-testbed.sh
+g9`, s2-01-contract, 13:19) found zhen blind to it anyway: every device `mac: null`, the neighbour watch's dump 0 bytes
+(`largest_dump_bytes: 0`, 44 polls, `resolved: 0`), every host `probe_reply` only, r06 (tcp-only) and r08 (silent)
+not found. Row 5 (`neighbor_resolved`) fails. (3) Isolated with `v2/harness/diag/llinfo.c`, zhen's exact read
+(`sysctl NET_RT_FLAGS/RTF_LLINFO`) and nothing else, built with `cc` (ad hoc signed, like zhen): **a 0-byte dump on
+macOS 27.2.1 in every context tried** (mini over SSH, mini under Apple's python3, MacBook from Claude's shell), while
+Apple's `/usr/sbin/arp -an` beside it lists 14 (mini) and 4 (MacBook) entries with hardware addresses. macOS 27
+appears to withhold the link-layer table from non-Apple binaries. zhen-core's own comment
+(`NeighborTable.swift`) says the cache "is readable even when the Local Network permission has been denied"; on this
+macOS it is not. Not changed since 0.8.1 on zhen-core `main` (0.9.0 included). Untested: whether root, or a process
+with Local Network permission, gets the table.  ·  Evidence: the mini's `data/contract/g9-20261119-131949/`,
+`data/testbed/status-20261119-131312.json`, `v2/harness/diag/llinfo.c`  ·  Decision: none. Changing zhen-core or the
+frozen binary is outside this step (`STEPS.md`, *Never*); the study's options go to JC.

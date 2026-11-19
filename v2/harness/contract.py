@@ -88,8 +88,13 @@ def judge(a, version_text, store_unchanged):
     row("1", [check(f"run.reach.{k}", v, reach.get(k)) for k, v in ROW1_ECHO.items()])
     row("1w", [check("run.reach.expected_window_millis", 1, a["1w"]["run"]["reach"].get("expected_window_millis"))])
     row("1u", [check("run.reach.unexpected_cold", "first-scan", a["1u"]["run"]["reach"].get("unexpected_cold"))])
-    row("1i", [check("run.ipv6_window.millis (2s)", 2000, a["1i"]["run"]["ipv6_window"].get("millis")),
-               check("run.ipv6_window.millis (0)", 0, a["1i0"]["run"]["ipv6_window"].get("millis"))])
+    # `millis` is how long the scan actually listened; the setting is echoed as policy, floor and cap.
+    w2, w0 = a["1i"]["run"]["ipv6_window"], a["1i0"]["run"]["ipv6_window"]
+    row("1i", [check("run.ipv6_window.policy (2s)", "fixed", w2.get("policy")),
+               check("run.ipv6_window.floor_millis (2s)", 2000, w2.get("floor_millis")),
+               check("run.ipv6_window.cap_millis (2s)", 2000, w2.get("cap_millis")),
+               check("run.ipv6_window.policy (0)", "off", w0.get("policy")),
+               check("run.ipv6_window.millis (0)", 0, w0.get("millis"))])
     row("2", [check("run.reach.policy", "learned", a["2"]["run"]["reach"].get("policy")),
               check("run.neighbor_watch.enabled", False, a["2"]["run"]["neighbor_watch"].get("enabled"))])
     r3 = a["3"]["run"]["reach"]
