@@ -1,0 +1,26 @@
+{
+  "_what": "Study 2's settings. Every rule in RUN.md that depends on the network or the clock reads its value here. A change is a dated commit to this file, recorded in LEDGER.md, before the next job runs.",
+
+  "home": {
+    "_what": "The home-network arm (phase 3 and history priming). Scanned only inside the window, on the mini's own clock.",
+    "cidr": "10.10.30.0/24",
+    "interface": "en0",
+    "window": { "start": "00:00", "end": "06:00" },
+    "slots_per_night": 3,
+    "blocks": 30,
+    "priming_nights": 7
+  },
+
+  "testbed": {
+    "_what": "The virtual network inside the mini (phases 1 and 2). Never leaves the machine, so it runs at any time.",
+    "cidr": "192.168.64.0/24",
+    "interface": "bridge100"
+  },
+
+  "clock": {
+    "_what": "No zone is fixed: the window is in whatever zone the mini is set to. Every job records the zone name and UTC offset it ran in. A home job is refused if the offset would change while it runs (a daylight-saving night, in any zone) or if NTP is off by more than the limit.",
+    "max_ntp_offset_seconds": 1.0
+  },
+
+  "phase2": { "blocks_per_cell": 30 }
+}

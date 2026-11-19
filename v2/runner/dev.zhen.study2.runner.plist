@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- Study 2, run as the study user with nobody logged in. Installed by `sudo v2/agent/start.sh install`. -->
+<!-- Study 2's job runner. Runs as zhenstudy with nobody logged in. Installed by v2/runner/install.sh. -->
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>dev.zhen.study2.collect</string>
+  <string>dev.zhen.study2.runner</string>
   <key>UserName</key>
-  <string>__USER__</string>
+  <string>zhenstudy</string>
+  <key>GroupName</key>
+  <string>staff</string>
+  <key>Umask</key>
+  <integer>2</integer>
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
-    <string>__REPO__/v2/agent/start.sh</string>
-    <string>collect</string>
+    <string>/Users/Shared/zhen-study2/repo/v2/runner/runner.sh</string>
   </array>
-  <key>WorkingDirectory</key>
-  <string>__REPO__</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>HOME</key>
-    <string>__HOME__</string>
-    <key>USER</key>
-    <string>__USER__</string>
+    <string>/Users/zhenstudy</string>
   </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
   <true/>
   <key>ThrottleInterval</key>
-  <integer>60</integer>
+  <integer>30</integer>
   <key>ProcessType</key>
   <string>Background</string>
   <key>StandardOutPath</key>
-  <string>__HOME__/.zhen-study2/logs/collect.launchd.out</string>
+  <string>/Users/Shared/zhen-study2/logs/runner.launchd.out</string>
   <key>StandardErrorPath</key>
-  <string>__HOME__/.zhen-study2/logs/collect.launchd.err</string>
+  <string>/Users/Shared/zhen-study2/logs/runner.launchd.err</string>
 </dict>
 </plist>

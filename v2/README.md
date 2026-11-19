@@ -3,13 +3,15 @@
 | File | What |
 |---|---|
 | `PLAN.md` | what is measured: three phases, conditions, hypotheses in outline |
-| `RUN.md` | how it runs: the machine, the window, authority, the three stops |
-| `BRIEF.md` | the unattended agent's steps and gates |
+| `RUN.md` | how it runs: Claude on the MacBook, a plain runner on the mini, the window, authority |
+| `STEPS.md` | the steps in order, where each happens, and its gate |
+| `config.json` | **every value that depends on the network or the clock**: the home network, the window, block counts |
+| `SETUP.md` | what a ready Mac mini looks like; `/study-setup` makes it so |
+| `runner/` | the mini's job runner, its window check, its LaunchDaemon and installer |
 | `REVIEW-PR.md` | the layout of the freeze PR and the final PR |
-| `START.md` | **start here**: takes a fresh Mac mini to a running study from one prompt |
-| `agent/` | `start.sh` (install, hourly tick, collection runner), the two LaunchDaemons, `tokens.sh`, the agent's prompt and permissions |
-| `STATE` | where the run is now: `RUNNING`, `WAITING_FREEZE`, `WAITING_ROOT`, `BLOCKED`, `DONE` |
+| `STATE` | the current step |
 | `LEDGER.md` | every gate and decision, append-only |
 | `frozen-binary-v2.json` | the binary study 2 measures |
 
-`PROTOCOL-v2.md` appears at the freeze stop and is frozen by JC's `/freeze`.
+From the MacBook, in `~/Dev/InfinityCastle`: `/study-setup` once, `/study-run <phase>` per phase,
+`/study-status` any time, `/study-sync` to bring data back.

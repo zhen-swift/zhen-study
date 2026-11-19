@@ -1,119 +1,108 @@
 # Study 2 — how it runs
 
-**Decided with JC, 2026-10-31 and 2026-11-02.** This file is the run contract: where, when, as whom, with
-what authority, and where it stops. `PLAN.md` says *what* is measured; `BRIEF.md` is the agent's step list.
-A change to anything here is a commit to this file, dated, before the run acts on it.
-
-**2026-11-02:** `main` is the only branch. The paper moved into `paper/` on `main`; the agent cuts `study2`
-from `main` and the final PR goes into `main`.
-
-**2026-11-05:** netsanity 0.4.0 is dropped from study 2: the binary no longer exists and cannot be rebuilt to the same
-artifact (`PLAN.md`, *The bridge*). The repositories on the mini live in `~/Dev/InfinityCastle`, the same layout as the
-development hub.
-
-**2026-11-06:** the binary is built from source on the mini at zhen-core 0.8.1, not copied: a hand-carried
-build is a link nobody can check. See *Binary*.
-
-**2026-11-06:** the repository starts itself. `START.md` takes a fresh mini to a running study from one
-prompt; nothing is copied by hand. The agent
-and the collection run as LaunchDaemons under `zhenstudy`, so no one has to be logged in.
+**The run contract,** decided with JC (2026-10-31 to 2026-11-19). `PLAN.md` says *what* is measured, `STEPS.md`
+says in what order, and `config.json` holds every value that depends on the network or the clock. A change to any
+of them is a dated commit, recorded in `LEDGER.md`, before the next job runs.
 
 ```
- JC, once                      the agent, unattended                          JC
- ─────────                     ─────────────────────────────────────────      ──────────
- START.md ─────► one prompt ──► prep ─► phase 1 ─► freeze PR ══ STOP ══►  /freeze + root line
-                                                                               │
-                     final PR ══ STOP ══◄ paper ◄ analysis ◄ phase 3 ◄ phase 2 ◄┘
-                        │
-                        ▼
-                  JC merges, removes root
+ MacBook — Claude, with JC                         Mac mini — no Claude, no secrets
+ ──────────────────────────────                    ───────────────────────────────────
+ /study-setup  ─── SSH (Touch ID) ──────────────►  account, grants, zhen build, runner
+ code, testbed, analysis, paper                    
+ /study-run    ─── SSH: pin the repo, queue jobs ─►  runner (launchd, unattended)
+ /study-status ◄── SSH: read-only snapshot ───────   runs one job at a time, day or night,
+ /study-sync   ◄── SSH: copy data/ back ──────────   inside the window for the home network
+ commit, push to GitHub (from the MacBook only)
 ```
 
-## Where and as whom
+## Who does what
 
 | | |
 |---|---|
-| Machine | Mac mini, Apple M6 (`Mac18,5`), macOS 27.0.1, dedicated to the study |
-| Account | `zhenstudy`, a standard (non-admin) user. Nothing personal on it |
-| Agent | Claude Code, headless (`claude -p`), started hourly by the LaunchDaemon `dev.zhen.study2.agent` through `agent/start.sh`, as `zhenstudy`, with nobody logged in |
-| Collection | the LaunchDaemon `dev.zhen.study2.collect`, kept alive: runs the harness argv the agent writes to `~/.zhen-study2/collect.args`, idle while the file is absent |
-| Scanning link | Ethernet `en0` on the home network. Wi-Fi `en1` is read for channel load only |
-| Clean network | no VPN, no network filter or system extension (checked 2026-10-31: none) |
-| Disk | 146 GiB free at setup |
+| **Claude** | runs only on JC's MacBook, in sessions JC starts: the harness port, the testbed, the analysis, the paper. It reaches the mini only through `Mini/scripts/mini` (SSH, Secure Enclave key, Touch ID) |
+| **The mini** | runs jobs, nothing else. The LaunchDaemon `dev.zhen.study2.runner`, as the standard user `zhenstudy`, with nobody logged in. No Claude, no tokens, no GitHub sign-in: it only ever clones public repositories |
+| **GitHub** | written only from the MacBook. The mini never pushes |
+| **Data back** | `/study-sync` copies the runner's `data/` and logs to the MacBook over SSH. Phase 3's raw captures never leave the mini |
+
+## The runner
+
+Everything lives in `/Users/Shared/zhen-study2/` (`runner/runner.sh` documents the layout):
+
+- `repo/` is the zhen-study clone the jobs run from. `/study-run` checks out the exact commit before queuing, and
+  every job records that commit.
+- `queue/` holds one JSON file per job. A job is **one block** (or one priming scan), so a skipped or failed job
+  costs one block, never a night.
+- The runner takes the first job that may run now: testbed jobs any time, home jobs only inside the window. A job
+  that dies mid-run goes to `failed/` and is never re-run silently.
+- `PAUSE` stops new jobs. `/study-run stop` writes it.
 
 ## When
 
-| Arm | Window | Clock |
+| Arm | When | Clock |
 |---|---|---|
 | Testbed — phases 1 and 2 | any time | — |
-| Home network — phase 3 and the history-priming scans | **00:00–06:00** | `America/Mexico_City` |
+| Home network — phase 3 and history priming | `config.json` → `home.window` (now 00:00–06:00) | **the mini's own local zone, whatever it is set to** |
 
-- The harness checks the clock **before every block**: zone name is `America/Mexico_City`, NTP offset under 1 s
-  (`sntp`), and local time inside the window with the block's expected length. Any check failing: the block is
-  skipped and logged, never run.
-- **No daylight-saving skips:** Mexico City has had no daylight-saving time since 2022, so every night is a full six hours.
-- Phase 3 is **night-only**, in three slots per night: 00–02, 02–04, 04–06. The day stratum in `PLAN.md` is
-  dropped because the window has no day; this is a threat to validity, stated in the paper.
-- One scanner at a time: a single lock is held by any block or priming scan, so testbed and home runs never overlap.
+No zone is written into the plan. Before every home job, `runner/window.py` checks, from `config.json`:
 
-## Authority
+- the job fits inside the window, with its expected length (windows that cross midnight work)
+- the UTC offset does not change while it runs. That skips daylight-saving nights automatically, in any zone
+- NTP is within `clock.max_ntp_offset_seconds`
+- the scanning interface's address is inside `home.cidr`. If the network is renumbered, home jobs are refused
+  until `config.json` is updated
 
-The **OS account is the security boundary.** Claude Code's allow-list (`agent/settings.json`) is the no-prompt
-contract: in headless mode anything not listed is refused, never asked. A `python3` the agent is allowed to run can
-do what `zhenstudy` can do, so the limits that matter are the account's.
+Every job's log line records the zone name and UTC offset it actually ran in. Phase 3's night slots are the window
+split into `home.slots_per_night` equal parts. The day stratum is dropped (there is no daytime window), which is a
+threat to validity the paper states.
+
+## Authority on the mini
 
 | | Allowed | Not allowed |
 |---|---|---|
-| Files | the zhen-study clone, `~/.zhen-study2/`, `~/zhen-study2-private/` | anything outside; the tokens in `~/.config/zhen/` are read only by `start.sh` |
-| Git | commit; push branches `study2` and `study2-*`; tags `study2/*`; open and edit PRs; comment | **merge**, push to `main`, force-push |
-| zhen-core | read | any change. The binary is frozen |
-| Root | `sudo -n` on `nmap`, `tcpdump`, `arp`, `wdutil` — and the frozen `zhen` **only after the freeze stop** | any other root |
-| Network | GitHub, PyPI (the analysis venv), Ubuntu cloud images (the testbed), CTAN via TeX | web search, web fetch |
-| Contact JC | only by stopping | messages, issues, mentions |
+| The admin account, over SSH | clone, pin the repo, queue jobs, read logs and data | `sudo`, except under the temporary setup grant during `/study-setup` |
+| `zhenstudy` (the runner) | write `queue/ running/ done/ failed/ data/ logs/ history/`, its private folder; `sudo -n` on `nmap`, `tcpdump`, `arp`, `wdutil`, and on `zhen` **after the freeze** | change `repo/`, any other root |
+| Network | GitHub (public clones), Ubuntu cloud images (the testbed) | everything else |
 
-Binaries the root grant names live in `/usr/local/zhen-study2/`, owned by root, so `zhenstudy` cannot swap one
-to get root.
+The binaries the root grant names live in `/usr/local/zhen-study2/`, owned by root, so `zhenstudy` cannot swap
+one to get root.
 
-## Stops — the only three
+## Where JC decides
 
-| Stop | When | JC does | The run resumes when |
-|---|---|---|---|
-| **Freeze** | phase 1 analysed, `PROTOCOL-v2.md` drafted | reviews the PR in the browser; comments `/freeze`; runs the one command in the PR to add zhen's root line | the wrapper sees `/freeze` from `JCTec` **and** `sudo -n -l` lists zhen |
-| **Final** | phase 3 analysed, paper rewritten | reviews and merges; runs the removal command in the PR | — the run is done |
-| **Blocked** | something the agent cannot fix after three attempts over three hours | reads `STATE` and the last `LEDGER.md` entry | JC edits `STATE` back to `RUNNING` |
-
-A stop is a state in `v2/STATE`, committed and pushed, and the agent exiting. While stopped, the hourly wrapper
-checks for its condition in shell and **does not start Claude**, so a stop costs nothing.
-
-PR layout for both review stops: `REVIEW-PR.md`.
+| When | JC does |
+|---|---|
+| `/study-setup` | adds the temporary sudo line on the mini, once |
+| **The freeze** | reviews the freeze PR (`REVIEW-PR.md`) and **merges it**. That merge is the freeze. Then adds zhen's root line (one `ssh -t mini` command in the PR) |
+| Each phase | runs `/study-run <phase>`. Nothing starts a phase by itself |
+| **The end** | reviews the final PR and merges it; removes the grants and the runner (commands in the PR) |
 
 ## Resilience
 
 | Event | What happens |
 |---|---|
-| usage limit, crash, agent exits | launchd starts the wrapper every hour; it resumes from `LEDGER.md` |
-| power cut | the mini is on a battery; JC wakes it remotely and unlocks FileVault; the daemons start by themselves |
+| power cut or reboot | JC unlocks FileVault remotely; the runner starts by itself; an interrupted job is in `failed/` |
+| a job fails | it moves to `failed/` with its log; the harness's own rules apply inside it (`HARNESS.md`) |
+| the network or zone changes | home jobs are refused or skipped and logged, never run wrongly; `config.json` gets a dated commit |
 | macOS update | automatic installs are off for the study |
-| a block fails | the harness's own retry rules (`HARNESS.md`); failures are recorded, never deleted |
 
 ## Binary
 
-**zhen-core 0.8.1** (commit `b6636fa63d5e906a727139a2547490a30fbf0bda`), built from source on the mini by `START.md` with `swift build -c release`,
-installed once at `/usr/local/zhen-study2/zhen`, and never rebuilt until the study ends.
+**zhen-core 0.8.1** (commit `b6636fa63d5e906a727139a2547490a30fbf0bda`), built from source on the mini by
+`/study-setup` with `swift build -c release`, installed once at `/usr/local/zhen-study2/zhen`, never rebuilt until
+the study ends.
 
 | Link | Where it is recorded |
 |---|---|
 | source | the public commit above |
-| how it was built | the build command, toolchain and host, in `frozen-binary-v2.json` |
+| how it was built | build command, toolchain and host, in `frozen-binary-v2.json` |
 | which file | its sha256, taken at install, before phase 1 |
 | which file ran | `zhen --version` and `run.tool.commit` in every artifact; the harness hashes the binary on every run |
 
-Builds are not reproducible byte for byte, so the sha256 identifies *this* build within the study, and the
-commit plus the recipe is how anyone else gets an equivalent one. 0.8.1 differs from the 0.8.0 frozen on
-2026-10-17 by the version string and a compiler fix for macOS 15.6 (19 lines, no change to how a scan runs).
+Builds are not reproducible byte for byte, so the sha256 identifies *this* build within the study, and the commit
+plus the recipe is how anyone else gets an equivalent one. 0.8.1 differs from the 0.8.0 frozen on 2026-10-17 by the
+version string and a compiler fix for macOS 15.6 (19 lines, no change to how a scan runs).
 
 ## Private data
 
-Phase 3 raw captures and artifacts name household devices. They stay in `~/zhen-study2-private/` on the mini and
-are **never pushed**. Committed phase 3 data carries salted hashes of MACs and addresses; the salt lives in the
-private folder.
+Phase 3 raw captures and artifacts name household devices. They stay in `/Users/zhenstudy/zhen-study2-private/`
+(mode 700) on the mini and are **never copied or pushed**. Committed phase 3 data carries salted hashes of MACs and
+addresses; the salt stays in the private folder.

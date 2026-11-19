@@ -1,6 +1,6 @@
 # Study 2 — ledger
 
-Append-only. Format in `BRIEF.md`. Times are `America/Los_Angeles` until 2026-11-18, `America/Mexico_City` after.
+Append-only. Format in `BRIEF.md`. Times are the mini's local time, with its UTC offset.
 
 ## 2026-11-02 · setup · plan written
 What: run contract (`RUN.md`), brief (`BRIEF.md`), mini setup (`mini/SETUP.md`), review-PR layout (`REVIEW-PR.md`),
@@ -23,3 +23,12 @@ DHCP reservation on the router `10.10.30.1`. The mini's zone is `America/Mexico_
 time, so the DST-night skip is gone. `PLAN.md`, `RUN.md`, `BRIEF.md`, `START.md`, the hub rule and
 `run_block.py`'s `--cidr` default now say so. Decision (JC): the plans follow the machine. Study 1's records keep
 `10.10.20.0/24`, where they were measured.
+
+## 2026-11-19 · setup · Claude off the mini; settings in config.json
+What: Claude runs only on the MacBook and reaches the mini over SSH (`Mini/scripts/mini`). The mini runs a plain job
+runner (`runner/`, LaunchDaemon `dev.zhen.study2.runner`) with no Claude, no tokens and no GitHub sign-in; data
+comes back with `/study-sync`. `config.json` now holds the home network, the window, slot and block counts: the
+window is on the mini's own clock, whatever its zone, and daylight-saving nights are skipped by checking the UTC
+offset, not by date. `STEPS.md` replaces `BRIEF.md`, `SETUP.md` replaces `START.md`, `agent/` is removed, and the
+freeze is a merge, not a comment. Decision (JC): Claude stays on the machine with the Touch ID key; the plans
+follow the machine instead of naming it.

@@ -14,7 +14,7 @@ the PR has failed. Files are there for depth.
 
 ## Freeze PR — `study2` → `main`
 
-**Title:** `Phase 1 results and the study 2 protocol — comment /freeze to lock it`
+**Title:** `Phase 1 results and the study 2 protocol — merge to freeze`
 
 ```
 1  THE ANSWER        three numbers, large: wait percentile · first-scan wait · flags phase 2 passes
@@ -25,18 +25,19 @@ the PR has failed. Files are there for depth.
 6  TABLE             each claim phase 2 tests: claim · what refutes it
 7  TABLE             what changed from PLAN.md
 8  HEALTH            blocks run / skipped / why · open defects, one line each
-9  WHAT /freeze DOES and the one command to run after it
+9  WHAT MERGING DOES and the one command to run after it
 ```
 
-Section 9 ends with the command, ready to paste on the mini in the admin account:
+Section 9 ends with the command, ready to paste on the MacBook:
 
 ```bash
-printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen\n' > /tmp/zhen-study2-zhen && sudo visudo -c -f /tmp/zhen-study2-zhen && sudo install -m 0440 -o root -g wheel /tmp/zhen-study2-zhen /etc/sudoers.d/zhen-study2-zhen
+ssh -t mini "printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen\\n' > /tmp/zhen-study2-zhen && sudo visudo -c -f /tmp/zhen-study2-zhen && sudo install -m 0440 -o root -g wheel /tmp/zhen-study2-zhen /etc/sudoers.d/zhen-study2-zhen"
 ```
 
-**JC's responses:** review comments → revised. A comment that is exactly `/freeze`, by `JCTec` → the freeze.
+**JC's responses:** review comments → revised in a MacBook session. **Merging** → the freeze: tag
+`study2/protocol-frozen` on the merge commit, then `/study-run pilot`.
 
-## Final PR — `study2-paper` → `main`
+## Final PR — `study2` → `main`
 
 **Title:** `Study 2 results and the combined paper`
 
@@ -46,13 +47,11 @@ printf 'zhenstudy ALL=(root) NOPASSWD: /usr/local/zhen-study2/zhen\n' > /tmp/zhe
 3  TABLE             what the paper says now that it did not
 4  HEALTH            phase 2 and 3 blocks run / skipped · defects · deviations from the protocol
 5  THE PDF           link to paper.pdf at this commit
-6  CLEAN-UP          the two commands below
+6  CLEAN-UP          the command below
 ```
 
 ```bash
-sudo rm /etc/sudoers.d/zhen-study2-zhen /etc/sudoers.d/zhen-study2
-sudo launchctl bootout system/dev.zhen.study2.agent; sudo launchctl bootout system/dev.zhen.study2.collect
-sudo rm /Library/LaunchDaemons/dev.zhen.study2.agent.plist /Library/LaunchDaemons/dev.zhen.study2.collect.plist
+ssh -t mini 'sudo launchctl bootout system/dev.zhen.study2.runner; sudo rm /Library/LaunchDaemons/dev.zhen.study2.runner.plist /etc/sudoers.d/zhen-study2-zhen /etc/sudoers.d/zhen-study2'
 ```
 
-**JC's response:** merges. `study2-paper` is cut from `study2`, so this one merge brings all of study 2 into `main`.
+**JC's response:** merges, then runs the clean-up command.

@@ -7,6 +7,9 @@ shape with dispersion added. This revision follows a change to the system under 
 **Run decisions, 2026-11-02:** how, where and when the study runs — the Mac mini, the unattended agent, the
 home-network window, the stops — are in `RUN.md`. Where they change this plan, the change is, marked *(RUN.md)* below.
 
+**2026-11-19:** Claude runs only on JC's MacBook; the mini is a plain job runner with no secrets. Every value that
+depends on the network or the clock moved to `config.json` (`RUN.md`).
+
 **2026-11-06:** study 2 measures zhen-core **0.8.1**, built from source on the study mini before phase 1
 (`RUN.md`, *Binary*). It differs from 0.8.0 only by the version string and a macOS 15.6 compiler fix; where this
 plan says 0.8.0, the mechanism meant is the same.
@@ -24,7 +27,7 @@ Study 1 is complete and is not revised by anything here.
 |---|---|
 | **The scanner is being fixed before it is measured** | zhen-core 0.8.0 (`zhen-agents/briefs/core-0.8.0-reach.md`) replaces the network-wide learned tail with a wait per address, learned from history at the 97th percentile, and watches the neighbour table during the sweep. Study 1's mechanism stays reachable as `--reach learned --no-neighbor-watch` |
 | **Root, for the window** | JC ruled: one `NOPASSWD` line naming the frozen zhen binary's exact path, added before the phase 2 pilot, removed when phase 3 ends. JC adds and removes it |
-| **A home-network arm** | JC ruled: phase 3, on the home LAN, `10.10.30.0/24` (was `10.10.20.0/24` until 2026-11-18) |
+| **A home-network arm** | JC ruled: phase 3, on the home LAN named in `config.json` (`home.cidr`) |
 | **One paper** | JC ruled: paper 1 is held and the two studies are one paper. The supervisor is told, not asked after the fact |
 | **Time is not a constraint** | three phases, run in sequence, each gated on the last |
 
@@ -106,9 +109,9 @@ Question: does phase 2's ordering hold on real devices — sleeping phones, Wi-F
 
 | | |
 |---|---|
-| Network | `10.10.30.0/24` only — the hub rule (the home LAN, renumbered from `10.10.20.0/24` on 2026-11-18) |
+| Network | `config.json` → `home.cidr` only. The runner refuses a home job if the mini's address is not in it |
 | Conditions | zhen default (history primed by a week of scans inside the window *(RUN.md)*), zhen root, nmap root `-T5`, nmap user `-T4` |
-| Schedule | ~30 blocks, **night-only**: 00:00–06:00 `America/Mexico_City`, three slots per night (00–02, 02–04, 04–06). The day stratum is dropped because the household window has no day; stated as a threat to validity *(RUN.md)* |
+| Schedule | `home.blocks` blocks, inside `home.window` on the mini's own clock, split into `home.slots_per_night` equal slots (`config.json`). The day stratum is dropped because the window has no day; stated as a threat to validity *(RUN.md)* |
 | Ground truth | no manifest exists: recall is against the **union of every condition's finds in the block plus the capture**, declared in advance as a pseudo-ground truth and labelled as one everywhere |
 | Covariates | Wi-Fi channel utilisation, which study 1 collected as `not_applicable` on every run |
 
@@ -146,4 +149,4 @@ So the only core work left before collection is the 0.8.0 brief, ending at G9.
 
 ## Still open, and JC's
 
-Nothing. Phase 3's window was chosen by JC on 2026-10-31 *(RUN.md)*.
+Nothing. Phase 3's window and network are in `config.json` *(RUN.md)*.
