@@ -1,33 +1,40 @@
 {
   "schema_version": 1,
-  "what": "The zhen build study 2 measures. Frozen before phase 1.",
-  "tag": "0.8.0",
-  "commit": "f629ba242533be893ca7d49ba4a789d598647d9d",
-  "frozen_on": "2026-10-17",
-  "version": "0.8.0",
-  "sha256": "e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c",
-  "size_bytes": 6493272,
-  "mach_o_uuid": "8AFFF598-0C6E-344A-ABA9-8F833171EEB6",
-  "path": "/Users/jc/Dev/zhen-study2-binary/.build/release/zhen",
-  "worktree": "/Users/jc/Dev/zhen-study2-binary",
+  "what": "The zhen build study 2 measures. Built from source on the Mac mini, recorded before phase 1. Never rebuilt until the study ends.",
+  "tag": "0.8.1",
+  "commit": "b6636fa63d5e906a727139a2547490a30fbf0bda",
+  "frozen_on": "2026-11-18",
+  "version": "0.8.1 (commit unknown)",
+  "version_note": "The binary reports no commit: a plain `swift build -c release` of a clone embeds none. The link from this file to its source is this record (tag, commit, source_path), not `zhen --version`.",
+  "sha256": "e10ac616ae298df44ba30b67230a1420157d92e9fa43d3b7303cd846283794b1",
+  "size_bytes": 6656808,
+  "mach_o_uuid": "4855C59F-A5A1-3493-B348-2232ABD99A4F",
+  "path": "/usr/local/zhen-study2/zhen",
+  "owner_mode": "root:wheel 0755",
+  "installed_at": "2026-11-18T19:15:14-0600",
+  "source_path": "/Users/zhenstudy/Dev/InfinityCastle/zhen-core",
+  "source_clean": true,
   "build_command": "swift build -c release",
   "build_directory": ".",
-  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101), swift-driver 1.148.6",
-  "target": "arm64-apple-macosx26.0",
+  "toolchain": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1), swift-driver 1.168.6",
+  "target": "arm64-apple-macosx27.2.0",
+  "min_os": "15.6",
   "host": {
-    "os": "macOS 26.6.2",
-    "build": "25G83",
-    "model": "Mac16,8"
+    "os": "macOS 27.2.1",
+    "build": "26B131",
+    "model": "Mac18,5"
   },
+  "build_record": "/Users/Shared/zhen-study2/build.json on the mini (moved there from ~zhenstudy/.zhen-study2/ by /study-setup on 2026-11-18)",
   "sha256_is_reproducible": false,
-  "sha256_meaning": "Identifies this artifact, not this source. Two builds of the same commit at the same path differ; see REPRODUCIBILITY.md, 'What the checksum is for'. The binary reports its own commit (zhen --version, run.tool in every artifact), and harness/provenance.py hashes the binary it runs, so a replacement is visible in the data.",
+  "sha256_meaning": "Identifies this artifact within study 2, not this source. Builds are not reproducible byte for byte (REPRODUCIBILITY.md, 'What the checksum is for'); the commit plus the recipe above is how anyone else gets an equivalent one. The harness hashes the binary on every run, so a replacement is visible in the data.",
   "frozen_packages": [
     "zhen-swift/zhen-core (the whole package: ZhenCore, ZhenDarwin, zhen)"
   ],
-  "deferred_defects": "zhen-core Docs/process/0.8.0-questions.md: Q5, Q7, Q13, Q20 and Q22 are open; none blocks the freeze. Gate evidence is in Docs/process/0.8.0-progress.md (gate T, and G9 against this binary on 2026-10-17).",
   "supersedes": {
-    "tag": "study/binary-2026-09-12b",
-    "sha256": "b4220600b75acd10b46d033cb315a9e5c035021494a93afe381e0014eff6e4ed",
-    "why": "Study 1's binary (netsanity 0.4.0). Study 2 measures zhen 0.8.0, whose default waits per address; study 1's mechanism stays reachable in this binary as --reach learned --no-neighbor-watch."
+    "tag": "0.8.0",
+    "commit": "f629ba242533be893ca7d49ba4a789d598647d9d",
+    "sha256": "e1f95ea922a4a8764022a877a712e9c39f00352c9a0b955eee615555934a742c",
+    "frozen_on": "2026-10-17",
+    "why": "That build was made on the MacBook and could not be traced to its source by anyone else. Study 2 builds 0.8.1 from the public commit on the mini instead (LEDGER.md, 2026-11-06). 0.8.1 differs from 0.8.0 by the version string and a compiler fix for macOS 15.6; scan behaviour is unchanged. G9's flag checks re-run against this binary on the testbed in S2."
   }
 }

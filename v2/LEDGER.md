@@ -38,3 +38,12 @@ What: `SETUP.md` now opens with every item the old-design `/study-start` run may
 exactly one outcome: keep (`zhenstudy`, its grant, the built binary if its record checks out), move (`build.json`),
 or remove (Claude Code, the token folder, the old clone, `gh`, MacTeX, any old daemons). Anything not named is
 listed, not acted on. Decision (JC): no ambiguity for the setup to resolve by itself.
+
+## 2026-11-18 · S0 · gate passed
+What: `/study-setup` made the mini match `SETUP.md` (20:50–21:00 `-0600`). Every 2026-11-18 leftover has its
+outcome in `v2/mini/MACHINE.md`; the old run's binary was kept, its `build.json` checking out. `frozen-binary-v2.json`
+is now the record of zhen-core 0.8.1 (`b6636fa`), sha256 `e10ac616…94b1`, equal to the installed file's, and
+supersedes the 2026-10-17 record of 0.8.0. Setup grant removed, `sudo -n true` fails; runner `running`, queue
+empty.  ·  Evidence: `v2/mini/MACHINE.md`, `v2/frozen-binary-v2.json`, hub `Mini/.run/2026-11-18-2050…2059-*.sh`
+·  Decision (JC): Homebrew `zhen` 0.9.0 (tap `zhen-swift/zhen`), which `SETUP.md` does not name, stays on the
+mini; the harness calls the frozen binary by its full path.
