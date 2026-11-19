@@ -46,12 +46,12 @@ and the collection run as LaunchDaemons under `zhenstudy`, so no one has to be l
 | Arm | Window | Clock |
 |---|---|---|
 | Testbed — phases 1 and 2 | any time | — |
-| Home network — phase 3 and the history-priming scans | **00:00–06:00** | `America/Los_Angeles` |
+| Home network — phase 3 and the history-priming scans | **00:00–06:00** | `America/Mexico_City` |
 
-- The harness checks the clock **before every block**: zone name is `America/Los_Angeles`, NTP offset under 1 s
+- The harness checks the clock **before every block**: zone name is `America/Mexico_City`, NTP offset under 1 s
   (`sntp`), and local time inside the window with the block's expected length. Any check failing: the block is
   skipped and logged, never run.
-- **Daylight-saving nights are skipped** (14 March 2027, 7 November 2027): one repeats an hour, the other loses one.
+- **No daylight-saving skips:** Mexico City has had no daylight-saving time since 2022, so every night is a full six hours.
 - Phase 3 is **night-only**, in three slots per night: 00–02, 02–04, 04–06. The day stratum in `PLAN.md` is
   dropped because the window has no day; this is a threat to validity, stated in the paper.
 - One scanner at a time: a single lock is held by any block or priming scan, so testbed and home runs never overlap.

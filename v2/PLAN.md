@@ -24,7 +24,7 @@ Study 1 is complete and is not revised by anything here.
 |---|---|
 | **The scanner is being fixed before it is measured** | zhen-core 0.8.0 (`zhen-agents/briefs/core-0.8.0-reach.md`) replaces the network-wide learned tail with a wait per address, learned from history at the 97th percentile, and watches the neighbour table during the sweep. Study 1's mechanism stays reachable as `--reach learned --no-neighbor-watch` |
 | **Root, for the window** | JC ruled: one `NOPASSWD` line naming the frozen zhen binary's exact path, added before the phase 2 pilot, removed when phase 3 ends. JC adds and removes it |
-| **A home-network arm** | JC ruled: phase 3, on `10.10.20.0/24` |
+| **A home-network arm** | JC ruled: phase 3, on the home LAN, `10.10.30.0/24` (was `10.10.20.0/24` until 2026-11-18) |
 | **One paper** | JC ruled: paper 1 is held and the two studies are one paper. The supervisor is told, not asked after the fact |
 | **Time is not a constraint** | three phases, run in sequence, each gated on the last |
 
@@ -106,9 +106,9 @@ Question: does phase 2's ordering hold on real devices — sleeping phones, Wi-F
 
 | | |
 |---|---|
-| Network | `10.10.20.0/24` only — the hub rule |
+| Network | `10.10.30.0/24` only — the hub rule (the home LAN, renumbered from `10.10.20.0/24` on 2026-11-18) |
 | Conditions | zhen default (history primed by a week of scans inside the window *(RUN.md)*), zhen root, nmap root `-T5`, nmap user `-T4` |
-| Schedule | ~30 blocks, **night-only**: 00:00–06:00 `America/Los_Angeles`, three slots per night (00–02, 02–04, 04–06). The day stratum is dropped because the household window has no day; stated as a threat to validity *(RUN.md)* |
+| Schedule | ~30 blocks, **night-only**: 00:00–06:00 `America/Mexico_City`, three slots per night (00–02, 02–04, 04–06). The day stratum is dropped because the household window has no day; stated as a threat to validity *(RUN.md)* |
 | Ground truth | no manifest exists: recall is against the **union of every condition's finds in the block plus the capture**, declared in advance as a pseudo-ground truth and labelled as one everywhere |
 | Covariates | Wi-Fi channel utilisation, which study 1 collected as `not_applicable` on every run |
 

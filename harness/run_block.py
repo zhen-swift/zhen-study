@@ -576,7 +576,7 @@ def main(argv=None) -> int:
     parser.add_argument("--self-check", action="store_true",
                         help="assert the harness imports nothing from netsanity, and exit")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--cidr", default="10.10.20.0/24")
+    parser.add_argument("--cidr", default="10.10.30.0/24")
     parser.add_argument("--iface", default="en0")
     parser.add_argument("--netsanity", default="netsanity")
     parser.add_argument("--nmap", default="nmap")

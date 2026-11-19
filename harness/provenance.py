@@ -336,10 +336,10 @@ if __name__ == "__main__":
     import sys
 
     ns = sys.argv[1] if len(sys.argv) > 1 else "netsanity"
-    hosts = sys.argv[2:] or ["10.10.20.1"]
+    hosts = sys.argv[2:] or ["10.10.30.1"]
     try:
         print(json.dumps(collect(netsanity=ns, nmap="nmap", control_hosts=hosts,
-                                 segment_prefix="10.10.20."), indent=1, sort_keys=True))
+                                 segment_prefix="10.10.30."), indent=1, sort_keys=True))
     except DirtyTree as error:
         print(f"BLOCK ABORTED: {error}")
         raise SystemExit(2)
