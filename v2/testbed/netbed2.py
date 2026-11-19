@@ -126,6 +126,7 @@ def provenance():
         "os": f"macOS {text(['sw_vers', '-productVersion'])} ({text(['sw_vers', '-buildVersion'])})",
         "model": text(["sysctl", "-n", "hw.model"]),
         "user": text(["id", "-un"]),
+        "python": f"{sys.executable} {sys.version.split()[0]}",
         "host_conditions": host_conditions(),
     }
 
