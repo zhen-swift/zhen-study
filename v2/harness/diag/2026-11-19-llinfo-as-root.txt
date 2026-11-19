@@ -1,0 +1,7 @@
+# Mini/.run/2026-11-19-1400-llinfo-as-root.sh (hub), run by JC on the mini in a Terminal, 2026-11-19 ~14:50 -0600.
+# llinfo.c (this folder) built with cc as jc-mini, run unprivileged, then with sudo; arp's count beside it.
+# Output as JC pasted it, minus the sudo prompt and the ssh/shell lines (they name a LAN address and a host).
+unprivileged: {"dump_bytes": 0, "entries": 0, "with_mac": 0}
+as root:      {"dump_bytes": 716, "entries": 5, "with_mac": 5}
+arp with MAC: 5
+removed /tmp/llinfo.3qh8

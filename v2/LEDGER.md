@@ -153,3 +153,20 @@ the link-layer table is withheld unless that process holds Local Network permiss
 launchd job cannot be granted. Apple binaries under Apple parents (a shell, `/usr/bin/python3`, the runner) see it.
 Untested: root.  ·  Evidence: `Mini/.run/2026-11-19-1430-zhen-0.8.2-precheck.sh` (hub), zhen-core `2145e8c`
 ·  Decision: none; back to JC. No zhen-core release is made from this branch.
+
+## 2026-11-19 · S2 · root reads the neighbour table; unprivileged zhen is measured as macOS 27 leaves it
+What: JC ran `llinfo.c` (zhen's exact read) on the mini, as `jc-mini` and with `sudo`: unprivileged, a 0-byte dump;
+as root, 716 bytes, 5 entries, all 5 with a hardware address, equal to `arp`'s 5. So on macOS 27 the link-layer
+table is withheld from a non-Apple binary unless it runs as root. zhen's root conditions (phase 2's H3 root run,
+phase 3's zhen root) keep their neighbour evidence; every unprivileged zhen condition loses it, whatever zhen does.
+·  Evidence: `v2/harness/diag/2026-11-19-llinfo-as-root.txt`, `v2/harness/diag/llinfo.c`
+·  Decision (Claude, as announced to JC before the test, JC to overrule): (1) The unprivileged conditions are measured
+as they behave on macOS 27, not worked around; the withheld table is a finding of the study, stated wherever an
+unprivileged result appears. (2) G9 row 5 (`neighbor_resolved`) cannot pass unprivileged on this OS. S2's gate takes
+rows 1–4, 6 and 8 on the testbed, and records row 5's unprivileged failure with this cause; row 5 is re-run **as
+root** with the frozen binary once JC adds the root line (S5), and must pass before the pilot (S6). The gate is
+moved, not dropped. (3) Carried to the freeze (S5), because the protocol is not frozen yet: H7 (the default reaches
+recall 1.00 cold) and phase 1's recall ceiling were written for a zhen that sees the table. Without it, the
+tcp-only and silent responders (r06, r08) were not found in the contract run, so the unprivileged default's
+ceiling on the testbed is 8 of 10. Phase 1 measures that ceiling; `PROTOCOL-v2.md` restates H7 against it or as a
+root-run hypothesis, and says why, before the freeze.
