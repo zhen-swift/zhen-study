@@ -1,0 +1,24 @@
+Starting Nmap 7.993 ( https://nmap.org ) at 2026-11-19 16:16 -0600
+Nmap scan report for 192.168.64.1
+Host is up, received conn-refused (0.00013s latency).
+Nmap scan report for 192.168.64.2
+Host is up, received syn-ack (0.0014s latency).
+Nmap scan report for 192.168.64.3
+Host is up, received conn-refused (1.0s latency).
+Nmap scan report for 192.168.64.4
+Host is up, received conn-refused (1.0s latency).
+Nmap scan report for 192.168.64.5
+Host is up, received conn-refused (1.0s latency).
+Nmap scan report for 192.168.64.6
+Host is up, received syn-ack (0.050s latency).
+Nmap scan report for 192.168.64.7
+Host is up, received syn-ack (0.028s latency).
+Nmap scan report for 192.168.64.8
+Host is up, received conn-refused (1.1s latency).
+Nmap scan report for 192.168.64.9
+Host is up, received conn-refused (1.1s latency).
+Nmap scan report for 192.168.64.10
+Host is up, received conn-refused (1.5s latency).
+Nmap scan report for 192.168.64.11
+Host is up, received conn-refused (2.3s latency).
+Nmap done: 256 IP addresses (11 hosts up) scanned in 1537.92 seconds

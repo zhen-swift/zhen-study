@@ -1,0 +1,127 @@
+{
+ "schema_version": 2,
+ "what": "netbed2 status",
+ "provenance": {
+  "generated_at": "2026-11-19T13:13:12-0600",
+  "zone": "America/Mexico_City",
+  "utc_offset": "-0600",
+  "repo_commit": "087bd03b10cc426660a035f2de1e5be70ee81bf2",
+  "repo_clean": true,
+  "image": {
+   "location": "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img",
+   "digest": "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e",
+   "template_sha256": "6234ede2e32318e04e7fb477111490f923f688f8ffd6984f144d4cfe87b67c1f"
+  },
+  "lima": "limactl version 2.3.0",
+  "os": "macOS 27.2.1 (26B131)",
+  "model": "Mac18,5",
+  "user": "zhenstudy",
+  "python": "/Library/Developer/CommandLineTools/usr/bin/python3 3.9.6",
+  "host_conditions": {
+   "job_priority": 31,
+   "hostagent_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "vm_process_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "background": false,
+   "at_start": {
+    "priority_at_start": 31,
+    "setpriority_rc": null,
+    "priority_after": 31
+   }
+  }
+ },
+ "users_logged_in": [
+  "jc-mini console"
+ ],
+ "bridge100": {
+  "present": true,
+  "inet": "192.168.64.1"
+ },
+ "machines": [
+  {
+   "name": "netbed1",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [],
+   "responder_namespaces": 2,
+   "guest_cpus": "1",
+   "ping_from_host": {}
+  },
+  {
+   "name": "netbed2",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [],
+   "responder_namespaces": 2,
+   "guest_cpus": "1",
+   "ping_from_host": {}
+  },
+  {
+   "name": "netbed3",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [],
+   "responder_namespaces": 2,
+   "guest_cpus": "1",
+   "ping_from_host": {}
+  },
+  {
+   "name": "netbed4",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [],
+   "responder_namespaces": 2,
+   "guest_cpus": "1",
+   "ping_from_host": {}
+  },
+  {
+   "name": "netbed5",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [],
+   "responder_namespaces": 2,
+   "guest_cpus": "1",
+   "ping_from_host": {}
+  }
+ ],
+ "neighbour_table": {
+  "source": "sudo -n /usr/sbin/arp -an",
+  "as_root": {
+   "192.168.64.1": "redacted-host-mac",
+   "192.168.64.10": "vm-79577032ee1f",
+   "192.168.64.11": "vm-e2dbe2a84dc7",
+   "192.168.64.2": "vm-20faf7ce662b",
+   "192.168.64.3": "vm-f94291818ae0",
+   "192.168.64.4": "vm-f3ddf0767d0e",
+   "192.168.64.5": "vm-af391aba120c",
+   "192.168.64.6": "vm-bd4d6569da4c",
+   "192.168.64.7": "vm-f8b5bd0b21be",
+   "192.168.64.8": "vm-098bec5f3cba",
+   "192.168.64.9": "vm-7257de8af2c0"
+  },
+  "plain_arp_from_python": {
+   "192.168.64.1": "redacted-host-mac",
+   "192.168.64.10": "vm-79577032ee1f",
+   "192.168.64.11": "vm-e2dbe2a84dc7",
+   "192.168.64.2": "vm-20faf7ce662b",
+   "192.168.64.3": "vm-f94291818ae0",
+   "192.168.64.4": "vm-f3ddf0767d0e",
+   "192.168.64.5": "vm-af391aba120c",
+   "192.168.64.6": "vm-bd4d6569da4c",
+   "192.168.64.7": "vm-f8b5bd0b21be",
+   "192.168.64.8": "vm-098bec5f3cba",
+   "192.168.64.9": "vm-7257de8af2c0"
+  }
+ }
+}

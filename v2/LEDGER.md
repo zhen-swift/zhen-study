@@ -191,3 +191,27 @@ root stubbed. One warning, from the harness's own check, not from zhen: it expec
 report false). Fixed in `run_block.run_checks`, with tests. These blocks do not count for the gate, which needs a
 dry run with no warning on the code that will collect; `v2/jobs/dryrun-2026111902/` re-runs all three (dry-run
 block ids now carry the seed).  ·  Evidence: the mini's `data/dryrun/`, jobs `dryrun-0001…`, `dryrun-0002…`
+
+## 2026-11-19 · sync · S2's dry runs and contract runs
+What: `/study-sync` copied the runner's `data/` (both dry-run passes: phase 1 1 + 1 blocks, phase 2 2 + 2 blocks, 18 + 24
+runs per pass, with raw zhen artifacts, nmap XML and stderr; the two contract runs `g9-20261119-131949` and
+`g9-20261119-164343`; testbed `applied.json` and one status) and `logs/runner.ndjson` (102 lines), with every `done/`
+and `failed/` job record and log, to `v2/data/` and `v2/runs/`. No failed job in S2. Privacy check: the rsync first
+overwrote the committed, hashed testbed copies with the mini's raw VM addresses; the write-once ones were restored
+from git and `applied.json` rewritten. The VMs' lima addresses in nmap's root XML (the phase 2 raw folders) and the
+testbed files were rewritten as `vm-` hashes, and the mini's bridge address in `status-20261119-131312.json` as
+`redacted-host-mac`. Rescan of every synced and every tracked file under `v2/data/` and `v2/runs/`: no hardware
+address, no address in the home network. The rewritten raw copies differ from the mini's bytes; no record hashes
+them (records hash pcaps, stores and manifests only).
+
+## 2026-11-19 · S2 · gate passed
+What: the S2 gate. (1) The dry run `v2/jobs/dryrun-2026111902/` on `a7202ea`, every condition through the runner on the
+mini: phase 1 d500 flush per run (18 conditions), phase 2 d50 flush per block (11) and d500 flush per run with -T2
+(13), 31 conditions, 42 runs, all three jobs in `done/`. `check.py --blocks dry2026111902` on the synced records: 0
+problems and warnings, 0 exclusions. (2) `test_harness.py`: 25 tests pass under `/usr/bin/python3` 3.9. (3) zhen-core's
+study contract on the testbed against the frozen binary (`data/contract/g9-20261119-164343/`): rows 1, 1w, 1u, 1i, 2,
+3, 4, 6 and 8 met; row 5 fails and is deferred to the root run after S5, before S6 (entry "root reads the table").
+Seen in the dry run, single runs and not results: unprivileged nmap at -T2 took 1,538 s and 2,275 s for 10 of 10
+hosts, and nmap root at -T2 447 s; a phase 2 block with -T2 therefore runs about 50 min, without it about 3 min.
+·  Evidence: `v2/data/dryrun/`, `v2/runs/dryrun-000{1,2,3}-*-dry2026111902.*`, `v2/data/contract/`
+·  Next: S3, phase 1 collection (`/study-run phase1`).

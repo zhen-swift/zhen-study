@@ -1,0 +1,52 @@
+
+netbed1
+  baseline p50 0.153 ms
+  r01 192.168.64.2 designed 500.0 ms
+    round 1: netem= 499.846 ms  p50= 510.016 ms  err= +2.00%
+    round 2: netem= 489.830 ms  p50= 498.594 ms  err= -0.28%
+    achieved p50 498.594 ms (-0.28%), cold first contact 995.164 ms
+  r02 192.168.64.3 designed 500.0 ms
+    round 1: netem= 499.846 ms  p50= 510.005 ms  err= +2.00%
+    round 2: netem= 489.841 ms  p50= 499.997 ms  err= -0.00%
+    achieved p50 499.997 ms (-0.00%), cold first contact 995.799 ms
+
+netbed2
+  baseline p50 0.133 ms
+  r03 192.168.64.4 designed 500.0 ms
+    round 1: netem= 499.868 ms  p50= 500.052 ms  err= +0.01%
+    achieved p50 500.052 ms (+0.01%), cold first contact 1000.146 ms
+  r04 192.168.64.5 designed 500.0 ms
+    round 1: netem= 499.868 ms  p50= 500.028 ms  err= +0.01%
+    achieved p50 500.028 ms (+0.01%), cold first contact 1000.159 ms
+
+netbed3
+  baseline p50 0.137 ms
+  r05 192.168.64.6 designed 500.0 ms
+    round 1: netem= 499.863 ms  p50= 500.023 ms  err= +0.00%
+    achieved p50 500.023 ms (+0.00%), cold first contact 1000.206 ms
+  r06 192.168.64.7 designed 500.0 ms
+    round 1: netem= 499.863 ms  p50= 500.031 ms  err= +0.01%
+    achieved p50 500.031 ms (+0.01%), cold first contact 1000.2096 ms
+
+netbed4
+  baseline p50 0.145 ms
+  r07 192.168.64.8 designed 500.0 ms
+    round 1: netem= 499.855 ms  p50= 510.030 ms  err= +2.01%
+    round 2: netem= 489.825 ms  p50= 497.515 ms  err= -0.50%
+    achieved p50 497.515 ms (-0.50%), cold first contact 992.021 ms
+  r08 192.168.64.9 designed 500.0 ms
+    round 1: netem= 499.855 ms  p50= 510.019 ms  err= +2.00%
+    round 2: netem= 489.836 ms  p50= 500.009 ms  err= +0.00%
+    achieved p50 500.009 ms (+0.00%), cold first contact None ms
+
+netbed5
+  baseline p50 0.141 ms
+  r09 192.168.64.10 designed 500.0 ms
+    round 1: netem= 499.860 ms  p50= 500.020 ms  err= +0.00%
+    achieved p50 500.020 ms (+0.00%), cold first contact 1000.135 ms
+  r10 192.168.64.11 designed 500.0 ms
+    round 1: netem= 499.860 ms  p50= 500.024 ms  err= +0.00%
+    achieved p50 500.024 ms (+0.00%), cold first contact 1000.1685 ms
+wrote /Users/Shared/zhen-study2/data/testbed/d1.json
+wrote /Users/Shared/zhen-study2/data/testbed/applied.json
+CALIBRATION CORRECTED MORE THAN 1.0 ms: ['r01', 'r02', 'r07', 'r08'] (not the link; see host_conditions)

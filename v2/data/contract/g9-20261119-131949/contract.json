@@ -1,0 +1,303 @@
+{
+ "schema_version": 1,
+ "what": "zhen-core study contract, G9 rows 1-6 and 8, on the testbed",
+ "binary": "/usr/local/zhen-study2/zhen",
+ "binary_sha256": "e10ac616ae298df44ba30b67230a1420157d92e9fa43d3b7303cd846283794b1",
+ "frozen_sha256": "e10ac616ae298df44ba30b67230a1420157d92e9fa43d3b7303cd846283794b1",
+ "port_of": {
+  "repo": "zhen-swift/zhen-core",
+  "tag": "0.8.1",
+  "path": "Scripts/verify-reach-testbed.sh",
+  "blob": "17baf43ecada4867707914a8cf60d4a7b1e019d4",
+  "function": "g9"
+ },
+ "cidr": "192.168.64.0/24",
+ "interface": "bridge100",
+ "started_at": "2026-11-19T13:19:49-0600",
+ "version_text": "0.8.1 (commit unknown)",
+ "rows": [
+  {
+   "row": "1",
+   "checks": [
+    {
+     "what": "run.reach.percentile",
+     "expected": 0.9,
+     "got": 0.9,
+     "ok": true
+    },
+    {
+     "what": "run.reach.first_scan_wait_millis",
+     "expected": 1200,
+     "got": 1200,
+     "ok": true
+    },
+    {
+     "what": "run.reach.cap_millis",
+     "expected": 4000,
+     "got": 4000,
+     "ok": true
+    },
+    {
+     "what": "run.reach.min_samples",
+     "expected": 10,
+     "got": 10,
+     "ok": true
+    },
+    {
+     "what": "run.reach.device_min_samples",
+     "expected": 3,
+     "got": 3,
+     "ok": true
+    },
+    {
+     "what": "run.reach.device_margin",
+     "expected": 1.5,
+     "got": 1.5,
+     "ok": true
+    },
+    {
+     "what": "run.reach.miss_backoff",
+     "expected": 3,
+     "got": 3,
+     "ok": true
+    },
+    {
+     "what": "run.reach.attempts_step_millis",
+     "expected": 400,
+     "got": 400,
+     "ok": true
+    },
+    {
+     "what": "run.reach.attempts_cap",
+     "expected": 7,
+     "got": 7,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "1w",
+   "checks": [
+    {
+     "what": "run.reach.expected_window_millis",
+     "expected": 1,
+     "got": 1,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "1u",
+   "checks": [
+    {
+     "what": "run.reach.unexpected_cold",
+     "expected": "first-scan",
+     "got": "first-scan",
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "1i",
+   "checks": [
+    {
+     "what": "run.ipv6_window.millis (2s)",
+     "expected": 2000,
+     "got": 2026.748125,
+     "ok": false
+    },
+    {
+     "what": "run.ipv6_window.millis (0)",
+     "expected": 0,
+     "got": 0,
+     "ok": true
+    }
+   ],
+   "passed": false
+  },
+  {
+   "row": "2",
+   "checks": [
+    {
+     "what": "run.reach.policy",
+     "expected": "learned",
+     "got": "learned",
+     "ok": true
+    },
+    {
+     "what": "run.neighbor_watch.enabled",
+     "expected": false,
+     "got": false,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "3",
+   "checks": [
+    {
+     "what": "run.reach.first_scan",
+     "expected": true,
+     "got": true,
+     "ok": true
+    },
+    {
+     "what": "run.reach.history_samples",
+     "expected": 0,
+     "got": 0,
+     "ok": true
+    },
+    {
+     "what": "run.reach.history_read",
+     "expected": false,
+     "got": false,
+     "ok": true
+    },
+    {
+     "what": "history store unchanged by --no-history",
+     "expected": true,
+     "got": true,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "4",
+   "checks": [
+    {
+     "what": "hosts found on the cold run",
+     "expected": true,
+     "got": true,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.2 found_after_millis",
+     "expected": "present",
+     "got": 2.612167,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.3 found_after_millis",
+     "expected": "present",
+     "got": 2.558917,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.4 found_after_millis",
+     "expected": "present",
+     "got": 10.624667,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.5 found_after_millis",
+     "expected": "present",
+     "got": 10.630708,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.6 found_after_millis",
+     "expected": "present",
+     "got": 50.63025,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.8 found_after_millis",
+     "expected": "present",
+     "got": 200.742292,
+     "ok": true
+    },
+    {
+     "what": "192.168.64.10 found_after_millis",
+     "expected": "present",
+     "got": 1000.9495,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "5",
+   "checks": [
+    {
+     "what": "every host has discovered_via",
+     "expected": true,
+     "got": true,
+     "ok": true
+    },
+    {
+     "what": "neighbor_resolved among them (the silent host)",
+     "expected": true,
+     "got": false,
+     "ok": false
+    }
+   ],
+   "passed": false,
+   "note": "discovered_via seen: ['probe_reply']"
+  },
+  {
+   "row": "6",
+   "checks": [
+    {
+     "what": "discovery stage attempts",
+     "expected": "present",
+     "got": 3,
+     "ok": true
+    },
+    {
+     "what": "discovery stage concurrency",
+     "expected": "present",
+     "got": 512,
+     "ok": true
+    },
+    {
+     "what": "discovery stage retransmit_budget_millis",
+     "expected": "present",
+     "got": 25,
+     "ok": true
+    },
+    {
+     "what": "discovery stage tail_budget_millis",
+     "expected": "present",
+     "got": 268.805759,
+     "ok": true
+    }
+   ],
+   "passed": true
+  },
+  {
+   "row": "8",
+   "checks": [
+    {
+     "what": "zhen --version names the tag",
+     "expected": true,
+     "got": true,
+     "ok": true
+    },
+    {
+     "what": "run.tool.version",
+     "expected": "0.8.1",
+     "got": "0.8.1",
+     "ok": true
+    },
+    {
+     "what": "run.tool.commit, as the freeze record says this build reports",
+     "expected": null,
+     "got": null,
+     "ok": true
+    }
+   ],
+   "passed": true,
+   "note": "this build embeds no commit (frozen-binary-v2.json version_note); the file is identified by sha256"
+  }
+ ],
+ "excluded": {
+  "7": "zhen as root: its line comes at S5"
+ },
+ "finished_at": "2026-11-19T13:20:37-0600",
+ "passed": false
+}

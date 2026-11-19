@@ -1,0 +1,19 @@
+block p2-d50-block-001-dry: phase 2, d50, flush per block, seed 88839317 (dry run)
+  order: p2.nmap.root.T5 p2.zhen.product p2.zhen.learned p2.nmap.root.T3 p2.nmap.root.T4 p2.zhen.first p2.zhen.root p2.nmap.user.T4 p2.zhen.default p2.nmap.user.T3 p2.nmap.user.T5
+  priming 1/5: 8 hosts, 2.02s
+  priming 2/5: 8 hosts, 2.03s
+  priming 3/5: 8 hosts, 2.03s
+  priming 4/5: 8 hosts, 1.29s
+  priming 5/5: 8 hosts, 2.13s
+   0 p2.nmap.root.T5          cold    4.43s  10/10 
+   1 p2.zhen.product          warm    1.67s  8/10 
+   2 p2.zhen.learned          warm    0.40s  6/10  warnings: empty history but first_scan False, samples 0
+   3 p2.nmap.root.T3          warm    6.13s  10/10 
+   4 p2.nmap.root.T4          warm    6.12s  10/10 
+   5 p2.zhen.first            warm    1.53s  8/10 
+   6 p2.zhen.root             warm    0.00s  10/10 stub 
+   7 p2.nmap.user.T4          warm    2.30s  4/10 
+   8 p2.zhen.default          warm    1.00s  8/10 
+   9 p2.nmap.user.T3          warm   34.04s  4/10 
+  10 p2.nmap.user.T5          warm    5.05s  4/10 
+block p2-d50-block-001-dry done: 11 runs -> /Users/Shared/zhen-study2/data/dryrun/phase2/runs.ndjson

@@ -1,0 +1,43 @@
+
+netbed1
+  r01 192.168.64.2 netem 0.899 ms
+  r02 192.168.64.3 netem 0.899 ms
+
+netbed2
+  r03 192.168.64.4 netem 4.8785 ms
+  r04 192.168.64.5 netem 4.8785 ms
+
+netbed3
+  r05 192.168.64.6 netem 24.8755 ms
+  r06 192.168.64.7 netem 24.8755 ms
+
+netbed4
+  r07 192.168.64.8 netem 99.8745 ms
+  r08 192.168.64.9 netem 99.8745 ms
+
+netbed5
+  r09 192.168.64.10 netem 499.874 ms
+  r10 192.168.64.11 netem 499.874 ms
+wrote /Users/Shared/zhen-study2/data/testbed/applied.json
+  scan 1: --reach-percentile 0.9 --first-scan-wait 1200ms --reach-cap 4s --reach-min-samples 10 --reach-device-min-samples 3 --reach-margin 1.5 --reach-miss-backoff 3 --expected-attempts-step 400ms --expected-attempts-cap 7
+  scan 1w: --expected-window 1ms
+  scan 1u: --unexpected-cold first-scan
+  scan 1i: --ipv6-window 2s
+  scan 1i0: --ipv6-window 0
+  scan 2: --reach learned --no-neighbor-watch
+  scan 3: --no-history
+  scan 4: (defaults)
+row 1   ok
+row 1w  ok
+row 1u  ok
+row 1i  ok
+row 2   ok
+row 3   ok
+row 4   ok
+row 5   FAILED, deferred: macOS 27 withholds the neighbour table from unprivileged zhen (LEDGER.md, 2026-11-19, root reads the table); row 5 is re-run as root with the frozen binary after zhen's root line (S5), before the pilot (S6)
+      neighbor_resolved among them (the silent host): expected True, got False
+      discovered_via seen: ['probe_reply']
+row 6   ok
+row 8   ok
+      this build embeds no commit (frozen-binary-v2.json version_note); the file is identified by sha256
+wrote /Users/Shared/zhen-study2/data/contract/g9-20261119-164343/contract.json; G9 rows 1, 1w, 1u, 1i, 2, 3, 4, 6, 8 met

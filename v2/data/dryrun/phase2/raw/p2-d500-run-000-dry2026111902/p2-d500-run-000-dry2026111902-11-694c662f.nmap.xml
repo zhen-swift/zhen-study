@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///opt/homebrew/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.993 scan initiated Thu Nov 19 17:35:16 2026 as: /opt/homebrew/bin/nmap -sn -oX /Users/Shared/zhen-study2/data/dryrun/phase2/raw/p2-d500-run-000-dry2026111902/p2-d500-run-000-dry2026111902-11-694c662f.nmap.xml -&#45;reason -T2 192.168.64.0/24 -->
+<nmaprun scanner="nmap" args="/opt/homebrew/bin/nmap -sn -oX /Users/Shared/zhen-study2/data/dryrun/phase2/raw/p2-d500-run-000-dry2026111902/p2-d500-run-000-dry2026111902-11-694c662f.nmap.xml -&#45;reason -T2 192.168.64.0/24" start="1795131316" startstr="Thu Nov 19 17:35:16 2026" version="7.993" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.2" addrtype="ipv4"/>
+<address addr="vm-20faf7ce662b" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="1022" rttvar="5000" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.3" addrtype="ipv4"/>
+<address addr="vm-f94291818ae0" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="1046" rttvar="2814" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.4" addrtype="ipv4"/>
+<address addr="vm-f3ddf0767d0e" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="5172" rttvar="5172" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.5" addrtype="ipv4"/>
+<address addr="vm-af391aba120c" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="5029" rttvar="913" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.6" addrtype="ipv4"/>
+<address addr="vm-bd4d6569da4c" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="25035" rttvar="10582" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.7" addrtype="ipv4"/>
+<address addr="vm-f8b5bd0b21be" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="25038" rttvar="25038" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.8" addrtype="ipv4"/>
+<address addr="vm-098bec5f3cba" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="100039" rttvar="56278" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.9" addrtype="ipv4"/>
+<address addr="vm-7257de8af2c0" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="100069" rttvar="31677" to="400000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.10" addrtype="ipv4"/>
+<address addr="vm-79577032ee1f" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="500058" rttvar="89024" to="856154"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.64.11" addrtype="ipv4"/>
+<address addr="vm-e2dbe2a84dc7" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="500066" rttvar="281292" to="1625234"/>
+</host>
+<host><status state="up" reason="localhost-response" reason_ttl="0"/>
+<address addr="192.168.64.1" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</host>
+<runstats><finished time="1795131763" timestr="Thu Nov 19 17:42:43 2026" summary="Nmap done at Thu Nov 19 17:42:43 2026; 256 IP addresses (11 hosts up) scanned in 446.91 seconds" elapsed="446.91" exit="success"/><hosts up="11" down="245" total="256"/>
+</runstats>
+</nmaprun>

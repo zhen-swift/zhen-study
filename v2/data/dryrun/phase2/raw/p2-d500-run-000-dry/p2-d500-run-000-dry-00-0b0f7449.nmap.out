@@ -1,0 +1,34 @@
+Starting Nmap 7.993 ( https://nmap.org ) at 2026-11-19 16:08 -0600
+Nmap scan report for 192.168.64.2
+Host is up, received arp-response (0.0012s latency).
+MAC Address: vm-20faf7ce662b (Unknown)
+Nmap scan report for 192.168.64.3
+Host is up, received arp-response (0.0014s latency).
+MAC Address: vm-f94291818ae0 (Unknown)
+Nmap scan report for 192.168.64.4
+Host is up, received arp-response (0.0053s latency).
+MAC Address: vm-f3ddf0767d0e (Unknown)
+Nmap scan report for 192.168.64.5
+Host is up, received arp-response (0.0052s latency).
+MAC Address: vm-af391aba120c (Unknown)
+Nmap scan report for 192.168.64.6
+Host is up, received arp-response (0.025s latency).
+MAC Address: vm-bd4d6569da4c (Unknown)
+Nmap scan report for 192.168.64.7
+Host is up, received arp-response (0.025s latency).
+MAC Address: vm-f8b5bd0b21be (Unknown)
+Nmap scan report for 192.168.64.8
+Host is up, received arp-response (0.10s latency).
+MAC Address: vm-098bec5f3cba (Unknown)
+Nmap scan report for 192.168.64.9
+Host is up, received arp-response (0.10s latency).
+MAC Address: vm-7257de8af2c0 (Unknown)
+Nmap scan report for 192.168.64.10
+Host is up, received arp-response (0.50s latency).
+MAC Address: vm-79577032ee1f (Unknown)
+Nmap scan report for 192.168.64.11
+Host is up, received arp-response (0.50s latency).
+MAC Address: vm-e2dbe2a84dc7 (Unknown)
+Nmap scan report for 192.168.64.1
+Host is up, received localhost-response.
+Nmap done: 256 IP addresses (11 hosts up) scanned in 6.12 seconds

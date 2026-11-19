@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///opt/homebrew/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.993 scan initiated Thu Nov 19 16:42:57 2026 as: /opt/homebrew/bin/nmap -sn -oX /Users/Shared/zhen-study2/data/dryrun/phase2/raw/p2-d500-run-000-dry/p2-d500-run-000-dry-10-c40902ef.nmap.xml -&#45;reason -T3 192.168.64.0/24 -->
+<nmaprun scanner="nmap" args="/opt/homebrew/bin/nmap -sn -oX /Users/Shared/zhen-study2/data/dryrun/phase2/raw/p2-d500-run-000-dry/p2-d500-run-000-dry-10-c40902ef.nmap.xml -&#45;reason -T3 192.168.64.0/24" start="1795128177" startstr="Thu Nov 19 16:42:57 2026" version="7.993" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="192.168.64.1" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="337" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.64.2" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="1757" rttvar="2136" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.64.4" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="5112" rttvar="1273" to="100000"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.64.6" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="50050" rttvar="50050" to="250250"/>
+</host>
+<host><status state="up" reason="syn-ack" reason_ttl="0"/>
+<address addr="192.168.64.7" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<times srtt="34849" rttvar="19598" to="113241"/>
+</host>
+<runstats><finished time="1795128200" timestr="Thu Nov 19 16:43:20 2026" summary="Nmap done at Thu Nov 19 16:43:20 2026; 256 IP addresses (5 hosts up) scanned in 23.10 seconds" elapsed="23.10" exit="success"/><hosts up="5" down="251" total="256"/>
+</runstats>
+</nmaprun>
