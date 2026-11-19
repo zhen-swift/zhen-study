@@ -36,7 +36,7 @@ unattended agent takes over.
 
 | Must be true | Check with |
 |---|---|
-| zone `America/Los_Angeles`, network time on, offset under 1 s | `readlink /etc/localtime`, `sntp time.apple.com` |
+| zone `America/Mexico_City`, network time on, offset under 1 s | `readlink /etc/localtime`, `sntp time.apple.com` |
 | never sleeps; restarts after power loss | `pmset -g`: `sleep 0`, `disksleep 0`, `autorestart 1` |
 | no automatic macOS or App Store installs | `com.apple.SoftwareUpdate` `AutomaticallyInstallMacOSUpdates` and `CriticalUpdateInstall` false; `com.apple.commerce` `AutoUpdate` false |
 | `en0` is Ethernet and carries the default route | `networksetup -listallhardwareports`, `route -n get default` |

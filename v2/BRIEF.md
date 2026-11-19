@@ -16,7 +16,7 @@ push. Make every call you can make; record each in the ledger with its reason. S
 - Change zhen-core, or build, rebuild or replace a frozen binary.
 - Edit study 1's evidence (`data/`, `figures/`, `RESULTS.md`, `PROTOCOL.md`), or any study 2 evidence once written.
   A wrong record is corrected by a new record that says so.
-- Scan `10.10.20.0/24` outside 00:00–06:00 `America/Los_Angeles`, or on a skipped night.
+- Scan `10.10.30.0/24` outside 00:00–06:00 `America/Mexico_City`, or on a skipped night.
 - Run two scanners at once.
 - Push phase 3 raw data, or anything naming a household device, address or MAC.
 - Merge, push to `main`, or force-push.
@@ -26,7 +26,7 @@ push. Make every call you can make; record each in the ledger with its reason. S
 ## Ledger entry format
 
 ```
-## 2026-11-03 02:14 PST · S2 · gate passed
+## 2026-11-03 02:14 CST · S2 · gate passed
 What: …  ·  Evidence: path/to/file, commit abc1234  ·  Decision (if any): … because …
 ```
 
