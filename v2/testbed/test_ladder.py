@@ -114,5 +114,28 @@ class Gate(unittest.TestCase):
         self.assertEqual([r["name"] for r in silent], ["r08"])
 
 
+class HostRecords(unittest.TestCase):
+    ARP = ("? (192.168.64.1) at ca:80:6d:74:ed:64 on bridge100 ifscope permanent [bridge]\n"
+           "? (192.168.64.2) at 52:55:55:ab:97:9 on bridge100 ifscope [bridge]\n"
+           "? (192.168.64.3) at (incomplete) on bridge100 ifscope [bridge]\n")
+
+    def test_arp_parsed_and_normalised_like_study_1(self):
+        table = netbed2.parse_arp(self.ARP)
+        self.assertEqual(table["192.168.64.2"], "52:55:55:ab:97:09")
+        self.assertNotIn("192.168.64.3", table)
+        self.assertEqual(len(table), 2)
+
+    def test_small_corrections_pass(self):
+        entries = [{"name": "r01", "designed_rtt_ms": 1.0, "netem_delay_ms": 0.8835},
+                   {"name": "r09", "designed_rtt_ms": 500.0, "netem_delay_ms": 499.789}]
+        self.assertEqual(netbed2.large_corrections(entries), [])
+
+    def test_the_10_ms_artefact_is_caught(self):
+        # d500.json of 2026-11-19: r07 calibrated to 89.87 ms for a 100 ms design.
+        entries = [{"name": "r07", "designed_rtt_ms": 100.0, "netem_delay_ms": 89.8705},
+                   {"name": "r05", "designed_rtt_ms": 500.0, "netem_delay_ms": 489.752}]
+        self.assertEqual(netbed2.large_corrections(entries), ["r07", "r05"])
+
+
 if __name__ == "__main__":
     unittest.main()

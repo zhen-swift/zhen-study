@@ -25,17 +25,22 @@ study 1's instrument and is **not edited**: `netbed2.py` imports its mechanics (
 | Cold first contact | 5 trials per responder: `sudo -n /usr/sbin/arp -d` (inside `zhenstudy`'s grant), then one ping (or one TCP connect for r06); trials, losses, median and ratio to designed. r08 answers nothing and is unmeasurable | PLAN.md asks for it (about 2× RTT, because netem delays the ARP reply too). Recorded, not gated |
 | The gate | Every measured responder within **10% of designed** p50 on 3 runs × 30 probes (study 1's method), distinct agreeing hardware addresses, study 1's composition, the right ladder. Calibration itself stops at 2% (study 1's rule) | STEPS.md S1 |
 | A rebuild | `limactl delete -f` every machine, then `up` from the same pinned image (lima's image cache is kept; the digest is checked again) | "Re-verified after a full testbed rebuild" |
+| Scheduling | The runner's plist says `ProcessType Interactive`; `up`, `configure`, `apply` and `verify` refuse to run from a background-policy process (`ps` priority ≤ 4) or on machines one started, and every record carries `host_conditions`. **2026-11-19, after attempt 1** | Attempt 1 ran under `ProcessType Background`: some responders came back late by min(half the delay, ~10 ms), which is macOS timer coalescing of a background process's wake-ups, inherited by the VMs. Calibration absorbed it, a rebuild moved it. The scanners under test would inherit it too |
+| Calibration guard | `configure` fails if netem ends more than 1 ms below the designed round trip (`large_corrections`) | The path itself costs 0.1–0.3 ms. Attempt 1 calibrated ~10 ms of host artefact into all four manifests and passed its own check |
+| Neighbour table | Read as root, `sudo -n /usr/sbin/arp -an` (inside `zhenstudy`'s grant); the source is recorded | Homebrew's `python3` runs as `Python.app`, and macOS hides hardware addresses from an app without Local Network permission and from everything it starts: `arp -an` from it prints nothing. **The harness (S2) reads the neighbour table the same way and needs the same treatment** |
 
-## Running it
+## Attempt 1 (2026-11-19): failed, kept
 
-Each step is one runner job (`arm: testbed`, any time), queued from the MacBook after `repo/` is pinned to the
-commit that has this code:
+`manifests/2026-11-19-attempt-1-background/`: the four manifests and four verify records made under
+`ProcessType Background`. All four calibrations were inside 2%; after the rebuild every verify failed. Extra delay
+per responder, attempt 1's verify:
 
-1. Smoke: `up --only netbed1`, then a separate `status`. Answers three unknowns: does a VZ machine start under a
-   LaunchDaemon with nobody logged in; does `bridge100` appear; does the machine outlive the job that started it
-   (launchd ends a job's process group when its main process exits, unless `AbandonProcessGroup` is set). If not,
-   stop: the fix (`AbandonProcessGroup` in the runner's plist) is a root step for JC.
-2. `up`, then `configure --dispersion 500`, `50`, `5`, `1`.
-3. `/study-sync`; every manifest `within_gate_tolerance: true`.
-4. `rebuild`, then for each dispersion `apply --manifest d<D>.json` and `verify --manifest d<D>.json`. Four
-   `passed: true` is the gate.
+| Designed | Extra when present |
+|---|---|
+| 1 ms | +0.48 ms |
+| 10 ms | +4.9 ms |
+| ≥ 25 ms | +10.1 ms |
+
+It came and went per responder, not per machine. In the 1× manifest it had been calibrated in, then was absent at
+verify (r05 and r07 −2%). The neighbour table read empty for the Python reason above. Both are fixed by the
+decisions above; nothing in `ladder.py` or the design changed.

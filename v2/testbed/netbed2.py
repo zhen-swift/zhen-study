@@ -53,6 +53,13 @@ VERIFY_RUNS = verify_gate.RUNS
 VERIFY_PROBES = verify_gate.PROBES
 #: Cold first-contact trials per responder. Each one deletes the host's neighbour entry first.
 COLD_TRIALS = 5
+#: A calibration that leaves netem more than this below the designed round trip is compensating for something that
+#: is not the link. The path itself (virtio, vmnet, netem's timer) costs 0.1-0.3 ms; on 2026-11-19 a ~10 ms host
+#: artefact (see `host_conditions`) was calibrated into four manifests and only the rebuild exposed it.
+MAX_CORRECTION_MS = 1.0
+#: `ps -o pri` of a process macOS runs in background policy (darwinbg). Its timers fire late by up to half their
+#: interval, capped near 10 ms, and so do the timers of the virtual machines it starts.
+BACKGROUND_PRIORITY = 4
 
 
 def now_iso():
@@ -109,7 +116,99 @@ def provenance():
         "os": f"macOS {text(['sw_vers', '-productVersion'])} ({text(['sw_vers', '-buildVersion'])})",
         "model": text(["sysctl", "-n", "hw.model"]),
         "user": text(["id", "-un"]),
+        "host_conditions": host_conditions(),
     }
+
+
+# --------------------------------------------------------------------------------
+# host conditions
+# --------------------------------------------------------------------------------
+
+def priority_of(pid):
+    out = text(["ps", "-o", "pri=", "-p", str(pid)])
+    try:
+        return int(out.split()[0])
+    except (ValueError, IndexError):
+        return None
+
+
+#: What `leave_background` found and did at start, recorded in `host_conditions`.
+STARTED_IN = {}
+
+
+def leave_background():
+    """Take this process, and so everything it starts, out of macOS background policy.
+
+    `setpriority(PRIO_DARWIN_PROCESS, 0, 0)` clears darwinbg for the calling process; the runner's own plist says
+    `ProcessType Interactive` from 2026-11-19, and this makes a job independent of the plist being reinstalled.
+    Tested: under `taskpolicy -b`, priority 4 becomes 31, and children start at 31. Whether it worked is checked,
+    not assumed: `require_foreground` reads the priority again.
+    """
+    import ctypes
+    before = priority_of(os.getpid())
+    rc = None
+    if before is not None and before <= BACKGROUND_PRIORITY:
+        rc = ctypes.CDLL(None, use_errno=True).setpriority(4, 0, 0)  # PRIO_DARWIN_PROCESS, self, clear
+    STARTED_IN.update({"priority_at_start": before, "setpriority_rc": rc, "priority_after": priority_of(os.getpid())})
+
+
+def host_conditions():
+    """The scheduling the testbed runs under, recorded with every result.
+
+    S1's first attempt (2026-11-19) ran under the runner's `ProcessType Background`: the job and lima's host agents
+    at priority 4 (darwinbg). Delays came back late by min(half the netem delay, ~10 ms) on whichever responders'
+    timers sat on a guest CPU that was allowed to sleep, which is what macOS timer coalescing does to a
+    background process's wake-ups. Calibration absorbed it, then a rebuild moved it.
+    """
+    vm_pids = text(["pgrep", "-U", str(os.getuid()), "-f", "Virtualization.VirtualMachine"]).split()
+    agents = text(["pgrep", "-U", str(os.getuid()), "-f", "limactl hostagent"]).split()
+    job = priority_of(os.getpid())
+    return {"job_priority": job,
+            "hostagent_priorities": sorted(p for p in (priority_of(a) for a in agents if a.isdigit()) if p is not None),
+            "vm_process_priorities": sorted(p for p in (priority_of(v) for v in vm_pids if v.isdigit())
+                                            if p is not None),
+            "background": job is not None and job <= BACKGROUND_PRIORITY, "at_start": dict(STARTED_IN)}
+
+
+def require_foreground(machines=True):
+    """Refuse to build, shape or measure the testbed from a background-policy process (see `host_conditions`), or,
+    with `machines`, on machines a background-policy job started."""
+    h = host_conditions()
+    if h["background"]:
+        raise SystemExit(f"this job runs in macOS background policy (priority {h['job_priority']}): its timers, and "
+                         "those of the machines it starts, are coalesced by up to ~10 ms. The runner's plist must "
+                         "say ProcessType Interactive (v2/runner/dev.zhen.study2.runner.plist)")
+    stale = [p for p in h["hostagent_priorities"] if p <= BACKGROUND_PRIORITY]
+    if machines and stale:
+        raise SystemExit(f"{len(stale)} machine(s) were started in background policy; `netbed2.py rebuild` them "
+                         "from a foreground job first")
+    return h
+
+
+def parse_arp(output):
+    """`arp -an` output to {address: normalised hardware address}, as study 1's `verify_gate.neighbour_table`."""
+    table = {}
+    for line in output.splitlines():
+        m = re.search(r"\((\d+\.\d+\.\d+\.\d+)\) at ([0-9a-f:]+)", line)
+        if m and "incomplete" not in line:
+            table[m.group(1)] = verify_gate.normalise_mac(m.group(2))
+    return table
+
+
+def neighbour_table():
+    """The host's neighbour table, read as root. Returns (table, source).
+
+    macOS hides link-layer addresses from a process without Local Network permission, and Homebrew's `python3`
+    runs as an app (`Python.app`), so anything it starts inherits that: from it, `arp -an` and `netstat -rnl` show
+    no hardware addresses at all, while the same commands from a shell show them all (2026-11-19). Root is not
+    filtered, and `/usr/sbin/arp` is in zhenstudy's grant. Study 1's plain `arp -an` is the fallback, and the
+    source is recorded either way.
+    """
+    p = subprocess.run(["sudo", "-n", "/usr/sbin/arp", "-an"], capture_output=True, text=True)
+    if p.returncode == 0:
+        return parse_arp(p.stdout), "sudo -n /usr/sbin/arp -an"
+    p = subprocess.run(["/usr/sbin/arp", "-an"], capture_output=True, text=True)
+    return parse_arp(p.stdout), "arp -an (sudo refused)"
 
 
 # --------------------------------------------------------------------------------
@@ -117,6 +216,7 @@ def provenance():
 # --------------------------------------------------------------------------------
 
 def cmd_up(args):
+    require_foreground()
     names = [args.only] if args.only else machine_names()
     for name in names:
         status = netbed.vm_status(name)
@@ -155,11 +255,18 @@ def cmd_status(args):
             netns = netbed.guest(v["name"], "ip netns list | wc -l", check=False).stdout.strip()
             entry["root_namespace_interfaces"] = ifaces
             entry["responder_namespaces"] = int(netns or 0)
+            entry["guest_cpus"] = netbed.guest(v["name"], "nproc", check=False).stdout.strip()
             entry["ping_from_host"] = {i["address"]: verify_gate.summarise(netbed.ping_rtts(i["address"], 3, 0.2))
                                        for i in ifaces}
         machines.append(entry)
-    out = {"schema_version": 1, "what": "netbed2 status", "provenance": provenance(),
-           "users_logged_in": text(["who"]).splitlines(), "bridge100": bridge_address(), "machines": machines}
+    as_root, source = neighbour_table()
+    plain = verify_gate.neighbour_table()
+    on_bridge = [i["address"] for m in machines for i in m.get("root_namespace_interfaces", [])]
+    out = {"schema_version": 2, "what": "netbed2 status", "provenance": provenance(),
+           "users_logged_in": [" ".join(line.split()[:2]) for line in text(["who"]).splitlines()],  # no remote hosts "bridge100": bridge_address(), "machines": machines,
+           "neighbour_table": {"source": source,
+                               "found": {a: as_root.get(a) for a in on_bridge},
+                               "found_by_plain_arp_from_python": {a: plain.get(a) for a in on_bridge}}}
     write_json(OUT / f"status-{stamp()}.json", out)
     for m in machines:
         print(f"  {m['name']}: {m['status']}", flush=True)
@@ -168,6 +275,7 @@ def cmd_status(args):
 
 
 def cmd_rebuild(args):
+    require_foreground(machines=False)  # replacing machines started in background policy is what this is for
     for name in machine_names():
         if netbed.vm_status(name):
             print(f"{name}: deleting", flush=True)
@@ -275,7 +383,13 @@ def segment_header(d):
             "responders_per_machine": plan.RESPONDERS_PER_VM}
 
 
+def large_corrections(entries):
+    """Pure: responders whose calibrated netem sits more than MAX_CORRECTION_MS below their designed round trip."""
+    return [e["name"] for e in entries if e["designed_rtt_ms"] - e["netem_delay_ms"] > MAX_CORRECTION_MS]
+
+
 def cmd_configure(args):
+    require_foreground()
     d = args.dispersion
     entries = []
     for vm, responders in ladder.machines(d):
@@ -316,19 +430,23 @@ def cmd_configure(args):
             entries.append(rec)
 
     off = [e["name"] for e in entries if abs(e["achieved_error_percent"]) > TOLERANCE_PERCENT]
+    suspect = large_corrections(entries)
     manifest = {"schema_version": 3, "what": f"study 2 testbed manifest, dispersion {d}×",
                 **segment_header(d),
                 "calibration_tolerance_percent": plan.CALIBRATION_TOLERANCE_PERCENT,
                 "gate_tolerance_percent": TOLERANCE_PERCENT,
                 "within_gate_tolerance": not off, "outside_tolerance": off,
+                "max_correction_ms": MAX_CORRECTION_MS, "large_corrections": suspect,
                 "provenance": provenance(), "responders": entries}
     path = OUT / f"d{d}.json"
     write_json(path, manifest)
     write_applied(manifest, path, entries)
     if off:
         print(f"OUTSIDE {TOLERANCE_PERCENT}%: {off}", flush=True)
-        return 1
-    return 0
+    if suspect:
+        print(f"CALIBRATION CORRECTED MORE THAN {MAX_CORRECTION_MS} ms: {suspect} (not the link; see "
+              "host_conditions)", flush=True)
+    return 1 if off or suspect else 0
 
 
 def write_applied(manifest, manifest_path, entries):
@@ -352,6 +470,7 @@ def responders_from_manifest(manifest):
 
 
 def cmd_apply(args):
+    require_foreground()
     path = Path(args.manifest)
     if not path.is_absolute() and not path.exists():
         path = OUT / path
@@ -440,6 +559,7 @@ def cmd_verify(args):
     if args.manifest and Path(args.manifest).name != applied["manifest"]:
         raise SystemExit(f"{applied['manifest']} is applied, not {Path(args.manifest).name}")
     d, responders = applied["dispersion"], applied["responders"]
+    require_foreground()
 
     cold = {r["name"]: cold_first_contact(r, r["address"]) for r in responders}
     runs = []
@@ -455,7 +575,7 @@ def cmd_verify(args):
         runs.append(run)
     for r in responders:  # one probe each so the silent host is in the neighbour table too (it answers ARP)
         subprocess.run(["ping", "-c", "1", "-W", "1000", r["address"]], capture_output=True)
-    table = verify_gate.neighbour_table()
+    table, table_source = neighbour_table()
     mac_rows = [{"name": r["name"], "address": r["address"], "mac_in_neighbour_table": table.get(r["address"]),
                  "mac_reported_by_guest": verify_gate.normalise_mac(r["mac"])} for r in responders]
     failures = gate_failures(d, responders, runs, mac_rows)
@@ -466,7 +586,7 @@ def cmd_verify(args):
               "applied_at": applied["applied_at"], "runs": VERIFY_RUNS, "probes_per_run": VERIFY_PROBES,
               "tolerance_percent": TOLERANCE_PERCENT, "worst_error_percent": worst,
               "cold_first_contact": cold, "measurements": runs, "neighbour_table": mac_rows,
-              "provenance": provenance(), "failures": failures, "passed": not failures}
+              "neighbour_table_source": table_source, "provenance": provenance(), "failures": failures, "passed": not failures}
     write_json(OUT / f"verify-d{d}-{stamp()}.json", result)
     print(f"\nworst error {worst}% (tolerance {TOLERANCE_PERCENT}%)", flush=True)
     if failures:
@@ -494,6 +614,7 @@ def main():
     p.add_argument("--manifest", help="refuse unless this manifest is the one applied")
     p.set_defaults(fn=cmd_verify)
     args = ap.parse_args()
+    leave_background()
     return args.fn(args) or 0
 
 

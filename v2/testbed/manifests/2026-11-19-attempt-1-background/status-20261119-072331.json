@@ -1,0 +1,68 @@
+{
+ "schema_version": 1,
+ "what": "netbed2 status",
+ "provenance": {
+  "generated_at": "2026-11-19T07:23:31-0600",
+  "zone": "America/Mexico_City",
+  "utc_offset": "-0600",
+  "repo_commit": "b5176a255a4b53feeb3d08ad97866c01f8c9e63d",
+  "repo_clean": true,
+  "image": {
+   "location": "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img",
+   "digest": "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e",
+   "template_sha256": "3617c55d80973cf8e386e0147893043f7a9cc34209bd6a373b6438cdef031fc4"
+  },
+  "lima": "limactl version 2.3.0",
+  "os": "macOS 27.2.1 (26B131)",
+  "model": "Mac18,5",
+  "user": "zhenstudy"
+ },
+ "users_logged_in": [
+  "jc-mini ttys000",
+  "jc-mini console"
+ ],
+ "bridge100": {
+  "present": true,
+  "inet": "192.168.64.1"
+ },
+ "machines": [
+  {
+   "name": "netbed1",
+   "status": "Running",
+   "vmType": "vz",
+   "root_namespace_interfaces": [
+    {
+     "ifname": "lima0",
+     "address": "192.168.64.2",
+     "mac": "52:55:55:ab:97:99"
+    },
+    {
+     "ifname": "lima1",
+     "address": "192.168.64.3",
+     "mac": "52:55:55:c6:ff:15"
+    }
+   ],
+   "responder_namespaces": 0,
+   "ping_from_host": {
+    "192.168.64.2": {
+     "n": 3,
+     "min": 0.245,
+     "p10": 0.245,
+     "p50": 0.284,
+     "p90": 0.371,
+     "max": 0.371,
+     "stdev": 0.0527
+    },
+    "192.168.64.3": {
+     "n": 3,
+     "min": 0.223,
+     "p10": 0.223,
+     "p50": 0.235,
+     "p90": 0.267,
+     "max": 0.267,
+     "stdev": 0.0186
+    }
+   }
+  }
+ ]
+}

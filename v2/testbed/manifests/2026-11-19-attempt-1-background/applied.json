@@ -1,0 +1,149 @@
+{
+ "schema_version": 1,
+ "what": "the testbed segment as it is now",
+ "applied_at": "2026-11-19T08:20:06-0600",
+ "dispersion": 1,
+ "manifest": "d1.json",
+ "manifest_sha256": "0de92cce4f8e020d4c944d76eef0bd22f67b8f716d4a3ff08ff63a3da6904b02",
+ "responders": [
+  {
+   "name": "r01",
+   "machine": "netbed1",
+   "interface": "lima0",
+   "address": "192.168.64.2",
+   "mac": "52:55:55:ab:97:99",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.76,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    80
+   ]
+  },
+  {
+   "name": "r02",
+   "machine": "netbed1",
+   "interface": "lima1",
+   "address": "192.168.64.3",
+   "mac": "52:55:55:c6:ff:15",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.768,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": []
+  },
+  {
+   "name": "r03",
+   "machine": "netbed2",
+   "interface": "lima0",
+   "address": "192.168.64.4",
+   "mac": "52:55:55:1a:30:bb",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 499.829,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    443
+   ]
+  },
+  {
+   "name": "r04",
+   "machine": "netbed2",
+   "interface": "lima1",
+   "address": "192.168.64.5",
+   "mac": "52:55:55:5b:02:3e",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 499.829,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": []
+  },
+  {
+   "name": "r05",
+   "machine": "netbed3",
+   "interface": "lima0",
+   "address": "192.168.64.6",
+   "mac": "52:55:55:bd:d3:d6",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.752,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    80,
+    443
+   ]
+  },
+  {
+   "name": "r06",
+   "machine": "netbed3",
+   "interface": "lima1",
+   "address": "192.168.64.7",
+   "mac": "52:55:55:06:1d:89",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 499.802,
+   "loss_percent": 0.0,
+   "role": "tcp-only",
+   "answers_icmp": false,
+   "tcp_ports": [
+    80
+   ]
+  },
+  {
+   "name": "r07",
+   "machine": "netbed4",
+   "interface": "lima0",
+   "address": "192.168.64.8",
+   "mac": "52:55:55:09:7c:26",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.7655,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": []
+  },
+  {
+   "name": "r08",
+   "machine": "netbed4",
+   "interface": "lima1",
+   "address": "192.168.64.9",
+   "mac": "52:55:55:87:26:7b",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.7565,
+   "loss_percent": 0.0,
+   "role": "silent",
+   "answers_icmp": false,
+   "tcp_ports": []
+  },
+  {
+   "name": "r09",
+   "machine": "netbed5",
+   "interface": "lima0",
+   "address": "192.168.64.10",
+   "mac": "52:55:55:5a:1c:0d",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.7345,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": []
+  },
+  {
+   "name": "r10",
+   "machine": "netbed5",
+   "interface": "lima1",
+   "address": "192.168.64.11",
+   "mac": "52:55:55:3b:31:8c",
+   "designed_rtt_ms": 500.0,
+   "netem_delay_ms": 489.7635,
+   "loss_percent": 15.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": []
+  }
+ ]
+}

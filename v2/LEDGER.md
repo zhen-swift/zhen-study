@@ -64,3 +64,18 @@ records go to the runner's `data/testbed/`, and `applied.json` names what is on 
 `v2/testbed/README.md`, `v2/testbed/test_ladder.py` (16 pass)  ·  Decision (JC): the slowest host stays at 500 ms
 and only the spread changes, so dispersion is not confounded with the slowest round trip; the testbed is built
 through the runner.
+
+## 2026-11-19 · S1 · gate failed, twice for the host, not the design
+What: calibration put all four manifests inside 2%, but after the rebuild all four verify runs failed (08:09–08:26
+`-0600`). (1) Some responders came back late by min(half the netem delay, ~10 ms): +0.48 ms at 1 ms, +4.9 at 10,
++10.1 at 25 and above. It came and went per responder, so calibration had absorbed it and the rebuild moved it. The
+runner's plist said `ProcessType Background`; the job and lima's host agents ran at priority 4 (darwinbg), whose
+timer wake-ups macOS coalesces late by that rule. (2) The neighbour table read empty: Homebrew's `python3` runs as
+`Python.app`, and macOS hides hardware addresses from an app without Local Network permission and from everything
+it starts (`arp -an` and `netstat -rnl` from it show none, from a shell all of them).  ·  Evidence:
+`v2/testbed/manifests/2026-11-19-attempt-1-background/`, `v2/testbed/README.md` (Attempt 1)  ·  Decision (JC,
+"fix what you need"): the runner runs `ProcessType Interactive`, since a study that measures timing must not run its
+instruments, or the scanners under test, in background policy. `netbed2.py` refuses to build or measure from
+background policy, records `host_conditions` with every result, fails a calibration that corrects more than 1 ms,
+and reads the neighbour table as root (`arp` is in `zhenstudy`'s grant). For S2: the harness reads the neighbour
+table the same way and needs the same fix. Every `netbed2.py` job also leaves background policy itself at start (`setpriority(PRIO_DARWIN_PROCESS)`, checked, recorded as `host_conditions.at_start`), so the testbed does not wait on the plist being reinstalled, which needs root. Rebuild, recalibrate, re-verify.

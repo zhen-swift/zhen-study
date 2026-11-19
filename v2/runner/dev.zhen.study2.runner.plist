@@ -27,8 +27,12 @@
   <true/>
   <key>ThrottleInterval</key>
   <integer>30</integer>
+  <!-- Interactive, not Background (changed 2026-11-19, S1). Background puts the runner and everything it starts in
+       macOS background policy (darwinbg, priority 4): CPU last, I/O throttled, and timers coalesced late by up to
+       half their interval (~10 ms cap). The testbed's VMs inherited that and netem delays came back 10 ms late; the
+       scanners under test would inherit it too. A study that measures timing runs with no resource limits. -->
   <key>ProcessType</key>
-  <string>Background</string>
+  <string>Interactive</string>
   <key>StandardOutPath</key>
   <string>/Users/Shared/zhen-study2/logs/runner.launchd.out</string>
   <key>StandardErrorPath</key>
