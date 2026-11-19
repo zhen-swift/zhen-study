@@ -1,0 +1,21 @@
+
+netbed1
+  r01 192.168.64.2 netem 489.76 ms
+  r02 192.168.64.3 netem 489.768 ms
+
+netbed2
+  r03 192.168.64.4 netem 499.829 ms
+  r04 192.168.64.5 netem 499.829 ms
+
+netbed3
+  r05 192.168.64.6 netem 489.752 ms
+  r06 192.168.64.7 netem 499.802 ms
+
+netbed4
+  r07 192.168.64.8 netem 489.7655 ms
+  r08 192.168.64.9 netem 489.7565 ms
+
+netbed5
+  r09 192.168.64.10 netem 489.7345 ms
+  r10 192.168.64.11 netem 489.7635 ms
+wrote /Users/Shared/zhen-study2/data/testbed/applied.json

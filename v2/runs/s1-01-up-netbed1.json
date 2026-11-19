@@ -1,0 +1,1 @@
+{"id":"s1-01-up-netbed1","arm":"testbed","minutes":40,"argv":["v2/testbed/netbed2.py","up","--only","netbed1"]}

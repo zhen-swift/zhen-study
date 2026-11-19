@@ -1,0 +1,3 @@
+wrote /Users/Shared/zhen-study2/data/testbed/status-20261119-072331.json
+  netbed1: Running
+  bridge100: {'present': True, 'inet': '192.168.64.1'}

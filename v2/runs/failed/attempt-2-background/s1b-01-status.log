@@ -1,0 +1,17 @@
+wrote /Users/Shared/zhen-study2/data/testbed/status-20261119-113138.json
+  netbed1: Running
+  netbed2: Running
+  netbed3: Running
+  netbed4: Running
+  netbed5: Running
+Traceback (most recent call last):
+  File "/Users/Shared/zhen-study2/repo/v2/testbed/netbed2.py", line 622, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/Shared/zhen-study2/repo/v2/testbed/netbed2.py", line 618, in main
+    return args.fn(args) or 0
+           ~~~~~~~^^^^^^
+  File "/Users/Shared/zhen-study2/repo/v2/testbed/netbed2.py", line 273, in cmd_status
+    print(f"  bridge100: {out['bridge100']}", flush=True)
+                          ~~~^^^^^^^^^^^^^
+KeyError: 'bridge100'

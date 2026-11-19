@@ -1,0 +1,49 @@
+
+netbed1
+  baseline p50 0.124 ms
+  r01 192.168.64.2 designed 1.0 ms
+    round 1: netem=   0.876 ms  p50=   0.977 ms  err= -2.30%
+    round 2: netem=   0.899 ms  p50=   0.998 ms  err= -0.20%
+    achieved p50 0.998 ms (-0.20%), cold first contact 2.047 ms
+  r02 192.168.64.3 designed 1.0 ms
+    round 1: netem=   0.876 ms  p50=   0.977 ms  err= -2.30%
+    round 2: netem=   0.899 ms  p50=   1.001 ms  err= +0.10%
+    achieved p50 1.001 ms (+0.10%), cold first contact 2.048 ms
+
+netbed2
+  baseline p50 0.121 ms
+  r03 192.168.64.4 designed 5.0 ms
+    round 1: netem=   4.878 ms  p50=   4.980 ms  err= -0.40%
+    achieved p50 4.980 ms (-0.40%), cold first contact 10.027 ms
+  r04 192.168.64.5 designed 5.0 ms
+    round 1: netem=   4.878 ms  p50=   4.990 ms  err= -0.20%
+    achieved p50 4.990 ms (-0.20%), cold first contact 10.067 ms
+
+netbed3
+  baseline p50 0.124 ms
+  r05 192.168.64.6 designed 25.0 ms
+    round 1: netem=  24.875 ms  p50=  24.984 ms  err= -0.06%
+    achieved p50 24.984 ms (-0.06%), cold first contact 50.086 ms
+  r06 192.168.64.7 designed 25.0 ms
+    round 1: netem=  24.875 ms  p50=  24.987 ms  err= -0.05%
+    achieved p50 24.987 ms (-0.05%), cold first contact 50.1047 ms
+
+netbed4
+  baseline p50 0.126 ms
+  r07 192.168.64.8 designed 100.0 ms
+    round 1: netem=  99.874 ms  p50= 100.004 ms  err= +0.00%
+    achieved p50 100.004 ms (+0.00%), cold first contact 200.151 ms
+  r08 192.168.64.9 designed 100.0 ms
+    round 1: netem=  99.874 ms  p50=  99.992 ms  err= -0.01%
+    achieved p50 99.992 ms (-0.01%), cold first contact None ms
+
+netbed5
+  baseline p50 0.126 ms
+  r09 192.168.64.10 designed 500.0 ms
+    round 1: netem= 499.874 ms  p50= 500.118 ms  err= +0.02%
+    achieved p50 500.118 ms (+0.02%), cold first contact 1000.237 ms
+  r10 192.168.64.11 designed 500.0 ms
+    round 1: netem= 499.874 ms  p50= 500.074 ms  err= +0.01%
+    achieved p50 500.074 ms (+0.01%), cold first contact 1000.224 ms
+wrote /Users/Shared/zhen-study2/data/testbed/d500.json
+wrote /Users/Shared/zhen-study2/data/testbed/applied.json

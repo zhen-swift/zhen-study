@@ -1,0 +1,1 @@
+{"id":"s1c-02-configure-d500","arm":"testbed","minutes":40,"argv":["v2/testbed/netbed2.py","configure","--dispersion","500"]}

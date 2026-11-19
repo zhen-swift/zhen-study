@@ -1,0 +1,670 @@
+{
+ "schema_version": 1,
+ "gate": "study 2 S1",
+ "study": 2,
+ "dispersion": 500,
+ "ladder_ms": [
+  1.0,
+  5.0,
+  25.0,
+  100.0,
+  500.0
+ ],
+ "ladder_rule": "rtt(s, d) = 500 * (s / 500) ** (ln d / ln 500), rounded to 0.1 ms; s = study 1's target",
+ "anchor": "slowest fixed at 500 ms (JC, 2026-11-18)",
+ "designed_dispersion": 500.0,
+ "segment": "192.168.64.0/24",
+ "composition": {
+  "icmp+web": 3,
+  "icmp-only": 5,
+  "tcp-only": 1,
+  "silent": 1
+ },
+ "declared_web_fraction": 0.25,
+ "responders_per_machine": 2,
+ "machine": {
+  "cpus": 1,
+  "spinner_policy": "SCHED_IDLE"
+ },
+ "manifest": "d500.json",
+ "manifest_sha256": "92344300e4ba7900933aeeeef5676b2aeff6c0209c5efa13b3673e22290aed14",
+ "applied_at": "2026-11-19T12:40:56-0600",
+ "runs": 3,
+ "probes_per_run": 30,
+ "tolerance_percent": 10.0,
+ "worst_error_percent": 0.6,
+ "cold_first_contact": {
+  "r01": {
+   "method": "icmp",
+   "trials_ms": [
+    2.186,
+    2.133,
+    2.151,
+    2.174,
+    2.118
+   ],
+   "lost": 0,
+   "median_ms": 2.151,
+   "ratio_to_designed": 2.151
+  },
+  "r02": {
+   "method": "icmp",
+   "trials_ms": [
+    2.113,
+    2.201,
+    2.116,
+    2.085,
+    2.037
+   ],
+   "lost": 0,
+   "median_ms": 2.113,
+   "ratio_to_designed": 2.113
+  },
+  "r03": {
+   "method": "icmp",
+   "trials_ms": [
+    10.088,
+    10.134,
+    10.083,
+    10.106,
+    10.125
+   ],
+   "lost": 0,
+   "median_ms": 10.106,
+   "ratio_to_designed": 2.021
+  },
+  "r04": {
+   "method": "icmp",
+   "trials_ms": [
+    10.09,
+    10.081,
+    10.115,
+    10.115,
+    10.103
+   ],
+   "lost": 0,
+   "median_ms": 10.103,
+   "ratio_to_designed": 2.021
+  },
+  "r05": {
+   "method": "icmp",
+   "trials_ms": [
+    50.127,
+    50.078,
+    50.068,
+    50.098,
+    50.077
+   ],
+   "lost": 0,
+   "median_ms": 50.078,
+   "ratio_to_designed": 2.003
+  },
+  "r06": {
+   "method": "tcp",
+   "trials_ms": [
+    50.1502,
+    50.1305,
+    50.1574,
+    50.1028,
+    50.0835
+   ],
+   "lost": 0,
+   "median_ms": 50.1305,
+   "ratio_to_designed": 2.005
+  },
+  "r07": {
+   "method": "icmp",
+   "trials_ms": [
+    200.134,
+    200.162,
+    200.179,
+    200.092,
+    200.198
+   ],
+   "lost": 0,
+   "median_ms": 200.162,
+   "ratio_to_designed": 2.002
+  },
+  "r08": {
+   "method": "none",
+   "unmeasurable": true
+  },
+  "r09": {
+   "method": "icmp",
+   "trials_ms": [
+    999.376,
+    999.381,
+    999.52,
+    797.943,
+    999.658
+   ],
+   "lost": 0,
+   "median_ms": 999.381,
+   "ratio_to_designed": 1.999
+  },
+  "r10": {
+   "method": "icmp",
+   "trials_ms": [
+    999.729,
+    999.814,
+    999.841,
+    null,
+    999.971
+   ],
+   "lost": 1,
+   "median_ms": 999.8275,
+   "ratio_to_designed": 2.0
+  }
+ },
+ "measurements": [
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.5,
+    "n": 30,
+    "min": 0.988,
+    "p10": 0.997,
+    "p50": 1.005,
+    "p90": 1.024,
+    "max": 1.146,
+    "stdev": 0.0267
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.4,
+    "n": 30,
+    "min": 0.991,
+    "p10": 0.998,
+    "p50": 1.004,
+    "p90": 1.011,
+    "max": 1.067,
+    "stdev": 0.0125
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.24,
+    "n": 30,
+    "min": 4.976,
+    "p10": 4.977,
+    "p50": 4.988,
+    "p90": 5.018,
+    "max": 5.089,
+    "stdev": 0.0254
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.28,
+    "n": 30,
+    "min": 4.979,
+    "p10": 4.98,
+    "p50": 4.986,
+    "p90": 5.051,
+    "max": 5.1,
+    "stdev": 0.027
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 25.0,
+    "method": "icmp",
+    "error_percent": -0.104,
+    "n": 30,
+    "min": 24.966,
+    "p10": 24.967,
+    "p50": 24.974,
+    "p90": 25.045,
+    "max": 25.063,
+    "stdev": 0.0242
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 25.0,
+    "method": "tcp",
+    "error_percent": -0.014,
+    "n": 30,
+    "min": 24.9892,
+    "p10": 24.9917,
+    "p50": 24.9964,
+    "p90": 25.0323,
+    "max": 25.1303,
+    "stdev": 0.0265
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 100.0,
+    "method": "icmp",
+    "error_percent": -0.005,
+    "n": 30,
+    "min": 99.943,
+    "p10": 99.945,
+    "p50": 99.995,
+    "p90": 100.052,
+    "max": 100.108,
+    "stdev": 0.043
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 100.0,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.044,
+    "n": 30,
+    "min": 499.754,
+    "p10": 499.768,
+    "p50": 499.781,
+    "p90": 499.899,
+    "max": 500.065,
+    "stdev": 0.068
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.037,
+    "n": 24,
+    "min": 499.803,
+    "p10": 499.805,
+    "p50": 499.816,
+    "p90": 499.859,
+    "max": 499.957,
+    "stdev": 0.0315
+   }
+  ],
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.3,
+    "n": 30,
+    "min": 0.997,
+    "p10": 0.998,
+    "p50": 1.003,
+    "p90": 1.087,
+    "max": 1.202,
+    "stdev": 0.0428
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.4,
+    "n": 30,
+    "min": 0.987,
+    "p10": 0.998,
+    "p50": 1.004,
+    "p90": 1.019,
+    "max": 1.06,
+    "stdev": 0.0136
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.26,
+    "n": 30,
+    "min": 4.974,
+    "p10": 4.976,
+    "p50": 4.987,
+    "p90": 5.076,
+    "max": 5.097,
+    "stdev": 0.0375
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.32,
+    "n": 30,
+    "min": 4.97,
+    "p10": 4.977,
+    "p50": 4.984,
+    "p90": 5.04,
+    "max": 5.111,
+    "stdev": 0.0288
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 25.0,
+    "method": "icmp",
+    "error_percent": -0.088,
+    "n": 30,
+    "min": 24.966,
+    "p10": 24.97,
+    "p50": 24.978,
+    "p90": 24.996,
+    "max": 25.044,
+    "stdev": 0.0166
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 25.0,
+    "method": "tcp",
+    "error_percent": -0.01,
+    "n": 30,
+    "min": 24.9894,
+    "p10": 24.9923,
+    "p50": 24.9975,
+    "p90": 25.0045,
+    "max": 25.1193,
+    "stdev": 0.0227
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 100.0,
+    "method": "icmp",
+    "error_percent": -0.038,
+    "n": 30,
+    "min": 99.954,
+    "p10": 99.957,
+    "p50": 99.962,
+    "p90": 99.987,
+    "max": 100.109,
+    "stdev": 0.0277
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 100.0,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.021,
+    "n": 30,
+    "min": 499.884,
+    "p10": 499.888,
+    "p50": 499.896,
+    "p90": 499.908,
+    "max": 500.045,
+    "stdev": 0.0274
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.019,
+    "n": 24,
+    "min": 499.887,
+    "p10": 499.9,
+    "p50": 499.907,
+    "p90": 499.923,
+    "max": 500.006,
+    "stdev": 0.0246
+   }
+  ],
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.4,
+    "n": 30,
+    "min": 0.99,
+    "p10": 0.998,
+    "p50": 1.004,
+    "p90": 1.088,
+    "max": 10.485,
+    "stdev": 1.7006
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 1.0,
+    "method": "icmp",
+    "error_percent": 0.6,
+    "n": 30,
+    "min": 0.991,
+    "p10": 0.998,
+    "p50": 1.006,
+    "p90": 1.053,
+    "max": 1.115,
+    "stdev": 0.0242
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.3,
+    "n": 30,
+    "min": 4.976,
+    "p10": 4.98,
+    "p50": 4.985,
+    "p90": 5.028,
+    "max": 5.093,
+    "stdev": 0.025
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 5.0,
+    "method": "icmp",
+    "error_percent": -0.3,
+    "n": 30,
+    "min": 4.958,
+    "p10": 4.976,
+    "p50": 4.985,
+    "p90": 5.029,
+    "max": 5.056,
+    "stdev": 0.02
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 25.0,
+    "method": "icmp",
+    "error_percent": -0.084,
+    "n": 30,
+    "min": 24.968,
+    "p10": 24.973,
+    "p50": 24.979,
+    "p90": 25.061,
+    "max": 25.091,
+    "stdev": 0.0313
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 25.0,
+    "method": "tcp",
+    "error_percent": 0.001,
+    "n": 30,
+    "min": 24.9916,
+    "p10": 24.9958,
+    "p50": 25.0002,
+    "p90": 25.0776,
+    "max": 25.121,
+    "stdev": 0.0342
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 100.0,
+    "method": "icmp",
+    "error_percent": -0.007,
+    "n": 30,
+    "min": 99.951,
+    "p10": 99.974,
+    "p50": 99.993,
+    "p90": 100.014,
+    "max": 100.172,
+    "stdev": 0.0365
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 100.0,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.013,
+    "n": 30,
+    "min": 499.928,
+    "p10": 499.93,
+    "p50": 499.936,
+    "p90": 499.942,
+    "max": 500.067,
+    "stdev": 0.0239
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.012,
+    "n": 29,
+    "min": 499.931,
+    "p10": 499.933,
+    "p50": 499.94,
+    "p90": 499.96,
+    "max": 500.083,
+    "stdev": 0.0297
+   }
+  ]
+ ],
+ "neighbour_table": [
+  {
+   "name": "r01",
+   "address": "192.168.64.2",
+   "mac_in_neighbour_table": "vm-20faf7ce662b",
+   "mac_reported_by_guest": "vm-20faf7ce662b"
+  },
+  {
+   "name": "r02",
+   "address": "192.168.64.3",
+   "mac_in_neighbour_table": "vm-f94291818ae0",
+   "mac_reported_by_guest": "vm-f94291818ae0"
+  },
+  {
+   "name": "r03",
+   "address": "192.168.64.4",
+   "mac_in_neighbour_table": "vm-f3ddf0767d0e",
+   "mac_reported_by_guest": "vm-f3ddf0767d0e"
+  },
+  {
+   "name": "r04",
+   "address": "192.168.64.5",
+   "mac_in_neighbour_table": "vm-af391aba120c",
+   "mac_reported_by_guest": "vm-af391aba120c"
+  },
+  {
+   "name": "r05",
+   "address": "192.168.64.6",
+   "mac_in_neighbour_table": "vm-bd4d6569da4c",
+   "mac_reported_by_guest": "vm-bd4d6569da4c"
+  },
+  {
+   "name": "r06",
+   "address": "192.168.64.7",
+   "mac_in_neighbour_table": "vm-f8b5bd0b21be",
+   "mac_reported_by_guest": "vm-f8b5bd0b21be"
+  },
+  {
+   "name": "r07",
+   "address": "192.168.64.8",
+   "mac_in_neighbour_table": "vm-098bec5f3cba",
+   "mac_reported_by_guest": "vm-098bec5f3cba"
+  },
+  {
+   "name": "r08",
+   "address": "192.168.64.9",
+   "mac_in_neighbour_table": "vm-7257de8af2c0",
+   "mac_reported_by_guest": "vm-7257de8af2c0"
+  },
+  {
+   "name": "r09",
+   "address": "192.168.64.10",
+   "mac_in_neighbour_table": "vm-79577032ee1f",
+   "mac_reported_by_guest": "vm-79577032ee1f"
+  },
+  {
+   "name": "r10",
+   "address": "192.168.64.11",
+   "mac_in_neighbour_table": "vm-e2dbe2a84dc7",
+   "mac_reported_by_guest": "vm-e2dbe2a84dc7"
+  }
+ ],
+ "neighbour_table_source": "sudo -n /usr/sbin/arp -an",
+ "provenance": {
+  "generated_at": "2026-11-19T12:43:19-0600",
+  "zone": "America/Mexico_City",
+  "utc_offset": "-0600",
+  "repo_commit": "a18772b47435a4a6491370f1deb01a383c25bf22",
+  "repo_clean": true,
+  "image": {
+   "location": "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img",
+   "digest": "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e",
+   "template_sha256": "6234ede2e32318e04e7fb477111490f923f688f8ffd6984f144d4cfe87b67c1f"
+  },
+  "lima": "limactl version 2.3.0",
+  "os": "macOS 27.2.1 (26B131)",
+  "model": "Mac18,5",
+  "user": "zhenstudy",
+  "host_conditions": {
+   "job_priority": 31,
+   "hostagent_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "vm_process_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "background": false,
+   "at_start": {
+    "priority_at_start": 31,
+    "setpriority_rc": null,
+    "priority_after": 31
+   }
+  }
+ },
+ "failures": [],
+ "passed": true
+}

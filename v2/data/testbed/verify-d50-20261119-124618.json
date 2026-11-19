@@ -1,0 +1,670 @@
+{
+ "schema_version": 1,
+ "gate": "study 2 S1",
+ "study": 2,
+ "dispersion": 50,
+ "ladder_ms": [
+  10.0,
+  27.5,
+  75.9,
+  181.5,
+  500.0
+ ],
+ "ladder_rule": "rtt(s, d) = 500 * (s / 500) ** (ln d / ln 500), rounded to 0.1 ms; s = study 1's target",
+ "anchor": "slowest fixed at 500 ms (JC, 2026-11-18)",
+ "designed_dispersion": 50.0,
+ "segment": "192.168.64.0/24",
+ "composition": {
+  "icmp+web": 3,
+  "icmp-only": 5,
+  "tcp-only": 1,
+  "silent": 1
+ },
+ "declared_web_fraction": 0.25,
+ "responders_per_machine": 2,
+ "machine": {
+  "cpus": 1,
+  "spinner_policy": "SCHED_IDLE"
+ },
+ "manifest": "d50.json",
+ "manifest_sha256": "fd8f325ec8bdc7deb9578714297273cd08e5a5a1368d28bfc4a1e4364f9a967e",
+ "applied_at": "2026-11-19T12:43:51-0600",
+ "runs": 3,
+ "probes_per_run": 30,
+ "tolerance_percent": 10.0,
+ "worst_error_percent": 0.19,
+ "cold_first_contact": {
+  "r01": {
+   "method": "icmp",
+   "trials_ms": [
+    20.096,
+    20.074,
+    20.11,
+    20.093,
+    20.105
+   ],
+   "lost": 0,
+   "median_ms": 20.096,
+   "ratio_to_designed": 2.01
+  },
+  "r02": {
+   "method": "icmp",
+   "trials_ms": [
+    20.097,
+    20.054,
+    20.045,
+    20.081,
+    20.058
+   ],
+   "lost": 0,
+   "median_ms": 20.058,
+   "ratio_to_designed": 2.006
+  },
+  "r03": {
+   "method": "icmp",
+   "trials_ms": [
+    55.101,
+    55.112,
+    55.082,
+    55.109,
+    55.066
+   ],
+   "lost": 0,
+   "median_ms": 55.101,
+   "ratio_to_designed": 2.004
+  },
+  "r04": {
+   "method": "icmp",
+   "trials_ms": [
+    55.077,
+    55.051,
+    55.048,
+    55.103,
+    55.024
+   ],
+   "lost": 0,
+   "median_ms": 55.051,
+   "ratio_to_designed": 2.002
+  },
+  "r05": {
+   "method": "icmp",
+   "trials_ms": [
+    151.907,
+    151.894,
+    151.873,
+    151.852,
+    151.921
+   ],
+   "lost": 0,
+   "median_ms": 151.894,
+   "ratio_to_designed": 2.001
+  },
+  "r06": {
+   "method": "tcp",
+   "trials_ms": [
+    152.0322,
+    151.967,
+    151.9715,
+    151.9741,
+    151.9602
+   ],
+   "lost": 0,
+   "median_ms": 151.9715,
+   "ratio_to_designed": 2.002
+  },
+  "r07": {
+   "method": "icmp",
+   "trials_ms": [
+    363.22,
+    363.178,
+    363.179,
+    363.175,
+    363.241
+   ],
+   "lost": 0,
+   "median_ms": 363.179,
+   "ratio_to_designed": 2.001
+  },
+  "r08": {
+   "method": "none",
+   "unmeasurable": true
+  },
+  "r09": {
+   "method": "icmp",
+   "trials_ms": [
+    1000.291,
+    1000.217,
+    1000.224,
+    874.572,
+    1000.297
+   ],
+   "lost": 0,
+   "median_ms": 1000.224,
+   "ratio_to_designed": 2.0
+  },
+  "r10": {
+   "method": "icmp",
+   "trials_ms": [
+    1000.256,
+    1000.176,
+    1000.189,
+    1000.186,
+    1000.262
+   ],
+   "lost": 0,
+   "median_ms": 1000.189,
+   "ratio_to_designed": 2.0
+  }
+ },
+ "measurements": [
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.19,
+    "n": 30,
+    "min": 9.97,
+    "p10": 9.977,
+    "p50": 9.981,
+    "p90": 10.005,
+    "max": 10.144,
+    "stdev": 0.03
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.15,
+    "n": 30,
+    "min": 9.972,
+    "p10": 9.976,
+    "p50": 9.985,
+    "p90": 10.02,
+    "max": 10.049,
+    "stdev": 0.0184
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.105,
+    "n": 30,
+    "min": 27.461,
+    "p10": 27.465,
+    "p50": 27.471,
+    "p90": 27.515,
+    "max": 27.617,
+    "stdev": 0.029
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.102,
+    "n": 30,
+    "min": 27.455,
+    "p10": 27.465,
+    "p50": 27.472,
+    "p90": 27.5,
+    "max": 27.53,
+    "stdev": 0.0141
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 75.9,
+    "method": "icmp",
+    "error_percent": -0.029,
+    "n": 30,
+    "min": 75.863,
+    "p10": 75.871,
+    "p50": 75.878,
+    "p90": 75.949,
+    "max": 76.008,
+    "stdev": 0.0311
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 75.9,
+    "method": "tcp",
+    "error_percent": 0.002,
+    "n": 30,
+    "min": 75.8936,
+    "p10": 75.8966,
+    "p50": 75.9014,
+    "p90": 75.953,
+    "max": 76.036,
+    "stdev": 0.0289
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 181.5,
+    "method": "icmp",
+    "error_percent": 0.001,
+    "n": 30,
+    "min": 181.492,
+    "p10": 181.497,
+    "p50": 181.502,
+    "p90": 181.528,
+    "max": 181.631,
+    "stdev": 0.0261
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 181.5,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.001,
+    "n": 30,
+    "min": 499.979,
+    "p10": 499.985,
+    "p50": 499.994,
+    "p90": 500.037,
+    "max": 500.137,
+    "stdev": 0.0295
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.002,
+    "n": 24,
+    "min": 499.972,
+    "p10": 499.982,
+    "p50": 499.992,
+    "p90": 500.089,
+    "max": 501.44,
+    "stdev": 0.2886
+   }
+  ],
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.17,
+    "n": 30,
+    "min": 9.973,
+    "p10": 9.974,
+    "p50": 9.983,
+    "p90": 10.054,
+    "max": 10.17,
+    "stdev": 0.0408
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.19,
+    "n": 30,
+    "min": 9.967,
+    "p10": 9.975,
+    "p50": 9.981,
+    "p90": 9.99,
+    "max": 10.026,
+    "stdev": 0.0099
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.105,
+    "n": 30,
+    "min": 27.46,
+    "p10": 27.465,
+    "p50": 27.471,
+    "p90": 27.501,
+    "max": 27.581,
+    "stdev": 0.0241
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.105,
+    "n": 30,
+    "min": 27.461,
+    "p10": 27.466,
+    "p50": 27.471,
+    "p90": 27.522,
+    "max": 27.577,
+    "stdev": 0.0272
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 75.9,
+    "method": "icmp",
+    "error_percent": -0.03,
+    "n": 30,
+    "min": 75.863,
+    "p10": 75.869,
+    "p50": 75.877,
+    "p90": 75.957,
+    "max": 75.997,
+    "stdev": 0.0306
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 75.9,
+    "method": "tcp",
+    "error_percent": -0.002,
+    "n": 30,
+    "min": 75.8875,
+    "p10": 75.8914,
+    "p50": 75.8988,
+    "p90": 75.9388,
+    "max": 76.0212,
+    "stdev": 0.0255
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 181.5,
+    "method": "icmp",
+    "error_percent": -0.007,
+    "n": 30,
+    "min": 181.477,
+    "p10": 181.482,
+    "p50": 181.487,
+    "p90": 181.533,
+    "max": 181.603,
+    "stdev": 0.0292
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 181.5,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.004,
+    "n": 30,
+    "min": 499.965,
+    "p10": 499.973,
+    "p50": 499.979,
+    "p90": 499.993,
+    "max": 500.087,
+    "stdev": 0.0223
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.004,
+    "n": 21,
+    "min": 499.97,
+    "p10": 499.972,
+    "p50": 499.979,
+    "p90": 499.994,
+    "max": 500.093,
+    "stdev": 0.0252
+   }
+  ],
+  [
+   {
+    "name": "r01",
+    "address": "192.168.64.2",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.18,
+    "n": 30,
+    "min": 9.971,
+    "p10": 9.974,
+    "p50": 9.982,
+    "p90": 9.994,
+    "max": 10.125,
+    "stdev": 0.0264
+   },
+   {
+    "name": "r02",
+    "address": "192.168.64.3",
+    "designed_rtt_ms": 10.0,
+    "method": "icmp",
+    "error_percent": -0.17,
+    "n": 30,
+    "min": 9.97,
+    "p10": 9.975,
+    "p50": 9.983,
+    "p90": 10.073,
+    "max": 10.177,
+    "stdev": 0.042
+   },
+   {
+    "name": "r03",
+    "address": "192.168.64.4",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.087,
+    "n": 30,
+    "min": 27.464,
+    "p10": 27.466,
+    "p50": 27.476,
+    "p90": 27.514,
+    "max": 27.591,
+    "stdev": 0.0261
+   },
+   {
+    "name": "r04",
+    "address": "192.168.64.5",
+    "designed_rtt_ms": 27.5,
+    "method": "icmp",
+    "error_percent": -0.102,
+    "n": 30,
+    "min": 27.463,
+    "p10": 27.466,
+    "p50": 27.472,
+    "p90": 27.513,
+    "max": 27.551,
+    "stdev": 0.0194
+   },
+   {
+    "name": "r05",
+    "address": "192.168.64.6",
+    "designed_rtt_ms": 75.9,
+    "method": "icmp",
+    "error_percent": -0.037,
+    "n": 30,
+    "min": 75.859,
+    "p10": 75.861,
+    "p50": 75.872,
+    "p90": 75.945,
+    "max": 81.862,
+    "stdev": 1.0746
+   },
+   {
+    "name": "r06",
+    "address": "192.168.64.7",
+    "designed_rtt_ms": 75.9,
+    "method": "tcp",
+    "error_percent": 0.0,
+    "n": 30,
+    "min": 75.8879,
+    "p10": 75.8926,
+    "p50": 75.9002,
+    "p90": 75.9653,
+    "max": 76.0219,
+    "stdev": 0.0353
+   },
+   {
+    "name": "r07",
+    "address": "192.168.64.8",
+    "designed_rtt_ms": 181.5,
+    "method": "icmp",
+    "error_percent": 0.002,
+    "n": 30,
+    "min": 181.481,
+    "p10": 181.486,
+    "p50": 181.503,
+    "p90": 181.584,
+    "max": 181.665,
+    "stdev": 0.0418
+   },
+   {
+    "name": "r08",
+    "address": "192.168.64.9",
+    "designed_rtt_ms": 181.5,
+    "method": "none",
+    "unmeasurable": true
+   },
+   {
+    "name": "r09",
+    "address": "192.168.64.10",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.006,
+    "n": 30,
+    "min": 499.961,
+    "p10": 499.964,
+    "p50": 499.971,
+    "p90": 499.999,
+    "max": 500.121,
+    "stdev": 0.0282
+   },
+   {
+    "name": "r10",
+    "address": "192.168.64.11",
+    "designed_rtt_ms": 500.0,
+    "method": "icmp",
+    "error_percent": -0.006,
+    "n": 24,
+    "min": 499.962,
+    "p10": 499.963,
+    "p50": 499.972,
+    "p90": 499.987,
+    "max": 500.076,
+    "stdev": 0.024
+   }
+  ]
+ ],
+ "neighbour_table": [
+  {
+   "name": "r01",
+   "address": "192.168.64.2",
+   "mac_in_neighbour_table": "vm-20faf7ce662b",
+   "mac_reported_by_guest": "vm-20faf7ce662b"
+  },
+  {
+   "name": "r02",
+   "address": "192.168.64.3",
+   "mac_in_neighbour_table": "vm-f94291818ae0",
+   "mac_reported_by_guest": "vm-f94291818ae0"
+  },
+  {
+   "name": "r03",
+   "address": "192.168.64.4",
+   "mac_in_neighbour_table": "vm-f3ddf0767d0e",
+   "mac_reported_by_guest": "vm-f3ddf0767d0e"
+  },
+  {
+   "name": "r04",
+   "address": "192.168.64.5",
+   "mac_in_neighbour_table": "vm-af391aba120c",
+   "mac_reported_by_guest": "vm-af391aba120c"
+  },
+  {
+   "name": "r05",
+   "address": "192.168.64.6",
+   "mac_in_neighbour_table": "vm-bd4d6569da4c",
+   "mac_reported_by_guest": "vm-bd4d6569da4c"
+  },
+  {
+   "name": "r06",
+   "address": "192.168.64.7",
+   "mac_in_neighbour_table": "vm-f8b5bd0b21be",
+   "mac_reported_by_guest": "vm-f8b5bd0b21be"
+  },
+  {
+   "name": "r07",
+   "address": "192.168.64.8",
+   "mac_in_neighbour_table": "vm-098bec5f3cba",
+   "mac_reported_by_guest": "vm-098bec5f3cba"
+  },
+  {
+   "name": "r08",
+   "address": "192.168.64.9",
+   "mac_in_neighbour_table": "vm-7257de8af2c0",
+   "mac_reported_by_guest": "vm-7257de8af2c0"
+  },
+  {
+   "name": "r09",
+   "address": "192.168.64.10",
+   "mac_in_neighbour_table": "vm-79577032ee1f",
+   "mac_reported_by_guest": "vm-79577032ee1f"
+  },
+  {
+   "name": "r10",
+   "address": "192.168.64.11",
+   "mac_in_neighbour_table": "vm-e2dbe2a84dc7",
+   "mac_reported_by_guest": "vm-e2dbe2a84dc7"
+  }
+ ],
+ "neighbour_table_source": "sudo -n /usr/sbin/arp -an",
+ "provenance": {
+  "generated_at": "2026-11-19T12:46:18-0600",
+  "zone": "America/Mexico_City",
+  "utc_offset": "-0600",
+  "repo_commit": "a18772b47435a4a6491370f1deb01a383c25bf22",
+  "repo_clean": true,
+  "image": {
+   "location": "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img",
+   "digest": "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e",
+   "template_sha256": "6234ede2e32318e04e7fb477111490f923f688f8ffd6984f144d4cfe87b67c1f"
+  },
+  "lima": "limactl version 2.3.0",
+  "os": "macOS 27.2.1 (26B131)",
+  "model": "Mac18,5",
+  "user": "zhenstudy",
+  "host_conditions": {
+   "job_priority": 31,
+   "hostagent_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "vm_process_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "background": false,
+   "at_start": {
+    "priority_at_start": 31,
+    "setpriority_rc": null,
+    "priority_after": 31
+   }
+  }
+ },
+ "failures": [],
+ "passed": true
+}

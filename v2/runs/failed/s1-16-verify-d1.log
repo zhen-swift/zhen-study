@@ -1,0 +1,41 @@
+
+run 1 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.911 (-0.02%)
+  r02  192.168.64.3    designed   500.0 ms  p50   499.921 (-0.02%)
+  r03  192.168.64.4    designed   500.0 ms  p50   499.973 (-0.01%)
+  r04  192.168.64.5    designed   500.0 ms  p50   499.971 (-0.01%)
+  r05  192.168.64.6    designed   500.0 ms  p50   489.897 (-2.02%)
+  r06  192.168.64.7    designed   500.0 ms  p50   510.130 (+2.03%)
+  r07  192.168.64.8    designed   500.0 ms  p50   489.928 (-2.01%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   499.864 (-0.03%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.674 (-0.07%)
+
+run 2 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.899 (-0.02%)
+  r02  192.168.64.3    designed   500.0 ms  p50   499.889 (-0.02%)
+  r03  192.168.64.4    designed   500.0 ms  p50   499.980 (-0.00%)
+  r04  192.168.64.5    designed   500.0 ms  p50   499.965 (-0.01%)
+  r05  192.168.64.6    designed   500.0 ms  p50   489.913 (-2.02%)
+  r06  192.168.64.7    designed   500.0 ms  p50   510.112 (+2.02%)
+  r07  192.168.64.8    designed   500.0 ms  p50   489.902 (-2.02%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   499.854 (-0.03%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.911 (-0.02%)
+
+run 3 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.823 (-0.04%)
+  r02  192.168.64.3    designed   500.0 ms  p50   498.917 (-0.22%)
+  r03  192.168.64.4    designed   500.0 ms  p50   500.002 (+0.00%)
+  r04  192.168.64.5    designed   500.0 ms  p50   500.031 (+0.01%)
+  r05  192.168.64.6    designed   500.0 ms  p50   489.871 (-2.03%)
+  r06  192.168.64.7    designed   500.0 ms  p50   510.113 (+2.02%)
+  r07  192.168.64.8    designed   500.0 ms  p50   489.890 (-2.02%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   499.848 (-0.03%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.892 (-0.02%)
+wrote /Users/Shared/zhen-study2/data/testbed/verify-d1-20261119-082607.json
+
+worst error 2.026% (tolerance 10.0%)
+S1 GATE NOT MET for d=1:
+  - an address has no hardware address in the neighbour table

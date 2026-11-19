@@ -1,0 +1,607 @@
+{
+ "schema_version": 3,
+ "what": "study 2 testbed manifest, dispersion 500\u00d7",
+ "study": 2,
+ "dispersion": 500,
+ "ladder_ms": [
+  1.0,
+  5.0,
+  25.0,
+  100.0,
+  500.0
+ ],
+ "ladder_rule": "rtt(s, d) = 500 * (s / 500) ** (ln d / ln 500), rounded to 0.1 ms; s = study 1's target",
+ "anchor": "slowest fixed at 500 ms (JC, 2026-11-18)",
+ "designed_dispersion": 500.0,
+ "segment": "192.168.64.0/24",
+ "composition": {
+  "icmp+web": 3,
+  "icmp-only": 5,
+  "tcp-only": 1,
+  "silent": 1
+ },
+ "declared_web_fraction": 0.25,
+ "responders_per_machine": 2,
+ "machine": {
+  "cpus": 1,
+  "spinner_policy": "SCHED_IDLE"
+ },
+ "calibration_tolerance_percent": 2.0,
+ "gate_tolerance_percent": 10.0,
+ "within_gate_tolerance": true,
+ "outside_tolerance": [],
+ "max_correction_ms": 1.0,
+ "large_corrections": [],
+ "provenance": {
+  "generated_at": "2026-11-19T12:22:31-0600",
+  "zone": "America/Mexico_City",
+  "utc_offset": "-0600",
+  "repo_commit": "a18772b47435a4a6491370f1deb01a383c25bf22",
+  "repo_clean": true,
+  "image": {
+   "location": "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img",
+   "digest": "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e",
+   "template_sha256": "6234ede2e32318e04e7fb477111490f923f688f8ffd6984f144d4cfe87b67c1f"
+  },
+  "lima": "limactl version 2.3.0",
+  "os": "macOS 27.2.1 (26B131)",
+  "model": "Mac18,5",
+  "user": "zhenstudy",
+  "host_conditions": {
+   "job_priority": 31,
+   "hostagent_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "vm_process_priorities": [
+    31,
+    31,
+    31,
+    31,
+    31
+   ],
+   "background": false,
+   "at_start": {
+    "priority_at_start": 31,
+    "setpriority_rc": null,
+    "priority_after": 31
+   }
+  }
+ },
+ "responders": [
+  {
+   "name": "r01",
+   "machine": "netbed1",
+   "interface": "lima0",
+   "address": "192.168.64.2",
+   "mac": "vm-20faf7ce662b",
+   "designed_rtt_ms": 1.0,
+   "target_rtt_ms": 1.0,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    80
+   ],
+   "netem_delay_ms": 0.899,
+   "achieved": {
+    "n": 40,
+    "min": 0.989,
+    "p10": 0.991,
+    "p50": 0.998,
+    "p90": 1.008,
+    "p99": 1.102,
+    "max": 1.102,
+    "mean": 1.0016,
+    "stdev": 0.0173
+   },
+   "achieved_error_percent": -0.2,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 0.876,
+     "measured_p50_ms": 0.977,
+     "error_percent": -2.3
+    },
+    {
+     "round": 2,
+     "netem_ms": 0.899,
+     "measured_p50_ms": 0.998,
+     "error_percent": -0.2
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {
+     "80": "open"
+    }
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     2.064,
+     2.052,
+     2.026,
+     2.046,
+     2.047
+    ],
+    "lost": 0,
+    "median_ms": 2.047,
+    "ratio_to_designed": 2.047
+   }
+  },
+  {
+   "name": "r02",
+   "machine": "netbed1",
+   "interface": "lima1",
+   "address": "192.168.64.3",
+   "mac": "vm-f94291818ae0",
+   "designed_rtt_ms": 1.0,
+   "target_rtt_ms": 1.0,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": [],
+   "netem_delay_ms": 0.899,
+   "achieved": {
+    "n": 40,
+    "min": 0.989,
+    "p10": 0.993,
+    "p50": 1.001,
+    "p90": 1.015,
+    "p99": 1.15,
+    "max": 1.15,
+    "mean": 1.0074,
+    "stdev": 0.0273
+   },
+   "achieved_error_percent": 0.1,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 0.876,
+     "measured_p50_ms": 0.977,
+     "error_percent": -2.3
+    },
+    {
+     "round": 2,
+     "netem_ms": 0.899,
+     "measured_p50_ms": 1.001,
+     "error_percent": 0.1
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     2.071,
+     2.048,
+     2.048,
+     2.063,
+     2.042
+    ],
+    "lost": 0,
+    "median_ms": 2.048,
+    "ratio_to_designed": 2.048
+   }
+  },
+  {
+   "name": "r03",
+   "machine": "netbed2",
+   "interface": "lima0",
+   "address": "192.168.64.4",
+   "mac": "vm-f3ddf0767d0e",
+   "designed_rtt_ms": 5.0,
+   "target_rtt_ms": 5.0,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    443
+   ],
+   "netem_delay_ms": 4.8785,
+   "achieved": {
+    "n": 40,
+    "min": 4.967,
+    "p10": 4.971,
+    "p50": 4.98,
+    "p90": 4.992,
+    "p99": 5.072,
+    "max": 5.072,
+    "mean": 4.9826,
+    "stdev": 0.0159
+   },
+   "achieved_error_percent": -0.4,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 4.8785,
+     "measured_p50_ms": 4.98,
+     "error_percent": -0.4
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {
+     "443": "open"
+    }
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     10.044,
+     10.079,
+     10.027,
+     10.005,
+     9.995
+    ],
+    "lost": 0,
+    "median_ms": 10.027,
+    "ratio_to_designed": 2.005
+   }
+  },
+  {
+   "name": "r04",
+   "machine": "netbed2",
+   "interface": "lima1",
+   "address": "192.168.64.5",
+   "mac": "vm-af391aba120c",
+   "designed_rtt_ms": 5.0,
+   "target_rtt_ms": 5.0,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": [],
+   "netem_delay_ms": 4.8785,
+   "achieved": {
+    "n": 40,
+    "min": 4.973,
+    "p10": 4.98,
+    "p50": 4.99,
+    "p90": 5.016,
+    "p99": 5.081,
+    "max": 5.081,
+    "mean": 4.9949,
+    "stdev": 0.0203
+   },
+   "achieved_error_percent": -0.2,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 4.8785,
+     "measured_p50_ms": 4.99,
+     "error_percent": -0.2
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     10.081,
+     10.067,
+     10.081,
+     10.026,
+     10.06
+    ],
+    "lost": 0,
+    "median_ms": 10.067,
+    "ratio_to_designed": 2.013
+   }
+  },
+  {
+   "name": "r05",
+   "machine": "netbed3",
+   "interface": "lima0",
+   "address": "192.168.64.6",
+   "mac": "vm-bd4d6569da4c",
+   "designed_rtt_ms": 25.0,
+   "target_rtt_ms": 25.0,
+   "loss_percent": 0.0,
+   "role": "icmp+web",
+   "answers_icmp": true,
+   "tcp_ports": [
+    80,
+    443
+   ],
+   "netem_delay_ms": 24.8755,
+   "achieved": {
+    "n": 40,
+    "min": 24.974,
+    "p10": 24.976,
+    "p50": 24.984,
+    "p90": 24.997,
+    "p99": 25.086,
+    "max": 25.086,
+    "mean": 24.9898,
+    "stdev": 0.0235
+   },
+   "achieved_error_percent": -0.064,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 24.8755,
+     "measured_p50_ms": 24.984,
+     "error_percent": -0.064
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {
+     "80": "open",
+     "443": "open"
+    }
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     50.071,
+     50.034,
+     50.088,
+     50.103,
+     50.086
+    ],
+    "lost": 0,
+    "median_ms": 50.086,
+    "ratio_to_designed": 2.003
+   }
+  },
+  {
+   "name": "r06",
+   "machine": "netbed3",
+   "interface": "lima1",
+   "address": "192.168.64.7",
+   "mac": "vm-f8b5bd0b21be",
+   "designed_rtt_ms": 25.0,
+   "target_rtt_ms": 25.0,
+   "loss_percent": 0.0,
+   "role": "tcp-only",
+   "answers_icmp": false,
+   "tcp_ports": [
+    80
+   ],
+   "netem_delay_ms": 24.8755,
+   "achieved": {
+    "n": 40,
+    "min": 24.979,
+    "p10": 24.981,
+    "p50": 24.987,
+    "p90": 25.006,
+    "p99": 25.105,
+    "max": 25.105,
+    "mean": 24.9907,
+    "stdev": 0.0198
+   },
+   "achieved_error_percent": -0.052,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 24.8755,
+     "measured_p50_ms": 24.987,
+     "error_percent": -0.052
+    }
+   ],
+   "verified": {
+    "icmp": "silent",
+    "ports": {
+     "80": "open"
+    }
+   },
+   "cold_first_contact": {
+    "method": "tcp",
+    "trials_ms": [
+     50.1208,
+     50.1047,
+     50.0703,
+     50.1351,
+     50.0719
+    ],
+    "lost": 0,
+    "median_ms": 50.1047,
+    "ratio_to_designed": 2.004
+   }
+  },
+  {
+   "name": "r07",
+   "machine": "netbed4",
+   "interface": "lima0",
+   "address": "192.168.64.8",
+   "mac": "vm-098bec5f3cba",
+   "designed_rtt_ms": 100.0,
+   "target_rtt_ms": 100.0,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": [],
+   "netem_delay_ms": 99.8745,
+   "achieved": {
+    "n": 40,
+    "min": 99.986,
+    "p10": 99.991,
+    "p50": 100.004,
+    "p90": 100.088,
+    "p99": 100.11,
+    "max": 100.11,
+    "mean": 100.029,
+    "stdev": 0.0404
+   },
+   "achieved_error_percent": 0.004,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 99.8745,
+     "measured_p50_ms": 100.004,
+     "error_percent": 0.004
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     200.151,
+     200.159,
+     200.168,
+     200.125,
+     200.123
+    ],
+    "lost": 0,
+    "median_ms": 200.151,
+    "ratio_to_designed": 2.002
+   }
+  },
+  {
+   "name": "r08",
+   "machine": "netbed4",
+   "interface": "lima1",
+   "address": "192.168.64.9",
+   "mac": "vm-7257de8af2c0",
+   "designed_rtt_ms": 100.0,
+   "target_rtt_ms": 100.0,
+   "loss_percent": 0.0,
+   "role": "silent",
+   "answers_icmp": false,
+   "tcp_ports": [],
+   "netem_delay_ms": 99.8745,
+   "achieved": {
+    "n": 40,
+    "min": 99.979,
+    "p10": 99.986,
+    "p50": 99.992,
+    "p90": 100.01,
+    "p99": 100.164,
+    "max": 100.164,
+    "mean": 99.9974,
+    "stdev": 0.0282
+   },
+   "achieved_error_percent": -0.008,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 99.8745,
+     "measured_p50_ms": 99.992,
+     "error_percent": -0.008
+    }
+   ],
+   "verified": {
+    "icmp": "silent",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "none",
+    "unmeasurable": true
+   }
+  },
+  {
+   "name": "r09",
+   "machine": "netbed5",
+   "interface": "lima0",
+   "address": "192.168.64.10",
+   "mac": "vm-79577032ee1f",
+   "designed_rtt_ms": 500.0,
+   "target_rtt_ms": 500.0,
+   "loss_percent": 0.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": [],
+   "netem_delay_ms": 499.874,
+   "achieved": {
+    "n": 40,
+    "min": 500.058,
+    "p10": 500.085,
+    "p50": 500.118,
+    "p90": 500.155,
+    "p99": 500.248,
+    "max": 500.248,
+    "mean": 500.1196,
+    "stdev": 0.0348
+   },
+   "achieved_error_percent": 0.024,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 499.874,
+     "measured_p50_ms": 500.118,
+     "error_percent": 0.024
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     1000.237,
+     1000.336,
+     1000.209,
+     1000.26,
+     678.896
+    ],
+    "lost": 0,
+    "median_ms": 1000.237,
+    "ratio_to_designed": 2.0
+   }
+  },
+  {
+   "name": "r10",
+   "machine": "netbed5",
+   "interface": "lima1",
+   "address": "192.168.64.11",
+   "mac": "vm-e2dbe2a84dc7",
+   "designed_rtt_ms": 500.0,
+   "target_rtt_ms": 500.0,
+   "loss_percent": 15.0,
+   "role": "icmp-only",
+   "answers_icmp": true,
+   "tcp_ports": [],
+   "netem_delay_ms": 499.874,
+   "achieved": {
+    "n": 34,
+    "min": 500.037,
+    "p10": 500.05,
+    "p50": 500.074,
+    "p90": 500.177,
+    "p99": 500.275,
+    "max": 500.275,
+    "mean": 500.0962,
+    "stdev": 0.0571
+   },
+   "achieved_error_percent": 0.015,
+   "calibration": [
+    {
+     "round": 1,
+     "netem_ms": 499.874,
+     "measured_p50_ms": 500.074,
+     "error_percent": 0.015
+    }
+   ],
+   "verified": {
+    "icmp": "answers",
+    "ports": {}
+   },
+   "cold_first_contact": {
+    "method": "icmp",
+    "trials_ms": [
+     1000.234,
+     null,
+     1000.214,
+     1000.242,
+     1000.172
+    ],
+    "lost": 1,
+    "median_ms": 1000.224,
+    "ratio_to_designed": 2.0
+   }
+  }
+ ]
+}

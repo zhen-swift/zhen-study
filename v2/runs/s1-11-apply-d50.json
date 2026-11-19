@@ -1,0 +1,1 @@
+{"id":"s1-11-apply-d50","arm":"testbed","minutes":15,"argv":["v2/testbed/netbed2.py","apply","--manifest","d50.json"]}

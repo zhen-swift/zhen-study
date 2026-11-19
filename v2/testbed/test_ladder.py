@@ -115,7 +115,7 @@ class Gate(unittest.TestCase):
 
 
 class HostRecords(unittest.TestCase):
-    ARP = ("? (192.168.64.1) at ca:80:6d:74:ed:64 on bridge100 ifscope permanent [bridge]\n"
+    ARP = ("? (192.168.64.1) at 02:00:5e:00:00:01 on bridge100 ifscope permanent [bridge]\n"
            "? (192.168.64.2) at 52:55:55:ab:97:9 on bridge100 ifscope [bridge]\n"
            "? (192.168.64.3) at (incomplete) on bridge100 ifscope [bridge]\n")
 

@@ -1,0 +1,40 @@
+
+run 1 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.985 (-0.00%)
+  r02  192.168.64.3    designed   500.0 ms  p50   499.999 (-0.00%)
+  r03  192.168.64.4    designed   500.0 ms  p50   499.984 (-0.00%)
+  r04  192.168.64.5    designed   500.0 ms  p50   499.981 (-0.00%)
+  r05  192.168.64.6    designed   500.0 ms  p50   499.974 (-0.01%)
+  r06  192.168.64.7    designed   500.0 ms  p50   500.009 (+0.00%)
+  r07  192.168.64.8    designed   500.0 ms  p50   499.982 (-0.00%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   500.000 (+0.00%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.985 (-0.00%)
+
+run 2 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.981 (-0.00%)
+  r02  192.168.64.3    designed   500.0 ms  p50   499.987 (-0.00%)
+  r03  192.168.64.4    designed   500.0 ms  p50   499.979 (-0.00%)
+  r04  192.168.64.5    designed   500.0 ms  p50   499.978 (-0.00%)
+  r05  192.168.64.6    designed   500.0 ms  p50   499.970 (-0.01%)
+  r06  192.168.64.7    designed   500.0 ms  p50   500.008 (+0.00%)
+  r07  192.168.64.8    designed   500.0 ms  p50   499.980 (-0.00%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   499.994 (-0.00%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.980 (-0.00%)
+
+run 3 of 3
+  r01  192.168.64.2    designed   500.0 ms  p50   499.982 (-0.00%)
+  r02  192.168.64.3    designed   500.0 ms  p50   499.976 (-0.01%)
+  r03  192.168.64.4    designed   500.0 ms  p50   499.979 (-0.00%)
+  r04  192.168.64.5    designed   500.0 ms  p50   499.981 (-0.00%)
+  r05  192.168.64.6    designed   500.0 ms  p50   499.967 (-0.01%)
+  r06  192.168.64.7    designed   500.0 ms  p50   500.006 (+0.00%)
+  r07  192.168.64.8    designed   500.0 ms  p50   499.980 (-0.00%)
+  r08  192.168.64.9    designed   500.0 ms  answers nothing
+  r09  192.168.64.10   designed   500.0 ms  p50   499.992 (-0.00%)
+  r10  192.168.64.11   designed   500.0 ms  p50   499.976 (-0.01%)
+wrote /Users/Shared/zhen-study2/data/testbed/verify-d1-20261119-125519.json
+
+worst error 0.007% (tolerance 10.0%)
+S1 gate met for d=1

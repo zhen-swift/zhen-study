@@ -1,0 +1,47 @@
+
+netbed1
+  baseline p50 0.123 ms
+  r01 192.168.64.2 designed 10.0 ms
+    round 1: netem=   9.877 ms  p50=   9.984 ms  err= -0.16%
+    achieved p50 9.984 ms (-0.16%), cold first contact 20.06 ms
+  r02 192.168.64.3 designed 10.0 ms
+    round 1: netem=   9.877 ms  p50=   9.982 ms  err= -0.18%
+    achieved p50 9.982 ms (-0.18%), cold first contact 20.065 ms
+
+netbed2
+  baseline p50 0.133 ms
+  r03 192.168.64.4 designed 27.5 ms
+    round 1: netem=  27.367 ms  p50=  27.474 ms  err= -0.09%
+    achieved p50 27.474 ms (-0.09%), cold first contact 55.063 ms
+  r04 192.168.64.5 designed 27.5 ms
+    round 1: netem=  27.367 ms  p50=  27.475 ms  err= -0.09%
+    achieved p50 27.475 ms (-0.09%), cold first contact 55.043 ms
+
+netbed3
+  baseline p50 0.134 ms
+  r05 192.168.64.6 designed 75.9 ms
+    round 1: netem=  75.766 ms  p50=  75.871 ms  err= -0.04%
+    achieved p50 75.871 ms (-0.04%), cold first contact 151.871 ms
+  r06 192.168.64.7 designed 75.9 ms
+    round 1: netem=  75.766 ms  p50=  75.875 ms  err= -0.03%
+    achieved p50 75.875 ms (-0.03%), cold first contact 151.8775 ms
+
+netbed4
+  baseline p50 0.126 ms
+  r07 192.168.64.8 designed 181.5 ms
+    round 1: netem= 181.375 ms  p50= 181.507 ms  err= +0.00%
+    achieved p50 181.507 ms (+0.00%), cold first contact 363.154 ms
+  r08 192.168.64.9 designed 181.5 ms
+    round 1: netem= 181.375 ms  p50= 181.494 ms  err= -0.00%
+    achieved p50 181.494 ms (-0.00%), cold first contact None ms
+
+netbed5
+  baseline p50 0.126 ms
+  r09 192.168.64.10 designed 500.0 ms
+    round 1: netem= 499.874 ms  p50= 500.043 ms  err= +0.01%
+    achieved p50 500.043 ms (+0.01%), cold first contact 1000.214 ms
+  r10 192.168.64.11 designed 500.0 ms
+    round 1: netem= 499.874 ms  p50= 500.044 ms  err= +0.01%
+    achieved p50 500.044 ms (+0.01%), cold first contact 1000.206 ms
+wrote /Users/Shared/zhen-study2/data/testbed/d50.json
+wrote /Users/Shared/zhen-study2/data/testbed/applied.json

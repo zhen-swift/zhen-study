@@ -10,7 +10,7 @@ study 1's instrument and is **not edited**: `netbed2.py` imports its mechanics (
 | `lima-responder.yaml` | study 1's machine, with the image pinned by digest |
 | `netbed2.py` | `up`, `status`, `rebuild`, `configure`, `apply`, `verify` |
 | `test_ladder.py` | `python3 -m unittest v2/testbed/test_ladder.py` |
-| `manifests/` | the records, brought back by `/study-sync` and committed: `d1.json d5.json d50.json d500.json`, the `verify-*.json` gate evidence and the smoke `status-*.json` |
+| `../data/testbed/` | the records, brought back by `/study-sync` and committed: `d1.json d5.json d50.json d500.json`, the `verify-*.json` gate evidence, `status-*.json`, and the failed attempts in `attempt-1-background/` and `attempt-2-two-cpus/`. Hardware addresses are rewritten at sync: the VMs' as `vm-` + 12 hex of SHA-256 (distinct and agreeing stay checkable), the host's as `redacted-host-mac` |
 
 ## Decisions
 
@@ -32,7 +32,7 @@ study 1's instrument and is **not edited**: `netbed2.py` imports its mechanics (
 
 ## Attempt 1 (2026-11-19): failed, kept
 
-`manifests/2026-11-19-attempt-1-background/`: the four manifests and four verify records made under
+`../data/testbed/attempt-1-background/` (and, as first committed, `manifests/2026-11-19-attempt-1-background/`): the four manifests and four verify records made under
 `ProcessType Background`. All four calibrations were inside 2%; after the rebuild every verify failed. Extra delay
 per responder, attempt 1's verify:
 

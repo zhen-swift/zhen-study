@@ -1,0 +1,1 @@
+this job runs in macOS background policy (priority 4): its timers, and those of the machines it starts, are coalesced by up to ~10 ms. The runner's plist must say ProcessType Interactive (v2/runner/dev.zhen.study2.runner.plist)

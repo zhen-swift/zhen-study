@@ -102,3 +102,23 @@ neighbour-table fix is confirmed (as root: hardware addresses; from Python: none
 one virtual CPU per machine (`lima-responder.yaml` `cpus: 1`), and study 1's spinner at `SCHED_IDLE` so the CPU never
 sleeps and the spinner yields to all real work; same host cost (one busy core per machine). `Interactive` stays: a
 timing study should not run its scanners in background policy either. Rebuild, recalibrate, re-verify.
+
+## 2026-11-19 · S1 · gate passed
+What: one virtual CPU per machine (`a18772b`). Rebuild, then calibration of all four ladders (s1c, 12:15–12:39 `-0600`):
+every responder within 0.4% of design, the largest correction 0.135 ms (the 1 ms guard never tripped), cold first
+contact 2.00× the round trip. Then a second full rebuild and apply + verify of each (s1d, 12:39–12:55): **all four
+passed**, worst error 0.6% (500×), 0.19% (50×), 0.014% (5×), 0.007% (1×), against 10%; 10/10 hardware addresses in
+the host's neighbour table (read as root), distinct, agreeing with the guests; every job at priority 31, machines
+`cpus: 1`, spinner `SCHED_IDLE`.  ·  Evidence: `v2/data/testbed/d{1,5,50,500}.json`,
+`v2/data/testbed/verify-d*-20261119-12*.json`, `v2/runs/s1c-*`, `v2/runs/s1d-*`  ·  Decision: none new. S1 → S2.
+
+## 2026-11-19 · sync · S1's records
+What: `/study-sync` copied the runner's `data/` (26 testbed records: 9 current, 11 of attempt 1, 6 of attempt 2) and
+`logs/runner.ndjson`, 28 done and 14 failed job records with logs, to `v2/data/` and `v2/runs/`. Failures: attempt 1's
+four verifies (08:09–08:26, extra delay); attempt 2's status (11:31, a `status` bug since fixed) and five jobs refused as
+background policy (11:32–11:34, the guard working); attempt 2's four calibrations (11:50–12:12, the 1 ms guard). Privacy
+check: the first scan found the MacBook's LAN address (attempt 1's `who`) and the mini's bridge hardware address in
+attempt 2's status; both redacted in the copies, the VMs' lima addresses rewritten as hashes; rescan clean. Also: the
+mini's bridge address had been used as a fixture in `test_ladder.py` (`173a7ab`, pushed); replaced, though it stays in
+history. `v2/testbed/manifests/2026-11-19-attempt-1-background/` (committed in `173a7ab`, VM addresses unhashed) stays as
+written; from here `v2/data/testbed/` is where testbed records live.
