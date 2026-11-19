@@ -54,3 +54,13 @@ What: as `zhenstudy`, git refused `repo/` (owned by the admin account: "dubious 
 `safe.directory` for `repo/` as command-scope git config, which jobs inherit. Tested on the mini against a repo
 owned by another user.  ·  Evidence: `v2/runner/runner.sh`  ·  Decision (JC): fix it now, before any job runs;
 the mini gets it when `/study-run` pins the repo.
+
+## 2026-11-18 · S1 · the ladder, the image, the code
+What: `v2/testbed/` builds study 2's four segments by importing study 1's `testbed/` (unchanged). Ladder per
+dispersion d ∈ {1, 5, 50, 500}: study 1's delays scaled in log space, `500 · (s/500)^(ln d / ln 500)`, 0.1 ms;
+500× is study 1's exactly, 1× is 500 ms everywhere. Composition is study 1's. Image pinned: Ubuntu 24.04 arm64
+`release-20261017`, `sha256:50e24e1f…348e`. The machines are built and measured by runner jobs as `zhenstudy`;
+records go to the runner's `data/testbed/`, and `applied.json` names what is on the segment now.  ·  Evidence:
+`v2/testbed/README.md`, `v2/testbed/test_ladder.py` (16 pass)  ·  Decision (JC): the slowest host stays at 500 ms
+and only the spread changes, so dispersion is not confounded with the slowest round trip; the testbed is built
+through the runner.

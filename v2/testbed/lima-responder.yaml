@@ -1,0 +1,32 @@
+# Study 2's responder machine: study 1's `testbed/lima-responder.yaml`, with the image pinned.
+#
+# Everything but `images` is study 1's, for study 1's reasons (two vzNAT devices per machine, because vmnet drops
+# frames from any hardware address it did not assign and the Virtualization framework accepts at most three
+# devices, one of them lima's own). See `testbed/lima-responder.yaml` and `testbed/FINDINGS-0.1.md`.
+#
+# The image: Ubuntu 24.04 (noble) server cloud image, arm64, the dated build `release-20261017`, the newest on
+# 2026-11-18. The digest is the one Ubuntu publishes in that folder's SHA256SUMS; lima refuses a download that
+# does not match it. Study 1 used the moving `release/` link, so its exact image is not known.
+vmType: "vz"
+os: "Linux"
+arch: "aarch64"
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/noble/release-20261017/ubuntu-24.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+    digest: "sha256:50e24e1fb79e89116e939d90aa7738f7af48c442fa1bc2510131e0b39c50348e"
+
+cpus: 2
+memory: "1GiB"
+disk: "10GiB"
+
+networks:
+  - vzNAT: true
+  - vzNAT: true
+
+mountType: "virtiofs"
+mounts: []
+
+containerd:
+  system: false
+  user: false
