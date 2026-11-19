@@ -20,6 +20,9 @@ import record as R  # noqa: E402
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
+    only = None
+    if argv[:1] == ["--blocks"]:          # --blocks SUFFIX: only blocks whose id ends with it (one dry run)
+        only, argv = argv[1], argv[2:]
     paths = [Path(p) for p in argv] or sorted((HERE.parent / "data").rglob("runs.ndjson"))
     if not paths:
         print("no runs.ndjson found")
@@ -29,6 +32,8 @@ def main(argv=None):
         rows = R.read(path)
         kinds, by_condition, excluded = collections.Counter(), collections.Counter(), []
         for n, r, problems in rows:
+            if only and r and not str(r.get("block_id", "")).endswith(only):
+                continue
             if r:
                 kinds[r.get("kind")] += 1
                 if r.get("kind") == "run":

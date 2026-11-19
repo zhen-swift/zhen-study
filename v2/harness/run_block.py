@@ -206,7 +206,10 @@ def run_checks(cond, parsed):
         return out
     reach = parsed.get("reach") or {}
     if cond.history == C.EMPTY:
-        if reach.get("first_scan") is not True or reach.get("history_samples") not in (0, None):
+        # `first_scan` is the history policy's state: a learned or fixed run reports false on an empty store
+        # (seen in the S2 dry run). Samples are 0 under every policy.
+        first_scan_ok = reach.get("first_scan") is True or reach.get("policy") != "history"
+        if not first_scan_ok or reach.get("history_samples") not in (0, None):
             out.append(f"empty history but first_scan {reach.get('first_scan')!r}, "
                        f"samples {reach.get('history_samples')!r}")
     elif cond.history == C.PRIMED:

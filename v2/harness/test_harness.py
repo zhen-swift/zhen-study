@@ -161,6 +161,24 @@ class Records(unittest.TestCase):
             R.append(Path("/nonexistent/never-written.ndjson"), self.run_record(kind="nonsense"))
 
 
+class RunChecks(unittest.TestCase):
+    def checks(self, cid, **reach):
+        import run_block
+        return run_block.run_checks(C.BY_ID[cid], {"ok": True, "reach": reach})
+
+    def test_learned_on_an_empty_store_is_not_a_first_scan(self):
+        # What 0.8.1 reports (S2 dry run, 2026-11-19): first_scan belongs to the history policy.
+        self.assertEqual(self.checks("p2.zhen.learned", policy="learned", first_scan=False, history_samples=0), [])
+
+    def test_history_on_an_empty_store_must_be_a_first_scan(self):
+        self.assertEqual(self.checks("p2.zhen.first", policy="history", first_scan=True, history_samples=0), [])
+        self.assertTrue(self.checks("p2.zhen.first", policy="history", first_scan=False, history_samples=0))
+
+    def test_primed_run_that_read_no_samples_is_flagged(self):
+        self.assertTrue(self.checks("p2.zhen.root", policy="history", history_read=True, history_samples=0))
+        self.assertEqual(self.checks("p2.zhen.root", policy="history", history_read=True, history_samples=40), [])
+
+
 class Generator(unittest.TestCase):
     config = {"phase1": {"blocks_per_cell": 20}, "phase2": {"blocks_per_cell": 30}}
 

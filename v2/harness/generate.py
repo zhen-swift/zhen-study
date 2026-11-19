@@ -65,7 +65,8 @@ def jobs(design, seed, config):
     rng.shuffle(todo)
     out = []
     for n, (phase, d, flush, index, extra) in enumerate(todo, 1):
-        block = f"p{phase}-d{d}-{flush}-{index:03d}" + ("-dry" if "--dry-run" in extra else "")
+        # Dry-run blocks carry the seed, so a re-run's records are told apart from an earlier one's.
+        block = f"p{phase}-d{d}-{flush}-{index:03d}" + (f"-dry{seed}" if "--dry-run" in extra else "")
         job_id = f"{design}-{n:04d}-{block}"
         out.append({
             "id": job_id, "arm": "testbed", "minutes": minutes(phase, index),

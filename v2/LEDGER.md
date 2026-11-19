@@ -182,3 +182,12 @@ block), every condition once, zhen as root stubbed.  ·  Evidence: this commit
 ·  Decision (Claude, JC to overrule before the freeze): 20 blocks per phase 1 cell, because phase 1 never enters a
 hypothesis test and 20 blocks × 10 responders gives 200 host trials per condition and dispersion, enough to tell
 P97 from P99 near recall 1 at ~6 h of machine time. pcaps stay on the mini outside `data/`.
+
+## 2026-11-19 · S2 · dry run, first pass: one false warning, fixed; dry run re-generated
+What: the first dry-run blocks on `73dc547` ran end to end on the mini (phase 2 d50 flush per block, 11 runs; phase 1
+d500, 18 runs): testbed applied, five priming scans, flushes, a capture per run, nmap as root and as user, zhen as
+root stubbed. One warning, from the harness's own check, not from zhen: it expected an empty store to give
+`first_scan: true` under every reach policy, and 0.8.1 reports it only under `history` (learned and fixed runs
+report false). Fixed in `run_block.run_checks`, with tests. These blocks do not count for the gate, which needs a
+dry run with no warning on the code that will collect; `v2/jobs/dryrun-2026111902/` re-runs all three (dry-run
+block ids now carry the seed).  ·  Evidence: the mini's `data/dryrun/`, jobs `dryrun-0001…`, `dryrun-0002…`

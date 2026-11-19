@@ -1,0 +1,25 @@
+{
+ "id": "dryrun-0002-p2-d50-block-001-dry2026111902",
+ "arm": "testbed",
+ "minutes": 7,
+ "argv": [
+  "v2/harness/run_block.py",
+  "--phase",
+  "2",
+  "--block",
+  "p2-d50-block-001-dry2026111902",
+  "--dispersion",
+  "50",
+  "--flush",
+  "block",
+  "--seed",
+  "1727305971",
+  "--block-index",
+  "1",
+  "--dry-run",
+  "--stub-root"
+ ],
+ "env": {
+  "ZHEN_STUDY2_JOB": "dryrun-0002-p2-d50-block-001-dry2026111902"
+ }
+}
