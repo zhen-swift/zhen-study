@@ -1,0 +1,26 @@
+block p1-d50-run-019: phase 1, d50, flush per run, seed 530278432
+  order: p1.history0.90.primed p1.fixed1.5s.primed p1.fixed0.5s.primed p1.history0.99.empty p1.fixed0.5s.empty p1.fixed3s.primed p1.fixed2s.empty p1.fixed2s.primed p1.fixed1s.empty p1.learned.empty p1.history0.99.primed p1.learned.primed p1.fixed1.5s.empty p1.history0.97.primed p1.fixed1s.primed p1.history0.90.empty p1.fixed3s.empty p1.history0.97.empty
+  priming 1/5: 8 hosts, 1.53s
+  priming 2/5: 8 hosts, 1.53s
+  priming 3/5: 8 hosts, 1.52s
+  priming 4/5: 8 hosts, 1.69s
+  priming 5/5: 8 hosts, 2.13s
+   0 p1.history0.90.primed    cold    1.86s  8/10 
+   1 p1.fixed1.5s.primed      cold    1.55s  7/10 
+   2 p1.fixed0.5s.primed      cold    0.53s  6/10 
+   3 p1.history0.99.empty     cold    1.53s  7/10 
+   4 p1.fixed0.5s.empty       cold    0.53s  6/10 
+   5 p1.fixed3s.primed        cold    3.04s  8/10 
+   6 p1.fixed2s.empty         cold    2.03s  8/10 
+   7 p1.fixed2s.primed        cold    2.03s  8/10 
+   8 p1.fixed1s.empty         cold    1.04s  8/10 
+   9 p1.learned.empty         cold    0.38s  6/10 
+  10 p1.history0.99.primed    cold    2.13s  8/10 
+  11 p1.learned.primed        cold    0.39s  6/10 
+  12 p1.fixed1.5s.empty       cold    1.53s  8/10 
+  13 p1.history0.97.primed    cold    2.13s  8/10 
+  14 p1.fixed1s.primed        cold    1.04s  8/10 
+  15 p1.history0.90.empty     cold    1.54s  8/10 
+  16 p1.fixed3s.empty         cold    3.03s  8/10 
+  17 p1.history0.97.empty     cold    2.02s  8/10 
+block p1-d50-run-019 done: 18 runs -> /Users/Shared/zhen-study2/data/phase1/runs.ndjson

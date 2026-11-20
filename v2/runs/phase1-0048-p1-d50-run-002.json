@@ -1,0 +1,23 @@
+{
+ "id": "phase1-0048-p1-d50-run-002",
+ "arm": "testbed",
+ "minutes": 7,
+ "argv": [
+  "v2/harness/run_block.py",
+  "--phase",
+  "1",
+  "--block",
+  "p1-d50-run-002",
+  "--dispersion",
+  "50",
+  "--flush",
+  "run",
+  "--seed",
+  "1894819661",
+  "--block-index",
+  "2"
+ ],
+ "env": {
+  "ZHEN_STUDY2_JOB": "phase1-0048-p1-d50-run-002"
+ }
+}

@@ -222,3 +222,20 @@ What: phase 1's 80 jobs (20 blocks per dispersion × 4, flush per run, 18 condit
 with `design.json`, and queued on the mini from `repo/` pinned to `17f9320` (hub script `Mini/.run/2026-11-19-1900-s3-phase1.sh`,
 output in the mini's `~/admin-runs/`). Testbed jobs, so they start now; the generator's estimate is ~9.3 h. The first
 job (`phase1-0001-p1-d1-run-014`) was running 20 s after queuing, zone CST, offset -0600.  ·  Evidence: `v2/jobs/phase1-348798216/`, commit 17f9320
+
+## 2026-11-20 · sync · phase 1
+What: `/study-sync` copied the runner's `data/` (new: `data/phase1/`, 1,520 rows in `runs.ndjson` = 80 block and
+1,440 run records; 1,440 raw zhen artifacts with stderr; the history store each run used, 87 MB uncompressed, ~7 MB
+gzipped) and `logs/runner.ndjson` (+160 lines), with the 80 phase 1 job records and logs, to `v2/data/` and
+`v2/runs/`. No failed job. Privacy check: the rsync again overwrote the committed, hashed copies of earlier records
+(testbed and the dry runs' nmap XML) with the mini's raw ones; restored from git, and `testbed/applied.json`'s VM
+addresses hashed. Phase 1's files hold no hardware address (unprivileged zhen sees none on macOS 27). Rescan of every
+synced and every tracked file under `v2/data/` and `v2/runs/`: no hardware address, no address in the home network.
+·  Evidence: `v2/data/phase1/`, `v2/runs/phase1-*`
+
+## 2026-11-20 · S3 · gate passed
+What: phase 1 complete. 80 jobs from `v2/jobs/phase1-348798216/`, all in `done/`, none failed or skipped, run
+2026-11-19 17:46–22:18 (mini's clock, -0600; ~4.5 h against the generator's 9.3 h estimate). 72 cells (4 dispersions ×
+18 conditions), 20 runs each. `check.py v2/data/phase1/runs.ndjson`: 0 problems and warnings, 0 exclusions. Every
+block at repo `17f9320`, clean, binary matching the freeze; no dry or stubbed run; every run cold (flush per run).
+·  Evidence: `v2/data/phase1/runs.ndjson`  ·  Next: S4, phase 1 analysis.
