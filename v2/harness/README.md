@@ -12,6 +12,7 @@ never computes a statistic.** Records hold address sets and the manifest's addre
 | `record.py` | The NDJSON records (`block`, `run`), validated on write and on read |
 | `run_block.py` | One block = one job. The only thing the runner runs for phases 1 and 2 |
 | `generate.py` | A phase's design → job files in `v2/jobs/<design>-<seed>/`, shuffled by the seed, with `design.json` |
+| `privacy.py` | `/study-sync`'s privacy check: hardware and home addresses; hashes VM addresses in copies |
 | `check.py` | Every problem and warning in a `runs.ndjson`. The S2 gate is a dry run with none |
 | `contract.py` | zhen-core's study contract (G9) on the testbed. Row 5 deferred to the root run (below) |
 | `diag/` | `llinfo.c`, zhen's neighbour-table read alone, and its result as root |
